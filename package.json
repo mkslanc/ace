@@ -31,7 +31,8 @@
         "src",
         "ace.d.ts",
         "!**/*_test.js",
-        "!_test"
+        "!_test",
+        "esm-resolver.js"
     ],
     "scripts": {
         "start": "node static.js",
