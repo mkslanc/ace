@@ -1,4 +1,7 @@
 "use strict";
+
+const { Scope } = require("./scope");
+
 const reportError = require("./lib/report_error").reportError;
 
 // tokenizing lines longer than this makes editor very slow
@@ -15,6 +18,7 @@ class Tokenizer {
         /**@type {RegExp}*/
         this.splitRegex;
         this.states = rules;
+        this.rootScope = new Scope("modeName");
 
         this.regExps = {};
         this.matchMappings = {};
@@ -100,6 +104,22 @@ class Tokenizer {
 
             this.regExps[key] = new RegExp("(" + ruleRegExps.join(")|(") + ")|($)", flag);
         }
+    }
+
+    /**
+     * @param {string[]} stack
+     * @param {string} currentState
+     * @return {Scope}
+     */
+    makeScopeChainFromStack(stack, currentState) {
+        let scope = this.rootScope;
+        if (stack.length === 0) {
+            return scope.get(currentState); //the start state
+        }
+        for (var i = stack.length - 1; i >= 0; i--) {
+            scope = scope.get(stack[i]);
+        }
+        return scope;
     }
 
     /**
@@ -244,6 +264,10 @@ class Tokenizer {
         var matchAttempts = 0;
 
         var token = {type: null, value: ""};
+        
+        var updateType = (type) => {
+            return this.makeScopeChainFromStack(stack, currentState).get(type);
+        };
 
         while (match = re.exec(line)) {
             var type = mapping.defaultToken;
@@ -258,7 +282,7 @@ class Tokenizer {
                 } else {
                     if (token.type)
                         tokens.push(token);
-                    token = {type: type, value: skipped};
+                    token = {type: updateType(type), value: skipped};
                 }
             }
 
@@ -298,19 +322,24 @@ class Tokenizer {
 
             if (value) {
                 if (typeof type === "string") {
-                    if ((!rule || rule.merge !== false) && token.type === type) {
+                    if ((!rule || rule.merge !== false) && token.type == type) {
                         token.value += value;
                     } else {
                         if (token.type)
                             tokens.push(token);
-                        token = {type: type, value: value};
+                        token = {type: updateType(type), value: value};
                     }
                 } else if (type) {
-                    if (token.type)
+                    if (token.type) {
+                        token.type = updateType(token.type);
                         tokens.push(token);
+                    }
                     token = {type: null, value: ""};
-                    for (var i = 0; i < type.length; i++)
+                    for (var i = 0; i < type.length; i++) {
+                        type[i].type = updateType(type[i].type);
                         tokens.push(type[i]);
+                    }
+                        
                 }
             }
 
@@ -341,8 +370,10 @@ class Tokenizer {
             }
         }
 
-        if (token.type)
+        if (token.type) {
+            token.type = updateType(token.type);
             tokens.push(token);
+        }
         
         if (stack.length > 1) {
             if (stack[0] !== currentState)
