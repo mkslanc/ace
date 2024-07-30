@@ -1,24 +1,26 @@
 "use strict";
 
-class Scope {
+class Scope extends String {
     /**
-     * @param {string} name
+     * @param {any} name
      * @param {Scope} [parent]
      */
     constructor(name, parent) {
-        this.name = name.toString();
+        super(name);
+        this.name = this.toString();
         this.children = {};
         this.parent = parent;
+        this.data = name;
     }
-    toString() {
+   /* toString() {
         return this.name;
-    }
+    }*/
     /**
-     * @param {string} name
-     * @param {string|undefined} extraId
+     * @param {any} name
+     * @param {string|undefined} [extraId]
      */
     get(name, extraId) {
-        var id = name.toString() + (extraId || "");
+        var id = "" + name + (extraId || "");
         return this.children[id] || (
             this.children[id] = new Scope(name, this)
         );
@@ -30,12 +32,12 @@ class Scope {
         }
         return states[s ? s.name : "start"];
     }
-    replace(a, b) {
+    /*replace(a, b) {
         return this.name.replace(a, b);
     }
     indexOf(a, b) {
         return this.name.indexOf(a, b);
-    }
+    }*/
     /**
      * @param {string} states
      */
@@ -62,6 +64,15 @@ class Scope {
             scopeNames.push(self.name);
         } while (self = self.parent);
         return scopeNames;
+    }
+
+    toStack() {
+        var stack = [];
+        var self = this;
+        do {
+            stack.push(self.data);
+        } while (self = self.parent);
+        return stack;
     }
 } 
 

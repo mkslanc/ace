@@ -61,8 +61,10 @@ class TokenTooltip extends Tooltip {
         var tokenText = "";
         var scope = token.type;
         if (scope.name !== undefined) {
+            let firstScope = true;
             do {
-                tokenText += scope.name + "\n"
+                tokenText += firstScope ? scope.name + "\n" :"  " + scope.name + "\n";
+                firstScope = false;
                 if (!scope.parent)
                     tokenText += "\ntoken count:" + count(scope);
             } while(scope = scope.parent)
@@ -129,12 +131,6 @@ class TokenTooltip extends Tooltip {
         delete this.editor.tokenTooltip;
     };
 
-}
-
-function count(root) {
-    return Object.keys(root.children).reduce(function (n, key) {
-        return n + count(root.children[key]);
-    }, 1);
 }
 
 function count(root) {
