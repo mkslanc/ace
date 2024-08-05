@@ -12,19 +12,23 @@ class Scope extends String {
         this.parent = parent;
         this.data = name;
     }
-   /* toString() {
-        return this.name;
-    }*/
+
     /**
      * @param {any} name
      * @param {string|undefined} [extraId]
      */
     get(name, extraId) {
         var id = "" + name + (extraId || "");
-        return this.children[id] || (
-            this.children[id] = new Scope(name, this)
-        );
+        if (this.children[id]) {
+            return this.children[id];
+        }
+        this.children[id] = new Scope(name, this);
+        if (extraId) {
+            this.children[id].data = extraId;
+        }
+        return this.children[id];
     }
+    
     find(states) {
         var s = this;
         while (s && !states[s.name]) {
@@ -32,15 +36,7 @@ class Scope extends String {
         }
         return states[s ? s.name : "start"];
     }
-    /*replace(a, b) {
-        return this.name.replace(a, b);
-    }
-    indexOf(a, b) {
-        return this.name.indexOf(a, b);
-    }*/
-    /**
-     * @param {string} states
-     */
+
     hasParent(states) {
         var s = this;
         while (s && states !== s.name) {
@@ -48,11 +44,13 @@ class Scope extends String {
         }
         return s ? 1 : -1;
     }
+
     count() {
         var s = 1;
         for (var i in this.children) s += this.children[i].count();
         return s;
     }
+
     /**
      *
      * @returns {string[]}
@@ -74,6 +72,6 @@ class Scope extends String {
         } while (self = self.parent);
         return stack;
     }
-} 
+}
 
 exports.Scope = Scope;

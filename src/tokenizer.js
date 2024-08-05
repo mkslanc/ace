@@ -390,6 +390,10 @@ class Tokenizer extends CustomTokenizer {
         for (var i = stack.length - 1; i >= 0; i--) {
             scope = scope.get(stack[i]);
         }
+        if (stack[0] !== currentState) {
+            scope = scope.get(currentState, "#tmp");
+        }
+        
         return scope;
     }
 
@@ -404,6 +408,10 @@ class Tokenizer extends CustomTokenizer {
         if (startState instanceof Scope) {
             var stack = startState.toStack();
             stack.pop(); //drop the root scope name
+            
+            if (startState.data === "#tmp") {
+                stack.shift();
+            }
             if (stack.length === 1) {
                 stack = [];
             }
@@ -434,7 +442,7 @@ class Tokenizer extends CustomTokenizer {
         };
 
         while (match = re.exec(line)) {
-            var type = currentState.get(mapping.defaultToken);
+            var type = mapping.defaultToken;
             var rule = null;
             var rememberedState = undefined;
             var value = match[0];
@@ -462,16 +470,6 @@ class Tokenizer extends CustomTokenizer {
                 if (rule.onMatch || rule.onMatch2) {
                     if (rule.onMatch) {
                         type = rule.onMatch(value, currentState.toString(), stack, line);
-                        currentState = this.makeScopeChainFromStack(stack, currentState.toString());
-                        if (!Array.isArray(type)) {
-                            type = currentState.get(type);
-                        }
-                        else {
-                            for (var i = 0; i < type.length; i++) {
-                                type[i].type = currentState.get(
-                                    type[i].type);
-                            }
-                        }
                     }
                     else {
                         type = rule.onMatch2(value, currentState, stack, line); //TODO: I don't think we need stack here;
@@ -481,7 +479,7 @@ class Tokenizer extends CustomTokenizer {
 
                 }
                 else {
-                    if (rule.token) type = currentState.get(rule.token);
+                    if (rule.token) type = /*currentState.get(*/rule.token/*)*/;
                 }
 
                 if (rule.next || rule.next2 || rememberedState) {
@@ -519,6 +517,10 @@ class Tokenizer extends CustomTokenizer {
             }
 
             if (value) {
+                if (type && !(type instanceof Scope)) {
+                    currentState = this.makeScopeChainFromStack(stack, currentState.toString());
+                }
+
                 if (!Array.isArray(type)) {
                     if ((!rule || rule.merge !== false) && token.type === type) {
                         token.value += value;
@@ -564,24 +566,13 @@ class Tokenizer extends CustomTokenizer {
                     };
                 }
                 currentState = this.rootScope.get("start");
+                stack = [];
                 break;
             }
         }
 
         if (token.type) tokens.push(token);
-        
-        if (stack.length > 1) {
-            if (stack[0] != currentState) {
-                token = {
-                    value: "",
-                    type: currentState.get("#tmp")
-                };
-                tokens.push(token);
-                //console.log("here")
-            }
-                //stack.unshift("#tmp", currentState);
-        }
-        
+
         if (!tokens.length || tokens[tokens.length - 1].type.parent !== currentState) {
             token = {
                 value: "",
@@ -591,7 +582,8 @@ class Tokenizer extends CustomTokenizer {
         }
 
         return {
-            tokens: tokens
+            tokens: tokens,
+            state: currentState
         };
     }
 }
