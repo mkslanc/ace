@@ -1,23 +1,23 @@
 "use strict";
 const reportError = require("./lib/report_error").reportError;
 
-var oop = require("./lib/oop");
 var {Scope} = require("./scope");
 // tokenizing lines longer than this makes editor very slow
 var MAX_TOKEN_COUNT = 2000;
-
 /**
  * This class takes a set of highlighting rules, and creates a tokenizer out of them. For more information, see [the wiki on extending highlighters](https://github.com/ajaxorg/ace/wiki/Creating-or-Extending-an-Edit-Mode#wiki-extendingTheHighlighter).
  **/
-class CustomTokenizer {
+class Tokenizer {
     /**
      * Constructs a new tokenizer based on the given rules and flags.
      * @param {Object} rules The highlighting rules
-     **/
-    constructor(rules) {
+     * @param {string} modeName
+     */
+    constructor(rules, modeName) {
         /**@type {RegExp}*/
         this.splitRegex;
         this.states = rules;
+        this.rootScope = new Scope(modeName || "root");
 
         this.regExps = {};
         this.matchMappings = {};
@@ -31,12 +31,17 @@ class CustomTokenizer {
             var splitterRurles = [];
             for (var i = 0; i < state.length; i++) {
                 var rule = state[i];
-                if (rule.defaultToken) mapping.defaultToken = rule.defaultToken;
-                if (rule.caseInsensitive && flag.indexOf("i") === -1) flag += "i";
-                if (rule.unicode && flag.indexOf("u") === -1) flag += "u";
-                if (rule.regex == null) continue;
+                if (rule.defaultToken)
+                    mapping.defaultToken = rule.defaultToken;
+                if (rule.caseInsensitive && flag.indexOf("i") === -1)
+                    flag += "i";
+                if (rule.unicode && flag.indexOf("u") === -1)
+                    flag += "u";
+                if (rule.regex == null)
+                    continue;
 
-                if (rule.regex instanceof RegExp) rule.regex = rule.regex.toString().slice(1, -1);
+                if (rule.regex instanceof RegExp)
+                    rule.regex = rule.regex.toString().slice(1, -1);
 
                 // Count number of matching groups. 2 extra groups from the full match
                 // And the catch-all on the end (used to force a match);
@@ -45,36 +50,36 @@ class CustomTokenizer {
                 if (Array.isArray(rule.token)) {
                     if (rule.token.length == 1 || matchcount == 1) {
                         rule.token = rule.token[0];
-                    }
-                    else if (matchcount - 1 != rule.token.length) {
+                    } else if (matchcount - 1 != rule.token.length) {
                         this.reportError("number of classes and regexp groups doesn't match", {
                             rule: rule,
                             groupCount: matchcount - 1
                         });
                         rule.token = rule.token[0];
-                    }
-                    else {
+                    } else {
                         rule.tokenArray = rule.token;
                         rule.token = null;
                         rule.onMatch = this.$arrayTokens;
                     }
-                }
-                else if (typeof rule.token == "function" && !rule.onMatch) {
-                    if (matchcount > 1) rule.onMatch = this.$applyToken; else rule.onMatch = rule.token;
+                } else if (typeof rule.token == "function" && !rule.onMatch) {
+                    if (matchcount > 1)
+                        rule.onMatch = this.$applyToken;
+                    else
+                        rule.onMatch = rule.token;
                 }
 
                 if (matchcount > 1) {
                     if (/\\\d/.test(rule.regex)) {
                         // Replace any backreferences and offset appropriately.
-                        adjustedregex = rule.regex.replace(/\\([0-9]+)/g, function (match, digit) {
+                        adjustedregex = rule.regex.replace(/\\([0-9]+)/g, function(match, digit) {
                             return "\\" + (parseInt(digit, 10) + matchTotal + 1);
                         });
-                    }
-                    else {
+                    } else {
                         matchcount = 1;
                         adjustedregex = this.removeCapturingGroups(rule.regex);
                     }
-                    if (!rule.splitRegex && typeof rule.token != "string") splitterRurles.push(rule); // flag will be known only at the very end
+                    if (!rule.splitRegex && typeof rule.token != "string")
+                        splitterRurles.push(rule); // flag will be known only at the very end
                 }
 
                 mapping[matchTotal] = i;
@@ -83,7 +88,8 @@ class CustomTokenizer {
                 ruleRegExps.push(adjustedregex);
 
                 // makes property access faster
-                if (!rule.onMatch) rule.onMatch = null;
+                if (!rule.onMatch)
+                    rule.onMatch = null;
             }
 
             if (!ruleRegExps.length) {
@@ -91,7 +97,7 @@ class CustomTokenizer {
                 ruleRegExps.push("$");
             }
 
-            splitterRurles.forEach(function (rule) {
+            splitterRurles.forEach(function(rule) {
                 rule.splitRegex = this.createSplitterRegexp(rule.regex, flag);
             }, this);
 
@@ -116,19 +122,16 @@ class CustomTokenizer {
         var types = this.token.apply(this, values);
 
         // required for compatibility with old modes
-        if (typeof types === "string") return [
-            {
-                type: types,
-                value: str
-            }
-        ];
+        if (typeof types === "string")
+            return [{type: types, value: str}];
 
         var tokens = [];
         for (var i = 0, l = types.length; i < l; i++) {
-            if (values[i]) tokens[tokens.length] = {
-                type: types[i],
-                value: values[i]
-            };
+            if (values[i])
+                tokens[tokens.length] = {
+                    type: types[i],
+                    value: values[i]
+                };
         }
         return tokens;
     }
@@ -138,17 +141,20 @@ class CustomTokenizer {
      * @return {import("../ace-internal").Ace.Token[] | string}
      */
     $arrayTokens(str) {
-        if (!str) return [];
+        if (!str)
+            return [];
         var values = this.splitRegex.exec(str);
-        if (!values) return "text";
+        if (!values)
+            return "text";
         var tokens = [];
         //@ts-ignore
         var types = this.tokenArray;
         for (var i = 0, l = types.length; i < l; i++) {
-            if (values[i + 1]) tokens[tokens.length] = {
-                type: types[i],
-                value: values[i + 1]
-            };
+            if (values[i + 1])
+                tokens[tokens.length] = {
+                    type: types[i],
+                    value: values[i + 1]
+                };
         }
         return tokens;
     }
@@ -158,9 +164,10 @@ class CustomTokenizer {
      * @returns {string}
      */
     removeCapturingGroups(src) {
-        var r = src.replace(/\\.|\[(?:\\.|[^\\\]])*|\(\?[:=!<]|(\()/g, function (x, y) {
-            return y ? "(?:" : x;
-        });
+        var r = src.replace(
+            /\\.|\[(?:\\.|[^\\\]])*|\(\?[:=!<]|(\()/g,
+            function(x, y) {return y ? "(?:" : x;}
+        );
         return r;
     }
 
@@ -173,228 +180,38 @@ class CustomTokenizer {
             var stack = 0;
             var inChClass = false;
             var lastCapture = {};
-            src.replace(
-                /(\\.)|(\((?:\?[=!])?)|(\))|([\[\]])/g, function (m, esc, parenOpen, parenClose, square, index) {
-                    if (inChClass) {
-                        inChClass = square != "]";
+            src.replace(/(\\.)|(\((?:\?[=!])?)|(\))|([\[\]])/g, function(
+                m, esc, parenOpen, parenClose, square, index
+            ) {
+                if (inChClass) {
+                    inChClass = square != "]";
+                } else if (square) {
+                    inChClass = true;
+                } else if (parenClose) {
+                    if (stack == lastCapture.stack) {
+                        lastCapture.end = index+1;
+                        lastCapture.stack = -1;
                     }
-                    else if (square) {
-                        inChClass = true;
+                    stack--;
+                } else if (parenOpen) {
+                    stack++;
+                    if (parenOpen.length != 1) {
+                        lastCapture.stack = stack;
+                        lastCapture.start = index;
                     }
-                    else if (parenClose) {
-                        if (stack == lastCapture.stack) {
-                            lastCapture.end = index + 1;
-                            lastCapture.stack = -1;
-                        }
-                        stack--;
-                    }
-                    else if (parenOpen) {
-                        stack++;
-                        if (parenOpen.length != 1) {
-                            lastCapture.stack = stack;
-                            lastCapture.start = index;
-                        }
-                    }
-                    return m;
-                });
+                }
+                return m;
+            });
 
-            if (lastCapture.end != null && /^\)*$/.test(src.substr(lastCapture.end))) src = src.substring(
-                0, lastCapture.start) + src.substr(lastCapture.end);
+            if (lastCapture.end != null && /^\)*$/.test(src.substr(lastCapture.end)))
+                src = src.substring(0, lastCapture.start) + src.substr(lastCapture.end);
         }
-
+        
         // this is needed for regexps that can match in multiple ways
         if (src.charAt(0) != "^") src = "^" + src;
         if (src.charAt(src.length - 1) != "$") src += "$";
-
-        return new RegExp(src, (flag || "").replace("g", ""));
-    }
-
-    /**
-     * Returns an object containing two properties: `tokens`, which contains all the tokens; and `state`, the current state.
-     * @param {string} line
-     * @param {string | string[]} startState
-     * @returns {{tokens:import("../ace-internal").Ace.Token[], state: string|string[]}}
-     */
-    getLineTokens(line, startState) {
-        if (startState && typeof startState != "string") {
-            /**@type {any[]}*/
-            var stack = startState.slice(0);
-            startState = stack[0];
-            if (startState === "#tmp") {
-                stack.shift();
-                startState = stack.shift();
-            }
-        }
-        else var stack = [];
-
-        var currentState = /**@type{string}*/(startState) || "start";
-        var state = this.states[currentState];
-        if (!state) {
-            currentState = "start";
-            state = this.states[currentState];
-        }
-        var mapping = this.matchMappings[currentState];
-        var re = this.regExps[currentState];
-        re.lastIndex = 0;
-
-        var match, tokens = [];
-        var lastIndex = 0;
-        var matchAttempts = 0;
-
-        var token = {
-            type: null,
-            value: ""
-        };
-
-        while (match = re.exec(line)) {
-            var type = mapping.defaultToken;
-            var rule = null;
-            var value = match[0];
-            var index = re.lastIndex;
-
-            if (index - value.length > lastIndex) {
-                var skipped = line.substring(lastIndex, index - value.length);
-                if (token.type == type) {
-                    token.value += skipped;
-                }
-                else {
-                    if (token.type) tokens.push(token);
-                    token = {
-                        type: type,
-                        value: skipped
-                    };
-                }
-            }
-
-            for (var i = 0; i < match.length - 2; i++) {
-                if (match[i + 1] === undefined) continue;
-
-                rule = state[mapping[i]];
-
-                if (rule.onMatch) type = rule.onMatch(value, currentState, stack, line); else type = rule.token;
-
-                if (rule.next) {
-                    if (typeof rule.next == "string") {
-                        currentState = rule.next;
-                    }
-                    else {
-                        currentState = rule.next(currentState, stack);
-                    }
-
-                    state = this.states[currentState];
-                    if (!state) {
-                        this.reportError("state doesn't exist", currentState);
-                        currentState = "start";
-                        state = this.states[currentState];
-                    }
-                    mapping = this.matchMappings[currentState];
-                    lastIndex = index;
-                    re = this.regExps[currentState];
-                    re.lastIndex = index;
-                }
-                if (rule.consumeLineEnd) lastIndex = index;
-                break;
-            }
-
-            if (value) {
-                if (typeof type === "string") {
-                    if ((!rule || rule.merge !== false) && token.type === type) {
-                        token.value += value;
-                    }
-                    else {
-                        if (token.type) tokens.push(token);
-                        token = {
-                            type: type,
-                            value: value
-                        };
-                    }
-                }
-                else if (type) {
-                    if (token.type) tokens.push(token);
-                    token = {
-                        type: null,
-                        value: ""
-                    };
-                    for (var i = 0; i < type.length; i++) tokens.push(type[i]);
-                }
-            }
-
-            if (lastIndex == line.length) break;
-
-            lastIndex = index;
-
-            if (matchAttempts++ > MAX_TOKEN_COUNT) {
-                if (matchAttempts > 2 * line.length) {
-                    this.reportError("infinite loop with in ace tokenizer", {
-                        startState: startState,
-                        line: line
-                    });
-                }
-                // chrome doens't show contents of text nodes with very long text
-                while (lastIndex < line.length) {
-                    if (token.type) tokens.push(token);
-                    token = {
-                        value: line.substring(lastIndex, lastIndex += 500),
-                        type: "overflow"
-                    };
-                }
-                currentState = "start";
-                stack = [];
-                break;
-            }
-        }
-
-        if (token.type) tokens.push(token);
-
-        if (stack.length > 1) {
-            if (stack[0] !== currentState) stack.unshift("#tmp", currentState);
-        }
-        return {
-            tokens: tokens,
-            state: stack.length ? stack : currentState
-        };
-    }
-}
-
-CustomTokenizer.prototype.reportError = reportError;
-
-/**
- * This class takes a set of highlighting rules, and creates a tokenizer out of them.
- * @class CustomTokenizer
- * @extends Tokenizer
- **/
-
-/**
- * Constructs a new experimental tokenizer based on the given rules and flags.
- * @param {Object} rules The highlighting rules
- * @param {String} modeName The highlighting mode name
- *
- * @constructor
- **/
-class Tokenizer extends CustomTokenizer {
-    constructor(rules, modeName) {
-        super(rules);
-        this.rootScope = new Scope(modeName);
-    }
-
-    /**
-     * @param {string[]} stack
-     * @param {string} currentState
-     * @return {Scope}
-     */
-    makeScopeChainFromStack(stack, currentState) {
-        let scope = this.rootScope;
-        if (stack.length === 0) {
-            return scope.get(currentState); //the start state
-        }
-        for (var i = stack.length - 1; i >= 0; i--) {
-            scope = scope.get(stack[i]);
-        }
-        if (stack[0] !== currentState) {
-            scope = scope.get(currentState, "#tmp");
-        }
         
-        return scope;
+        return new RegExp(src, (flag||"").replace("g", ""));
     }
 
     /**
@@ -402,13 +219,12 @@ class Tokenizer extends CustomTokenizer {
      * @param {String} line
      * @param {String|Scope} startState
      * @returns {Object}
-     * @override
      **/
     getLineTokens(line, startState) {
         if (startState instanceof Scope) {
             var stack = startState.toStack();
             stack.pop(); //drop the root scope name
-            
+
             if (startState.data === "#tmp") {
                 stack.shift();
             }
@@ -419,7 +235,6 @@ class Tokenizer extends CustomTokenizer {
         else {
             var stack = [];
         }
-
 
         var currentState = (startState !== undefined) ? (startState instanceof Scope) ? startState : this.rootScope.get(
             startState) : this.rootScope.get("start");
@@ -490,7 +305,7 @@ class Tokenizer extends CustomTokenizer {
                         else {
                             if (rule.next) {
                                 currentState = rule.next(currentState.toString(), stack);
-                                currentState = this.makeScopeChainFromStack(stack, currentState);
+                                currentState = this.fromStack(stack, currentState);
                             }
                             else {
                                 currentState = rule.next2(currentState, stack);
@@ -518,7 +333,7 @@ class Tokenizer extends CustomTokenizer {
 
             if (value) {
                 if (type && !(type instanceof Scope)) {
-                    currentState = this.makeScopeChainFromStack(stack, currentState.toString());
+                    currentState = this.fromStack(stack, currentState.toString());
                 }
 
                 if (!Array.isArray(type)) {
@@ -586,8 +401,29 @@ class Tokenizer extends CustomTokenizer {
             state: currentState
         };
     }
+
+    /**
+     * Retrieves the scope for the given stack and current state.
+     *
+     * @param {string[]} stack - The stack of scopes.
+     * @param {string} currentState - The current state.
+     * @returns {Scope} The scope for the given stack and current state.
+     */
+    fromStack(stack, currentState) {
+        let scope = this.rootScope;
+        if (stack.length === 0) {
+            return scope.get(currentState); //the start state
+        }
+        for (var i = stack.length - 1; i >= 0; i--) {
+            scope = scope.get(stack[i]);
+        }
+        if (stack[0] !== currentState) {
+            scope = scope.get(currentState, "#tmp");
+        }
+
+        return scope;
+    }
 }
 
-
+Tokenizer.prototype.reportError = reportError;
 exports.Tokenizer = Tokenizer;
-exports.CustomTokenizer = CustomTokenizer;

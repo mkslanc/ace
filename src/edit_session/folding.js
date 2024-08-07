@@ -708,7 +708,7 @@ function Folding() {
         var token = iterator.getCurrentToken();
         var type = token && token.type;
         if (token && /^comment|string/.test(type)) {
-            type = /comment|string/.exec(type)[0];
+            type = type.match(/comment|string/)[0];
             if (type == "comment")
                 type += "|doc-start|\\.doc|empty";
             var re = new RegExp(type);

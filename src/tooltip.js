@@ -41,7 +41,7 @@ class Tooltip {
      * @param {String} text
      **/
     setText(text) {
-        this.getElement().textContent = text.toString();
+        this.getElement().textContent = text;
     }
 
     /**

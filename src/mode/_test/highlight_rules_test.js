@@ -50,11 +50,11 @@ function checkModes() {
         testComments(m.lineCommentStart, testLineComment, tokenizer, modeName);
         testComments(m.blockComment, testBlockComment, tokenizer, modeName);
         testBrackets(m, modeName);
-
+        
         if (m.snippetFileId)
             snippets[m.snippetFileId] = modeName;
     });
-
+    
     jsFileList(cwd + "../../snippets").forEach(function(snippetFileName) {
         if (/\.snippets$/.test(snippetFileName)) return;
         if (!snippets["ace/snippets/" + snippetFileName])
@@ -65,7 +65,7 @@ function checkModes() {
         console.error("Snippet files missing", snippets);
         throw new Error("Snippet files missing");
     }
-
+    
     function testNextState(tokenizer, modeName) {
         let keys = Object.keys(tokenizer.states);
         for (let i = 0; i < keys.length; i++) {
@@ -97,14 +97,14 @@ function checkModes() {
             }
         }
     }
-
+    
     function testBlockComment(tokenizer, blockComment, modeName) {
         if (blockComment.lineStartOnly)
-            return; // TODO test
+            return; // TODO test 
         var str = blockComment.start + " " + blockComment.end;
         str = blockComment.start + str;
         if (blockComment.nestable)
-            str += blockComment.end;
+            str += blockComment.end;     
         var data = tokenizer.getLineTokens(str, "start");
 
         var type = data.tokens.length > 0 ? data.tokens[data.tokens.length - 1].type : "";
@@ -118,7 +118,7 @@ function checkModes() {
             die("broken state after blockComment in " + modeName, data);
         }
     }
-
+    
     function testLineComment(tokenizer, commentStart, modeName) {
         var tokens = tokenizer.getLineTokens(commentStart + " ", "start").tokens;
         if (!/comment/.test(tokens[0].type)) {
@@ -128,11 +128,11 @@ function checkModes() {
 
     function testBrackets(mode, modeName) {
         if (/^(forth|mask)$/.test(modeName)) return;
-
+        
         var session = new EditSession("{ foo[ bar(baz) ] }", mode);
-
-        var isInvalid = session.getTokens(0).some(function(t) {
-            return /invalid|illegal|string/.test(t.type);
+        
+        var isInvalid = session.getTokens(0).some(function(t) { 
+            return /invalid|illegal|string/.test(t.type); 
         });
         if (isInvalid) return;
 
@@ -145,7 +145,7 @@ function checkModes() {
         position = session.findMatchingBracket({row:0, column:11});
         if (!position || position.column != 14)
             die("Matching bracket not found in " + modeName);
-
+        
         if (mode.$behaviour) {
             session.setValue("");
             editor.setSession(session);
@@ -187,7 +187,7 @@ function generateTestData(names, force) {
 
         if (names && names.length && names.indexOf(modeName) == -1)
             return;
-
+        
         var outputPath = cwd + "tokens_" + modeName + ".json";
         try {
             var oldOutput = require(outputPath);
@@ -201,7 +201,7 @@ function generateTestData(names, force) {
                 }).join("");
             }).join("\n");
         }
-
+        
         var filePath = "text_" + modeName + ".txt";
         if (specialDocs.indexOf(filePath) !== -1) {
             filePath = cwd + filePath;
@@ -210,7 +210,7 @@ function generateTestData(names, force) {
             // oldText = "";
         }
         var text = oldText ||fs.readFileSync(filePath, "utf8");
-
+        
         try {
             var Mode = require("../" + modeName).Mode;
         } catch(e) {
@@ -297,7 +297,7 @@ function testMode(modeName, i) {
             JSON.stringify(lineData.state), JSON.stringify(stateString),
             lineData.types, types,
             lineData.values, values]);
-
+        
         if (err) {
             console.log(line);
             throw "error";
