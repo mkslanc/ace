@@ -2,14 +2,13 @@
   "compilerOptions": {
     "strict": false,
     "noImplicitAny": false,
-    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
     "module": "commonjs",
     "target": "es2019",
     "allowJs": true,
     "checkJs": true,
     "declaration": true,
-    "emitDeclarationOnly": true,
-    "outFile": "./types/index.d.ts"
+    "noEmit": true,
   },
   "exclude": [
     "node_modules",
@@ -21,10 +20,12 @@
     "src/keyboard/vscode.js",
     "src/mode",
     "./ace-internal.d.ts",
+    "./ace-modes.d.ts",
     "src/**/* *"
   ],
   "include": [
     "./src/**/*",
-    "./ace.d.ts"
+    "./ace.d.ts",
+    "./types/ace_*.d.ts"
   ]
 }
