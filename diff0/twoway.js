@@ -41,7 +41,8 @@ class DiffView {
             options.ignoreTrimWhitespace = true;
         this.options = {
             ignoreTrimWhitespace: options.ignoreTrimWhitespace,
-            maxComputationTimeMs: options.maxComputationTimeMs || 0 // time in milliseconds, 0 => no computation limit.
+            maxComputationTimeMs: options.maxComputationTimeMs || 0, // time in milliseconds, 0 => no computation limit.
+            syncSelections: options.syncSelections || false //experimental option
         };
         this.container = element;
 
@@ -56,14 +57,15 @@ class DiffView {
         element.appendChild(this.left.container);
         element.appendChild(this.right.container);
 
-        this.left.setOption("scrollPastEnd", 0.5);
-        this.right.setOption("scrollPastEnd", 0.5);
-        this.left.setOption("highlightActiveLine", false);
-        this.right.setOption("highlightActiveLine", false);
-        this.left.setOption("highlightGutterLine", false);
-        this.right.setOption("highlightGutterLine", false);
-        this.left.setOption("animatedScroll", true);
-        this.right.setOption("animatedScroll", true);
+        const diffEditorOptions = {
+            "scrollPastEnd": 0.5,
+            "highlightActiveLine": false,
+            "highlightGutterLine": false,
+            "animatedScroll": true,
+        };
+
+        this.left.setOptions(diffEditorOptions);
+        this.right.setOptions(diffEditorOptions);
 
         this.markerLeft = new DiffHighlight(this, -1);
         this.markerRight = new DiffHighlight(this, 1);
@@ -235,10 +237,12 @@ class DiffView {
 
         this.$updatingSelection = true;
         var newRange = this.transformRange(selectionRange, isOrig);
-        (isOrig ? this.right : this.left).session.selection.setSelectionRange(newRange);
+
+        if (this.options.syncSelections) {
+            (isOrig ? this.right : this.left).session.selection.setSelectionRange(newRange);
+        }
         this.$updatingSelection = false;
           
-        
         if (isOrig) {
             this.leftSelectionRange = selectionRange;
             this.rightSelectionRange = newRange;
@@ -448,11 +452,9 @@ class DiffView {
         return this.currentDiffIndex == this.chunks.length - 1;
     }
 
-
     transformRange(range, orig) {
         return Range.fromPoints(this.transformPosition(range.start, orig), this.transformPosition(range.end, orig));
     }
-
 
     /**
      * @param {Ace.Point} pos
@@ -665,7 +667,7 @@ class DiffHighlight {
                         var screenRange = range.toScreenRange(session);
                         let cssClass = "inline " + operation;
                         if (range.isEmpty() && charChange[dir].start.column !== 0) {
-                            cssClass = "inline empty" + opOperation;
+                            cssClass = "inline empty " + opOperation;
                         }
 
                         if (screenRange.isMultiLine()) {

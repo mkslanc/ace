@@ -49,6 +49,9 @@
     <label>
         <input type="checkbox" id="btn-whitespace" checked onclick="trimWhitespace()"> Ignore Trim Whitespaces
     </label>
+    <label>
+        <input type="checkbox" id="btn-syncselections" onclick="syncSelections()"> Sync selections
+    </label>
 </div>
 
 <div class="ace_diff-container"></div>
@@ -72,6 +75,12 @@
     var trimWhitespace = () => {
         var checked = document.getElementById("btn-whitespace").checked;
         window.diffView.options.ignoreTrimWhitespace = checked;
+        window.diffView.onInput();
+    }
+
+    var syncSelections = () => {
+        var checked = document.getElementById("btn-syncselections").checked;
+        window.diffView.options.syncSelections = checked;
         window.diffView.onInput();
     }
 
