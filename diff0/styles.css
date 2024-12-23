@@ -1,7 +1,7 @@
 .ace_diff-container {
     display: flex !important;
     flex-direction: row;
-    position: absolute;
+    position: relative;
     overflow: hidden;
 }
 .ace_diff-container > .ace_editor {

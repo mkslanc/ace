@@ -1449,6 +1449,7 @@ declare module "./src/virtual_renderer" {
         destroyed?: boolean,
         session: Ace.EditSession,
         keyboardFocusClassName?: string,
+        $decoratorType: "diff" | "error"
     }
 }
 

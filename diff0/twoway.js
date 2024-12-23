@@ -34,6 +34,7 @@ class DiffView {
         this.onChangeFold = this.onChangeFold.bind(this);
         this.onChangeTheme = this.onChangeTheme.bind(this);
         this.onSelect = this.onSelect.bind(this);
+        this.currentDiffIndex = 0;
 
         dom.importCssString(css, "diffview.css");
         if (options.ignoreTrimWhitespace === undefined)
@@ -438,6 +439,16 @@ class DiffView {
         ace.renderer.animateScrolling(scrollTop);
     }
 
+
+    firstDiffSelected() {
+        return this.currentDiffIndex <= 0;
+    }
+
+    lastDiffSelected() {
+        return this.currentDiffIndex == this.chunks.length - 1;
+    }
+
+
     transformRange(range, orig) {
         return Range.fromPoints(this.transformPosition(range.start, orig), this.transformPosition(range.end, orig));
     }
@@ -450,6 +461,8 @@ class DiffView {
      */
     transformPosition(pos, isOrig) {
         var chunkIndex = findChunkIndex(this.chunks, pos.row, isOrig);
+        this.currentDiffIndex = chunkIndex;
+
         var chunk = this.chunks[chunkIndex];
 
         var clonePos = this.left.session.doc.clonePos;
