@@ -27,7 +27,18 @@ function createEditor() {
 }
 
 class DiffView {
+    /**
+     * Constructs a new DiffView instance.
+     *
+     * @param {HTMLElement} element - The container element for the DiffView.
+     * @param {Object} options - The configuration options for the DiffView.
+     * @param {boolean} [options.ignoreTrimWhitespace=true] - Whether to ignore whitespace changes when computing diffs.
+     * @param {boolean} [options.foldUnchanged=false] - Whether to fold unchanged regions in the diff view.
+     * @param {number} [options.maxComputationTimeMs=0] - The maximum time in milliseconds to spend computing diffs (0 means no limit).
+     * @param {boolean} [options.syncSelections=false] - Whether to synchronize selections between the original and edited views.
+     */
     constructor(element, options) {
+        /**@type AceDiff[]*/this.chunks;
         this.onInput = this.onInput.bind(this);
         this.onMouseWheel = this.onMouseWheel.bind(this);
         this.onScroll = this.onScroll.bind(this);
@@ -41,6 +52,7 @@ class DiffView {
             options.ignoreTrimWhitespace = true;
         this.options = {
             ignoreTrimWhitespace: options.ignoreTrimWhitespace,
+            foldUnchanged: options.foldUnchanged || false,
             maxComputationTimeMs: options.maxComputationTimeMs || 0, // time in milliseconds, 0 => no computation limit.
             syncSelections: options.syncSelections || false //experimental option
         };
@@ -87,10 +99,35 @@ class DiffView {
         config._signal("diffView", this);
     }
 
-    /**
-     * @type AceDiff[]
-     */
-    chunks;
+    foldUnchanged() {
+        this.edit.session.unfold();
+        this.orig.session.unfold();
+
+        var chunks = this.chunks;
+        var sep = "---";
+        var prev = {
+            old: new Range(0, 0, 0, 0),
+            new: new Range(0, 0, 0, 0),
+        };
+        for (var i = 0; i < chunks.length + 1; i++) {
+            let current = chunks[i] || {
+                old: new Range(this.orig.session.getLength(), 0, this.orig.session.getLength(), 0),
+                new: new Range(this.edit.session.getLength(), 0, this.edit.session.getLength(), 0)
+            };
+            var l = current.new.start.row - prev.new.end.row - 5;
+            if (l > 2) {
+                var s = prev.old.end.row + 2;
+                var f1 = this.orig.session.addFold(sep, new Range(s, 0, s + l, Number.MAX_VALUE));
+                s = prev.new.end.row + 2;
+                var f2 = this.edit.session.addFold(sep, new Range(s, 0, s + l, Number.MAX_VALUE));
+                f1.other = f2;
+                f2.other = f1;
+            }
+
+            prev = current;
+        }
+
+    }
 
     /*** theme/session ***/
     setSession(session) {
@@ -148,6 +185,10 @@ class DiffView {
 
         this.left.renderer.updateBackMarkers();
         this.right.renderer.updateBackMarkers();
+
+        if (this.options.foldUnchanged) {
+            this.foldUnchanged();
+        }
     }
 
     $diffLines(val1, val2) {
@@ -541,6 +582,12 @@ class DiffView {
 
     $getIndent(editor, line) {
         return editor.session.getLine(line).match(/^\s*/)[0].length
+    }
+
+    printDiffs() {
+       this.chunks.forEach((diff) => {
+           console.log(diff.toString());
+       })
     }
 }
 

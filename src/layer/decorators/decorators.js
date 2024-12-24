@@ -51,7 +51,10 @@ class Decorator {
             this.canvas.height = this.canvasHeight;
         }
     }
-    
+
+    /**
+     * @param {number} row
+     */
     compensateFoldRows(row) {
         let foldData = this.renderer.session.$foldData;
         let compensateFold = 0;
@@ -68,16 +71,21 @@ class Decorator {
         return compensateFold;
     }
 
+    /**
+     * @param {number} row
+     */
     compensateLineWidgets(row) {
         const widgetManager = this.renderer.session.widgetManager;
         if (widgetManager) {
             let delta = 0;
-            widgetManager.lineWidgets.forEach((el, index) => {
-                if (row > index) {
-                    delta += el.rowCount || 0;
-                }
-            });
-            return delta - 1;
+            if (Array.isArray(widgetManager.lineWidgets))  {
+                widgetManager.lineWidgets.forEach((el, index) => {
+                    if (row > index) {
+                        delta += el.rowCount || 0;
+                    }
+                });
+                return delta - 1;
+            }
         }
         return 0;
     }
