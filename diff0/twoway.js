@@ -688,7 +688,7 @@ class DiffHighlight {
                                 startColumn = charChange[dir].start.column;
                             }
                             else {
-                                startColumn = session.getLine(lineNumber).match(/^\s*/)[0].length;
+                                startColumn = 0;
                             }
                             if (lineNumber === charChange[dir].end.row) {
                                 endColumn = charChange[dir].end.column;
