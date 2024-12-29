@@ -763,6 +763,8 @@ class DiffHighlight {
                 }
             }
         });
+        //TODO: hack for decorators to be forcely updated until we got new change type in VirtualRenderer
+        editor.renderer.$scrollDecorator.$updateDecorators(config);
     }
 }
 
