@@ -120,8 +120,10 @@ class DiffView {
                 var f1 = this.orig.session.addFold(sep, new Range(s, 0, s + l, Number.MAX_VALUE));
                 s = prev.new.end.row + 2;
                 var f2 = this.edit.session.addFold(sep, new Range(s, 0, s + l, Number.MAX_VALUE));
-                f1.other = f2;
-                f2.other = f1;
+                if (f2 && f1) {
+                    f1.other = f2;
+                    f2.other = f1;
+                }
             }
 
             prev = current;
