@@ -235,6 +235,7 @@ class DiffView {
 
         init(diffView.edit);
         init(diffView.orig);
+
         diffView.chunks.forEach(function (ch) {
             var diff1 = ch.old.end.row - ch.old.start.row;
             var diff2 = ch.new.end.row - ch.new.start.row;
@@ -460,6 +461,7 @@ class DiffView {
 
         this.left.on("input", this.onInput);
         this.right.on("input", this.onInput);
+
     }
 
     /*** other ***/
@@ -670,12 +672,46 @@ class DiffHighlight {
         var diffView = this.diffView;
         var ignoreTrimWhitespace = diffView.options.ignoreTrimWhitespace;
         var lineChanges = diffView.chunks;
-        diffView[side].renderer.$scrollDecorator.zones = [];
-        for (const lineChange of lineChanges) {
-            let range = new Range(lineChange[dir].start.row, 0, lineChange[dir].end.row - 1, 1 << 30);
-            diffView[side].renderer.$scrollDecorator.addZone(range.start.row, range.end.row, operation);
-            range = range.toScreenRange(session);
-            markerLayer.drawFullLineMarker(html, range, "ace_diff " + operation + " inline", config);
+        let editor = diffView[side];
+
+        if (editor.session.lineWidgets) {
+            let ranges = editor.session.lineWidgets.reduce((allRanges, lineWidget, row) => {
+                if (!lineWidget) {
+                    console.log("Shouldn't get here");
+                    return allRanges;
+                }
+
+                if (lineWidget.hidden)
+                    return allRanges;
+
+                let start = editor.session.documentToScreenRow(row, 0);
+
+                if (lineWidget.rowsAbove > 0) {
+                    start -= lineWidget.rowsAbove;
+                } else {
+                    start++;
+                }
+                let end = start + lineWidget.rowCount - 1;
+
+                allRanges.push(new Range(start, 0, end, 1 << 30));
+                return allRanges;
+            }, []);
+
+            ranges.forEach((range) => {
+                markerLayer.drawFullLineMarker(html, range, "ace_diff aligned_diff inline", config);
+            })
+        }
+
+        editor.renderer.$scrollDecorator.zones = [];
+        lineChanges.forEach((lineChange) => {
+            let startRow = lineChange[dir].start.row;
+            let endRow = lineChange[dir].end.row;
+            let range = new Range(startRow, 0, endRow - 1, 1 << 30);
+            editor.renderer.$scrollDecorator.addZone(range.start.row, range.end.row, operation);
+            if (startRow !== endRow) {
+                range = range.toScreenRange(session);
+                markerLayer.drawFullLineMarker(html, range, "ace_diff " + operation + " inline", config);
+            }
 
             if (lineChange.charChanges) {
                 for (const charChange of lineChange.charChanges) {
@@ -726,7 +762,7 @@ class DiffHighlight {
                     }
                 }
             }
-        }
+        });
     }
 }
 
