@@ -417,14 +417,43 @@ class DiffView {
     }
 
     onChangeFold(ev, session) {
-        if (ev.action == "remove") {
-            var other = session == this.orig.session ? this.edit.session : this.orig.session;
-            var fold = ev.data;
-            if (fold && fold.other) {
+        var fold = ev.data;
+        if (this.$syncFold || !fold || !ev.action)
+            return;
+
+        const isOrig = session === this.orig.session;
+        const other = isOrig ? this.edit.session : this.orig.session;
+
+        if (ev.action === "remove") {
+            if (fold.other) {
                 fold.other.other = null;
                 other.removeFold(fold.other);
+            } else if (fold.lineWidget) {
+                other.widgetManager.addLineWidget(fold.lineWidget);
+                fold.lineWidget = null;
+                other.$editor.renderer.updateBackMarkers();
             }
         }
+
+       if (ev.action === "add") {
+           const range = this.transformRange(fold.range, isOrig);
+           if (range.isEmpty()) {
+               const row = range.start.row + 1;
+               if (other.lineWidgets[row]) {
+                   fold.lineWidget = other.lineWidgets[row];
+                   other.widgetManager.removeLineWidget(fold.lineWidget);
+                   other.$editor.renderer.updateBackMarkers();
+               }
+           } else {
+               this.$syncFold = true;
+
+               fold.other = other.addFold("---", range);
+               fold.other.other = fold;
+
+               this.$syncFold = false;
+
+           }
+       }
     }
 
     $attachEditorsEventHandlers() {
@@ -639,7 +668,6 @@ class SyncSelectionMarker {
 
         this.range = newRange;
     }
-
 }
 
 class DiffHighlight {
