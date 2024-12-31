@@ -67,12 +67,12 @@ class AppConfig {
             messages = defaultEnglishMessages;
             nlsPlaceholders = "dollarSigns";
         }
-    
+
     /**
      * @param {Object} obj
      * @param {string} path
      * @param {{ [key: string]: any }} options
-     * @returns {AppConfig}
+     * @returns {import("../../ace-internal").Ace.AppConfig}
      */
     defineOptions(obj, path, options) {
         if (!obj.$options)
@@ -156,11 +156,11 @@ class AppConfig {
      */
     nls(key, defaultString, params) {
         if (!messages[key])  {
-            warn("No message found for the key '" + key + "' in the provided messages, trying to find a translation for the default string '" + defaultString + "'.");
+            warn("No message found for the key '" + key + "' in messages with id " + messages.$id + ", trying to find a translation for the default string '" + defaultString + "'.");
             if (!messages[defaultString]) {
                 warn("No message found for the default string '" + defaultString + "' in the provided messages. Falling back to the default English message.");
             }
-        } 
+        }
 
         var translated = messages[key] || messages[defaultString] || defaultString;
         if (params) {

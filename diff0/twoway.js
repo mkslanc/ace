@@ -27,20 +27,34 @@ function createEditor() {
 }
 
 class DiffView {
+    /**
+     * Constructs a new DiffView instance.
+     *
+     * @param {HTMLElement} element - The container element for the DiffView.
+     * @param {Object} options - The configuration options for the DiffView.
+     * @param {boolean} [options.ignoreTrimWhitespace=true] - Whether to ignore whitespace changes when computing diffs.
+     * @param {boolean} [options.foldUnchanged=false] - Whether to fold unchanged regions in the diff view.
+     * @param {number} [options.maxComputationTimeMs=0] - The maximum time in milliseconds to spend computing diffs (0 means no limit).
+     * @param {boolean} [options.syncSelections=false] - Whether to synchronize selections between the original and edited views.
+     */
     constructor(element, options) {
+        /**@type AceDiff[]*/this.chunks;
         this.onInput = this.onInput.bind(this);
         this.onMouseWheel = this.onMouseWheel.bind(this);
         this.onScroll = this.onScroll.bind(this);
         this.onChangeFold = this.onChangeFold.bind(this);
         this.onChangeTheme = this.onChangeTheme.bind(this);
         this.onSelect = this.onSelect.bind(this);
+        this.currentDiffIndex = 0;
 
         dom.importCssString(css, "diffview.css");
         if (options.ignoreTrimWhitespace === undefined)
             options.ignoreTrimWhitespace = true;
         this.options = {
             ignoreTrimWhitespace: options.ignoreTrimWhitespace,
-            maxComputationTimeMs: options.maxComputationTimeMs || 0 // time in milliseconds, 0 => no computation limit.
+            foldUnchanged: options.foldUnchanged || false,
+            maxComputationTimeMs: options.maxComputationTimeMs || 0, // time in milliseconds, 0 => no computation limit.
+            syncSelections: options.syncSelections || false //experimental option
         };
         this.container = element;
 
@@ -55,14 +69,15 @@ class DiffView {
         element.appendChild(this.left.container);
         element.appendChild(this.right.container);
 
-        this.left.setOption("scrollPastEnd", 0.5);
-        this.right.setOption("scrollPastEnd", 0.5);
-        this.left.setOption("highlightActiveLine", false);
-        this.right.setOption("highlightActiveLine", false);
-        this.left.setOption("highlightGutterLine", false);
-        this.right.setOption("highlightGutterLine", false);
-        this.left.setOption("animatedScroll", true);
-        this.right.setOption("animatedScroll", true);
+        const diffEditorOptions = {
+            "scrollPastEnd": 0.5,
+            "highlightActiveLine": false,
+            "highlightGutterLine": false,
+            "animatedScroll": true,
+        };
+
+        this.left.setOptions(diffEditorOptions);
+        this.right.setOptions(diffEditorOptions);
 
         this.markerLeft = new DiffHighlight(this, -1);
         this.markerRight = new DiffHighlight(this, 1);
@@ -84,10 +99,37 @@ class DiffView {
         config._signal("diffView", this);
     }
 
-    /**
-     * @type AceDiff[]
-     */
-    chunks;
+    foldUnchanged() {
+        this.edit.session.unfold();
+        this.orig.session.unfold();
+
+        var chunks = this.chunks;
+        var sep = "---";
+        var prev = {
+            old: new Range(0, 0, 0, 0),
+            new: new Range(0, 0, 0, 0),
+        };
+        for (var i = 0; i < chunks.length + 1; i++) {
+            let current = chunks[i] || {
+                old: new Range(this.orig.session.getLength(), 0, this.orig.session.getLength(), 0),
+                new: new Range(this.edit.session.getLength(), 0, this.edit.session.getLength(), 0)
+            };
+            var l = current.new.start.row - prev.new.end.row - 5;
+            if (l > 2) {
+                var s = prev.old.end.row + 2;
+                var f1 = this.orig.session.addFold(sep, new Range(s, 0, s + l, Number.MAX_VALUE));
+                s = prev.new.end.row + 2;
+                var f2 = this.edit.session.addFold(sep, new Range(s, 0, s + l, Number.MAX_VALUE));
+                if (f2 && f1) {
+                    f1.other = f2;
+                    f2.other = f1;
+                }
+            }
+
+            prev = current;
+        }
+
+    }
 
     /*** theme/session ***/
     setSession(session) {
@@ -145,6 +187,10 @@ class DiffView {
 
         this.left.renderer.updateBackMarkers();
         this.right.renderer.updateBackMarkers();
+
+        if (this.options.foldUnchanged) {
+            this.foldUnchanged();
+        }
     }
 
     $diffLines(val1, val2) {
@@ -191,6 +237,7 @@ class DiffView {
 
         init(diffView.edit);
         init(diffView.orig);
+
         diffView.chunks.forEach(function (ch) {
             var diff1 = ch.old.end.row - ch.old.start.row;
             var diff2 = ch.new.end.row - ch.new.start.row;
@@ -234,10 +281,12 @@ class DiffView {
 
         this.$updatingSelection = true;
         var newRange = this.transformRange(selectionRange, isOrig);
-        (isOrig ? this.right : this.left).session.selection.setSelectionRange(newRange);
+
+        if (this.options.syncSelections) {
+            (isOrig ? this.right : this.left).session.selection.setSelectionRange(newRange);
+        }
         this.$updatingSelection = false;
           
-        
         if (isOrig) {
             this.leftSelectionRange = selectionRange;
             this.rightSelectionRange = newRange;
@@ -370,14 +419,43 @@ class DiffView {
     }
 
     onChangeFold(ev, session) {
-        if (ev.action == "remove") {
-            var other = session == this.orig.session ? this.edit.session : this.orig.session;
-            var fold = ev.data;
-            if (fold && fold.other) {
+        var fold = ev.data;
+        if (this.$syncFold || !fold || !ev.action)
+            return;
+
+        const isOrig = session === this.orig.session;
+        const other = isOrig ? this.edit.session : this.orig.session;
+
+        if (ev.action === "remove") {
+            if (fold.other) {
                 fold.other.other = null;
                 other.removeFold(fold.other);
+            } else if (fold.lineWidget) {
+                other.widgetManager.addLineWidget(fold.lineWidget);
+                fold.lineWidget = null;
+                other.$editor.renderer.updateBackMarkers();
             }
         }
+
+       if (ev.action === "add") {
+           const range = this.transformRange(fold.range, isOrig);
+           if (range.isEmpty()) {
+               const row = range.start.row + 1;
+               if (other.lineWidgets[row]) {
+                   fold.lineWidget = other.lineWidgets[row];
+                   other.widgetManager.removeLineWidget(fold.lineWidget);
+                   other.$editor.renderer.updateBackMarkers();
+               }
+           } else {
+               this.$syncFold = true;
+
+               fold.other = other.addFold("---", range);
+               fold.other.other = fold;
+
+               this.$syncFold = false;
+
+           }
+       }
     }
 
     $attachEditorsEventHandlers() {
@@ -414,6 +492,7 @@ class DiffView {
 
         this.left.on("input", this.onInput);
         this.right.on("input", this.onInput);
+
     }
 
     /*** other ***/
@@ -438,10 +517,18 @@ class DiffView {
         ace.renderer.animateScrolling(scrollTop);
     }
 
+
+    firstDiffSelected() {
+        return this.currentDiffIndex <= 0;
+    }
+
+    lastDiffSelected() {
+        return this.currentDiffIndex == this.chunks.length - 1;
+    }
+
     transformRange(range, orig) {
         return Range.fromPoints(this.transformPosition(range.start, orig), this.transformPosition(range.end, orig));
     }
-
 
     /**
      * @param {Ace.Point} pos
@@ -450,6 +537,8 @@ class DiffView {
      */
     transformPosition(pos, isOrig) {
         var chunkIndex = findChunkIndex(this.chunks, pos.row, isOrig);
+        this.currentDiffIndex = chunkIndex;
+
         var chunk = this.chunks[chunkIndex];
 
         var clonePos = this.left.session.doc.clonePos;
@@ -527,6 +616,12 @@ class DiffView {
     $getIndent(editor, line) {
         return editor.session.getLine(line).match(/^\s*/)[0].length
     }
+
+    printDiffs() {
+       this.chunks.forEach((diff) => {
+           console.log(diff.toString());
+       })
+    }
 }
 
 /*** options ***/
@@ -575,7 +670,6 @@ class SyncSelectionMarker {
 
         this.range = newRange;
     }
-
 }
 
 class DiffHighlight {
@@ -608,12 +702,46 @@ class DiffHighlight {
         var diffView = this.diffView;
         var ignoreTrimWhitespace = diffView.options.ignoreTrimWhitespace;
         var lineChanges = diffView.chunks;
-        diffView[side].renderer.$scrollDecorator.zones = [];
-        for (const lineChange of lineChanges) {
-            let range = new Range(lineChange[dir].start.row, 0, lineChange[dir].end.row - 1, 1 << 30);
-            diffView[side].renderer.$scrollDecorator.addZone(range.start.row, range.end.row, operation);
-            range = range.toScreenRange(session);
-            markerLayer.drawFullLineMarker(html, range, "ace_diff " + operation + " inline", config);
+        let editor = diffView[side];
+
+        if (editor.session.lineWidgets) {
+            let ranges = editor.session.lineWidgets.reduce((allRanges, lineWidget, row) => {
+                if (!lineWidget) {
+                    console.log("Shouldn't get here");
+                    return allRanges;
+                }
+
+                if (lineWidget.hidden)
+                    return allRanges;
+
+                let start = editor.session.documentToScreenRow(row, 0);
+
+                if (lineWidget.rowsAbove > 0) {
+                    start -= lineWidget.rowsAbove;
+                } else {
+                    start++;
+                }
+                let end = start + lineWidget.rowCount - 1;
+
+                allRanges.push(new Range(start, 0, end, 1 << 30));
+                return allRanges;
+            }, []);
+
+            ranges.forEach((range) => {
+                markerLayer.drawFullLineMarker(html, range, "ace_diff aligned_diff inline", config);
+            })
+        }
+
+        editor.renderer.$scrollDecorator.zones = [];
+        lineChanges.forEach((lineChange) => {
+            let startRow = lineChange[dir].start.row;
+            let endRow = lineChange[dir].end.row;
+            let range = new Range(startRow, 0, endRow - 1, 1 << 30);
+            editor.renderer.$scrollDecorator.addZone(range.start.row, range.end.row, operation);
+            if (startRow !== endRow) {
+                range = range.toScreenRange(session);
+                markerLayer.drawFullLineMarker(html, range, "ace_diff " + operation + " inline", config);
+            }
 
             if (lineChange.charChanges) {
                 for (const charChange of lineChange.charChanges) {
@@ -652,7 +780,7 @@ class DiffHighlight {
                         var screenRange = range.toScreenRange(session);
                         let cssClass = "inline " + operation;
                         if (range.isEmpty() && charChange[dir].start.column !== 0) {
-                            cssClass = "inline empty" + opOperation;
+                            cssClass = "inline empty " + opOperation;
                         }
 
                         if (screenRange.isMultiLine()) {
@@ -664,7 +792,9 @@ class DiffHighlight {
                     }
                 }
             }
-        }
+        });
+        //TODO: hack for decorators to be forcely updated until we got new change type in VirtualRenderer
+        editor.renderer.$scrollDecorator.$updateDecorators(config);
     }
 }
 

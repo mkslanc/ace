@@ -1,7 +1,7 @@
 .ace_diff-container {
     display: flex !important;
     flex-direction: row;
-    position: absolute;
+    position: relative;
     overflow: hidden;
 }
 .ace_diff-container > .ace_editor {
@@ -94,6 +94,16 @@
 }
 .ace_diff.delete.inline:after {
     background-color: rgba(255, 128, 79, 0.26);
+}
+.ace_diff.aligned_diff.inline:after {
+    background: rgba(206, 194, 191, 0.26);
+    /*background: repeating-linear-gradient(*/
+    /*        45deg,          !* Angle of the stripes *!*/
+    /*        rgba(122, 111, 108, 0.26),        !* First color *!*/
+    /*        rgba(122, 111, 108, 0.26) 5px,   !* Stripe width *!*/
+    /*        #FFFFFF 5px,   !* Second color starts *!*/
+    /*        #FFFFFF 10px    !* Second stripe width *!*/
+    /*);*/
 }
 
 .ace_diff.delete.inline.empty {
