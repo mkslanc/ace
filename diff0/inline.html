@@ -113,7 +113,7 @@
     });
 
 
-    require(["diff/inline-diff"], function () {
+    require(["diff/inline_diff_view"], function () {
 
         var config = require("ace-code/src/config");
         config.setLoader(function (moduleName, cb) {
@@ -124,22 +124,22 @@
 
         var useLocalStorage = /save=1/.test(location.search);
 
-        var DiffView = require("diff/inline-diff").DiffView;
-        var diffView = new DiffView(document.querySelector(".ace_diff-container"), {});
+        var InlineDiffView = require("diff/inline_diff_view").InlineDiffView;
+        var diffView = new InlineDiffView(document.querySelector(".ace_diff-container"), {});
         window.diffView = diffView;
 
         require("ace-code/src/lib/net").get("./diff/0.ts", function (v) {
-            diffView.leftSession.setValue(useLocalStorage && localStorage.orig || v, -1);
+            diffView.session.orig.setValue(useLocalStorage && localStorage.orig || v, -1);
         });
         require("ace-code/src/lib/net").get("./diff/1.ts", function (v) {
             diffView.right.setValue(useLocalStorage && localStorage.edit || v, -1);
             diffView.right.session.setMode("ace-code/src/mode/typescript");
-            diffView.leftSession.setMode("ace-code/src/mode/typescript");
+            diffView.session.orig.setMode("ace-code/src/mode/typescript");
         });
 
         window.onbeforeunload = function () {
             if (!useLocalStorage) return;
-            localStorage.orig = diffView.leftSession.getValue();
+            localStorage.orig = diffView.session.orig.getValue();
             localStorage.edit = diffView.edit.getValue();
         };
 

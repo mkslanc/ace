@@ -108,7 +108,7 @@
     });
 
 
-    require(["diff/twoway"], function () {
+    require(["diff/sidebyside_diff_view"], function () {
 
         var config = require("ace-code/src/config");
         config.setLoader(function (moduleName, cb) {
@@ -119,8 +119,8 @@
 
         var useLocalStorage = /save=1/.test(location.search);
 
-        var DiffView = require("diff/twoway").DiffView;
-        var diffView = new DiffView(document.querySelector(".ace_diff-container"), {});
+        var SideBySideDiffView = require("diff/sidebyside_diff_view").SideBySideDiffView;
+        var diffView = new SideBySideDiffView(document.querySelector(".ace_diff-container"), {});
         window.diffView = diffView;
 
         require("ace-code/src/lib/net").get("./diff/0.ts", function (v) {

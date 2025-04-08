@@ -60,7 +60,7 @@ class AceDiff {
 
 class DiffHighlight {
     /**
-     * @param {DiffView} diffView
+     * @param {import("./base_diff_view").BaseDiffView} diffView
      * @param type
      */
     constructor(diffView, type) {
