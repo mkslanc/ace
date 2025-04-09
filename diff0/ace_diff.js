@@ -77,6 +77,8 @@ class DiffHighlight {
             dir = "old";
             operation = "delete";
             opOperation = "insert";
+            //TODO: experiment
+            markerLayer = this.diffView.markerLayer;
         }
         else { //modified editor
             side = "right";
@@ -88,9 +90,10 @@ class DiffHighlight {
         var diffView = this.diffView;
         var ignoreTrimWhitespace = diffView.options.ignoreTrimWhitespace;
         var lineChanges = diffView.chunks;
-        let editor = diffView[side];
+        //TODO: experiment
+        let editor = diffView["right"];
 
-        if (editor.session.lineWidgets) {
+        /*if (editor.session.lineWidgets) {
             let ranges = editor.session.lineWidgets.reduce((allRanges, lineWidget, row) => {
                 if (!lineWidget) {
                     console.log("Shouldn't get here");
@@ -116,7 +119,7 @@ class DiffHighlight {
             ranges.forEach((range) => {
                 markerLayer.drawFullLineMarker(html, range, "ace_diff aligned_diff inline", config);
             })
-        }
+        }*/
 
         editor.renderer.$scrollDecorator.zones = [];
         lineChanges.forEach((lineChange) => {

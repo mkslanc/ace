@@ -44,7 +44,7 @@ class BaseDiffView {
      * @param {boolean} [options.foldUnchanged=false] - Whether to fold unchanged regions in the diff view.
      * @param {number} [options.maxComputationTimeMs=0] - The maximum time in milliseconds to spend computing diffs (0 means no limit).
      * @param {boolean} [options.syncSelections=false] - Whether to synchronize selections between the original and edited views.
-     * @param {boolean} [options.inlineDiffEditor=false] - Whether to use an inline diff editor.
+     * @param {boolean} [inlineDiffEditor] - Whether to use an inline diff editor.
      */
     constructor(element, options, inlineDiffEditor) {
         /**@type{{orig: EditSession, edit: EditSession, chunks: AceDiff[]}}*/this.session;
@@ -78,12 +78,15 @@ class BaseDiffView {
         element.appendChild(this.right.container);
         this.right.setOptions(diffEditorOptions);
         this.markerRight = new DiffHighlight(this, 1);
+        //TODO: experiment
+        this.markerLeft = new DiffHighlight(this, -1);
 
         if (!this.inlineDiffEditor) {
             this.orig = this.left = createEditor();
             element.appendChild(this.left.container);
             this.left.setOptions(diffEditorOptions);
-            this.markerLeft = new DiffHighlight(this, -1);
+            //TODO: experiment
+            //this.markerLeft = new DiffHighlight(this, -1);
 
             this.syncSelectionMarkerLeft = new SyncSelectionMarker();
             this.syncSelectionMarkerRight = new SyncSelectionMarker();
