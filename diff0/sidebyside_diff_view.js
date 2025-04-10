@@ -54,29 +54,29 @@ class SideBySideDiffView extends BaseDiffView {
             editor.session.widgetManager.lineWidgets = [];
         }
 
-        init(diffView.edit);
-        init(diffView.orig);
+        init(diffView.editorA);
+        init(diffView.editorB);
 
         diffView.chunks.forEach(function (ch) {
             var diff1 = ch.old.end.row - ch.old.start.row;
             var diff2 = ch.new.end.row - ch.new.start.row;
             if (diff1 < diff2) {
-                add(diffView.orig, {
+                add(diffView.editorA, {
                     rowCount: diff2 - diff1,
                     rowsAbove: ch.old.end.row === 0 ? diff2 : 0,
                     row: ch.old.end.row === 0 ? 0 : ch.old.end.row - 1
                 });
             }
             else if (diff1 > diff2) {
-                add(diffView.edit, {
+                add(diffView.editorB, {
                     rowCount: diff1 - diff2,
                     rowsAbove: ch.new.end.row === 0 ? diff1 : 0,
                     row: ch.new.end.row === 0 ? 0 : ch.new.end.row - 1
                 });
             }
         });
-        diffView.edit.session["_emit"]("changeFold", {data: {start: {row: 0}}});
-        diffView.orig.session["_emit"]("changeFold", {data: {start: {row: 0}}});
+        diffView.editorA.session["_emit"]("changeFold", {data: {start: {row: 0}}});
+        diffView.editorB.session["_emit"]("changeFold", {data: {start: {row: 0}}});
     }
 
     onSelect(e, selection) {
@@ -85,37 +85,37 @@ class SideBySideDiffView extends BaseDiffView {
 
     syncSelect(selection) {
         if (this.$updatingSelection) return;
-        var isOrig = selection.session === this.left.session;
+        var isOrig = selection.session === this.diffSession.sessionA;
         var selectionRange = selection.getRange();
 
-        var currSelectionRange = isOrig ? this.leftSelectionRange : this.rightSelectionRange;
+        var currSelectionRange = isOrig ? this.selectionRangeA : this.selectionRangeB;
         if (currSelectionRange && selectionRange.isEqual(currSelectionRange))
             return;
 
         if (isOrig) {
-            this.leftSelectionRange = selectionRange;
+            this.selectionRangeA = selectionRange;
         } else {
-            this.rightSelectionRange = selectionRange;
+            this.selectionRangeB = selectionRange;
         }
 
         this.$updatingSelection = true;
         var newRange = this.transformRange(selectionRange, isOrig);
 
         if (this.options.syncSelections) {
-            (isOrig ? this.right : this.left).session.selection.setSelectionRange(newRange);
+            (isOrig ? this.editorB : this.editorA).session.selection.setSelectionRange(newRange);
         }
         this.$updatingSelection = false;
 
         if (isOrig) {
-            this.leftSelectionRange = selectionRange;
-            this.rightSelectionRange = newRange;
+            this.selectionRangeA = selectionRange;
+            this.selectionRangeB = newRange;
         } else {
-            this.leftSelectionRange = newRange;
-            this.rightSelectionRange = selectionRange;
+            this.selectionRangeA = newRange;
+            this.selectionRangeB = selectionRange;
         }
 
-        this.updateSelectionMarker(this.syncSelectionMarkerLeft, this.left.session, this.leftSelectionRange);
-        this.updateSelectionMarker(this.syncSelectionMarkerRight, this.right.session, this.rightSelectionRange);
+        this.updateSelectionMarker(this.syncSelectionMarkerA, this.diffSession.sessionA, this.selectionRangeA);
+        this.updateSelectionMarker(this.syncSelectionMarkerB, this.diffSession.sessionB, this.selectionRangeB);
     }
 
     updateSelectionMarker(marker, session, range) {
@@ -124,7 +124,7 @@ class SideBySideDiffView extends BaseDiffView {
     }
 
     onScroll(e, session) {
-        this.syncScroll(this.left.session === session ? this.left.renderer : this.right.renderer);
+        this.syncScroll(this.diffSession.sessionA === session ? this.editorA.renderer : this.editorB.renderer);
     }
 
     /**
@@ -133,8 +133,8 @@ class SideBySideDiffView extends BaseDiffView {
     syncScroll(renderer) {
         if (this.$syncScroll == false) return;
 
-        var r1 = this.left.renderer;
-        var r2 = this.right.renderer;
+        var r1 = this.editorA.renderer;
+        var r2 = this.editorB.renderer;
         var isOrig = renderer == r1;
         if (r1["$scrollAnimation"] && r2["$scrollAnimation"]) return;
 
@@ -143,7 +143,7 @@ class SideBySideDiffView extends BaseDiffView {
 
         var r = isOrig ? r1 : r2;
         if (this.scrollSetBy != renderer) {
-            if (isOrig && this.scrollOrig == r.session.getScrollTop()) return; else if (!isOrig && this.scrollEdit
+            if (isOrig && this.scrollA == r.session.getScrollTop()) return; else if (!isOrig && this.scrollB
                 == r.session.getScrollTop()) return;
         }
         var rOther = isOrig ? r2 : r1;
@@ -210,12 +210,12 @@ class SideBySideDiffView extends BaseDiffView {
         this.$syncScroll = false;
 
         if (isOrig) {
-            this.scrollOrig = r.session.getScrollTop();
-            this.scrollEdit = targetPos;
+            this.scrollA = r.session.getScrollTop();
+            this.scrollB = targetPos;
         }
         else {
-            this.scrollOrig = targetPos;
-            this.scrollEdit = r.session.getScrollTop();
+            this.scrollA = targetPos;
+            this.scrollB = r.session.getScrollTop();
         }
         this.scrollSetBy = renderer;
         rOther.session.setScrollTop(targetPos);
@@ -233,7 +233,7 @@ class SideBySideDiffView extends BaseDiffView {
         var editor = ev.editor;
         var isScrolable = editor.renderer.isScrollableBy(ev.wheelX * ev.speed, ev.wheelY * ev.speed);
         if (!isScrolable) {
-            var other = editor == this.left ? this.right : this.left;
+            var other = editor == this.editorA ? this.editorB : this.editorA;
             if (other.renderer.isScrollableBy(ev.wheelX * ev.speed, ev.wheelY * ev.speed)) other.renderer.scrollBy(
                 ev.wheelX * ev.speed, ev.wheelY * ev.speed);
             return ev.stop();
@@ -241,8 +241,8 @@ class SideBySideDiffView extends BaseDiffView {
     }
 
     $attachEditorsEventHandlers() {
-        this.$attachEditorEventHandlers(this.left, this.markerLeft);
-        this.$attachEditorEventHandlers(this.right, this.markerRight);
+        this.$attachEditorEventHandlers(this.editorA, this.markerA);
+        this.$attachEditorEventHandlers(this.editorB, this.markerB);
     }
 
     $attachEditorEventHandlers(editor, marker) {
@@ -254,8 +254,8 @@ class SideBySideDiffView extends BaseDiffView {
     }
 
     $detachEditorsEventHandlers() {
-        this.$detachEditorEventHandlers(this.left, this.markerLeft);
-        this.$detachEditorEventHandlers(this.right, this.markerRight);
+        this.$detachEditorEventHandlers(this.editorA, this.markerA);
+        this.$detachEditorEventHandlers(this.editorB, this.markerB);
     }
 
     $detachEditorEventHandlers(editor, marker) {
@@ -267,13 +267,13 @@ class SideBySideDiffView extends BaseDiffView {
     }
 
     $attachEventHandlers() {
-        this.left.renderer.on("themeLoaded", this.onChangeTheme.bind(this));
+        this.editorA.renderer.on("themeLoaded", this.onChangeTheme.bind(this));
 
-        this.left.on("mousewheel", this.onMouseWheel.bind(this));
-        this.right.on("mousewheel", this.onMouseWheel.bind(this));
+        this.editorA.on("mousewheel", this.onMouseWheel.bind(this));
+        this.editorB.on("mousewheel", this.onMouseWheel.bind(this));
 
-        this.left.on("input", this.onInput.bind(this));
-        this.right.on("input", this.onInput.bind(this));
+        this.editorA.on("input", this.onInput.bind(this));
+        this.editorB.on("input", this.onInput.bind(this));
 
     }
 }

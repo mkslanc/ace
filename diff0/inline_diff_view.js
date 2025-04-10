@@ -25,19 +25,13 @@ class InlineDiffView extends BaseDiffView {
     }
 
     init() {
-        textLayer = new TextLayer(this.right.renderer.content);
-        this.edit.renderer.on("afterRender", renderWidgets.bind(this));
-        textLayer.setSession(this.session.orig);
+        textLayer = new TextLayer(this.editorB.renderer.content);
+        this.editorB.renderer.on("afterRender", renderWidgets.bind(this));
+        textLayer.setSession(this.diffSession.sessionA);
         textLayer.setPadding(4);
-
-
-        //TODO: start experiment
-        markerLayer = this.markerLayer = new MarkerLayer(this.right.renderer.content);
-        this.markerLayer.setSession(this.session.orig);
-        this.markerLayer.setPadding(4);
-
-        //TODO: end experiment
-
+        markerLayer = this.markerLayerA = new MarkerLayer(this.editorB.renderer.content);
+        this.markerLayerA.setSession(this.diffSession.sessionA);
+        this.markerLayerA.setPadding(4);
 
         this.$attachEventHandlers();
     }
@@ -65,30 +59,30 @@ class InlineDiffView extends BaseDiffView {
             textLayer.element.innerHTML = "";
         }
 
-        init(diffView.session.orig);
-        init(diffView.session.edit);
+        init(diffView.diffSession.sessionA);
+        init(diffView.diffSession.sessionB);
 
         diffView.chunks.forEach(function (ch) {
             var diff1 = ch.old.end.row - ch.old.start.row;
             var diff2 = ch.new.end.row - ch.new.start.row;
-            add(diffView.session.orig, {
+            add(diffView.diffSession.sessionA, {
                 rowCount: diff2,
                 rowsAbove: ch.old.end.row === 0 ? diff2 : 0,
                 row: ch.old.end.row === 0 ? 0 : ch.old.end.row - 1
             });
-            add(diffView.session.edit, {
+            add(diffView.diffSession.sessionB, {
                 rowCount: diff1,
                 rowsAbove: diff1,
                 row: ch.new.start.row,
             });
         });
-        diffView.session.orig["_emit"]("changeFold", {data: {start: {row: 0}}});
-        diffView.edit.session["_emit"]("changeFold", {data: {start: {row: 0}}});
+        diffView.diffSession.sessionA["_emit"]("changeFold", {data: {start: {row: 0}}});
+        diffView.diffSession.sessionB["_emit"]("changeFold", {data: {start: {row: 0}}});
     }
 
     $attachEditorsEventHandlers() {
-        this.$attachEditorEventHandlers(this.right, this.markerRight);
-        this.session.orig.addDynamicMarker(this.markerLeft);
+        this.$attachEditorEventHandlers(this.editorB, this.markerB);
+        this.diffSession.sessionA.addDynamicMarker(this.markerA);
     }
 
     $attachEditorEventHandlers(editor, marker) {
@@ -96,7 +90,7 @@ class InlineDiffView extends BaseDiffView {
     }
 
     $detachEditorsEventHandlers() {
-        this.$detachEditorEventHandlers(this.right, this.markerRight);
+        this.$detachEditorEventHandlers(this.editorB, this.markerB);
     }
 
     $detachEditorEventHandlers(editor, marker) {
@@ -104,11 +98,7 @@ class InlineDiffView extends BaseDiffView {
     }
 
     $attachEventHandlers() {
-        this.right.on("input", this.onInput.bind(this));
-    }
-
-    onInput() {
-        super.onInput();
+        this.editorB.on("input", this.onInput.bind(this));
     }
 }
 
@@ -137,11 +127,11 @@ function renderWidgets(changes, renderer) {
         return filtered;
     }
 
-    this.session.orig.bgTokenizer.lines = filterLines(this.session.orig.bgTokenizer.lines, this.chunks);
+    this.diffSession.sessionA.bgTokenizer.lines = filterLines(this.diffSession.sessionA.bgTokenizer.lines, this.chunks);
     textLayer.update(config);
     //TODO: force update after onInput
 
-    markerLayer.setMarkers(this.session.orig.getMarkers());
+    markerLayer.setMarkers(this.diffSession.sessionA.getMarkers());
     markerLayer.update(config);
 }
 

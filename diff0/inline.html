@@ -43,14 +43,8 @@
 <div class="toolbar">
     <button id="btn-prev" onclick="goToPrevious()">Previous</button>
     <button id="btn-next" onclick="goToNext()">Next</button>
-    <!--  <button id="btn-use-old">Use Old</button>
-      <button id="btn-use-new">Use New</button>
-      <button id="btn-use-both">Use Both</button>-->
     <label>
         <input type="checkbox" id="btn-whitespace" checked onclick="trimWhitespace()"> Ignore Trim Whitespaces
-    </label>
-    <label>
-        <input type="checkbox" id="btn-syncselections" onclick="syncSelections()"> Sync selections
     </label>
     <label>
     <input type="checkbox" id="btn-foldunchanged" onclick="foldUnchanged()"> Collapse unchanged lines
@@ -66,13 +60,8 @@
     };
 
     var goToNext = () => {
-/*        window.diffView.gotoNext(1);
-        updateButtonsState();*/
-        window.diffView.edit.widgetManager.addLineWidget({
-            rowCount: 3,
-            rowsAbove: 3,
-            row: 0
-        });
+        window.diffView.gotoNext(1);
+        updateButtonsState();
     };
 
     var goToPrevious = () => {
@@ -97,8 +86,8 @@
         window.diffView.options.foldUnchanged = checked;
         window.diffView.onInput();
         if (!checked) {
-            window.diffView.left.session.unfold();
-            window.diffView.right.session.unfold();
+            window.diffView.diffSession.sessionA.unfold();
+            window.diffView.diffSession.sessionB.unfold();
         }
     };
 
@@ -129,18 +118,18 @@
         window.diffView = diffView;
 
         require("ace-code/src/lib/net").get("./diff/0.ts", function (v) {
-            diffView.session.orig.setValue(useLocalStorage && localStorage.orig || v, -1);
+            diffView.diffSession.sessionA.setValue(useLocalStorage && localStorage.orig || v, -1);
         });
         require("ace-code/src/lib/net").get("./diff/1.ts", function (v) {
-            diffView.right.setValue(useLocalStorage && localStorage.edit || v, -1);
-            diffView.right.session.setMode("ace-code/src/mode/typescript");
-            diffView.session.orig.setMode("ace-code/src/mode/typescript");
+            diffView.editorB.setValue(useLocalStorage && localStorage.edit || v, -1);
+            diffView.diffSession.sessionB.setMode("ace-code/src/mode/typescript");
+            diffView.diffSession.sessionA.setMode("ace-code/src/mode/typescript");
         });
 
         window.onbeforeunload = function () {
             if (!useLocalStorage) return;
-            localStorage.orig = diffView.session.orig.getValue();
-            localStorage.edit = diffView.edit.getValue();
+            localStorage.orig = diffView.diffSession.sessionA.getValue();
+            localStorage.edit = diffView.editorB.getValue();
         };
 
         /*diffView.left.on("changeSelection", updateButtonsState);

@@ -34,8 +34,6 @@ function createEditor() {
     return editor;
 }
 
-//TODO:
-// editorA; editorB
 class BaseDiffView {
     /**
      * Constructs a new DiffView instance.
@@ -49,7 +47,7 @@ class BaseDiffView {
      * @param {boolean} [inlineDiffEditor] - Whether to use an inline diff editor.
      */
     constructor(element, options, inlineDiffEditor) {
-        /**@type{{orig: EditSession, edit: EditSession, chunks: AceDiff[]}}*/this.session;
+        /**@type{{sessionA: EditSession, sessionB: EditSession, chunks: AceDiff[]}}*/this.diffSession;
         /**@type AceDiff[]*/this.chunks;
         this.inlineDiffEditor = inlineDiffEditor || false;
         this.currentDiffIndex = 0;
@@ -76,32 +74,32 @@ class BaseDiffView {
             "animatedScroll": true
         };
 
-        this.edit = this.right = createEditor();
-        element.appendChild(this.right.container);
-        this.right.setOptions(diffEditorOptions);
-        this.markerRight = new DiffHighlight(this, 1);
-        this.markerLeft = new DiffHighlight(this, -1);
+        this.editorB = createEditor();
+        element.appendChild(this.editorB.container);
+        this.editorB.setOptions(diffEditorOptions);
+        this.markerB = new DiffHighlight(this, 1);
+        this.markerA = new DiffHighlight(this, -1);
 
         if (!this.inlineDiffEditor) {
-            this.orig = this.left = createEditor();
-            element.appendChild(this.left.container);
-            this.left.setOptions(diffEditorOptions);
+            this.editorA = createEditor();
+            element.appendChild(this.editorA.container);
+            this.editorA.setOptions(diffEditorOptions);
 
-            this.syncSelectionMarkerLeft = new SyncSelectionMarker();
-            this.syncSelectionMarkerRight = new SyncSelectionMarker();
-            this.left.session.addDynamicMarker(this.syncSelectionMarkerLeft);
-            this.right.session.addDynamicMarker(this.syncSelectionMarkerRight);
+            this.syncSelectionMarkerA = new SyncSelectionMarker();
+            this.syncSelectionMarkerB = new SyncSelectionMarker();
+            this.editorA.session.addDynamicMarker(this.syncSelectionMarkerA);
+            this.editorB.session.addDynamicMarker(this.syncSelectionMarkerB);
 
-            this.setSession({
-                orig: this.orig.session,
-                edit: this.edit.session,
+            this.setDiffSession({
+                sessionA: this.editorA.session,
+                sessionB: this.editorB.session,
                 chunks: []
             });
         }
         else {
-            this.setSession({
-                orig: new EditSession(""),
-                edit: this.edit.session,
+            this.setDiffSession({
+                sessionA: new EditSession(""),
+                sessionB: this.editorB.session,
                 chunks: []
             });
         }
@@ -113,10 +111,8 @@ class BaseDiffView {
     }
 
     foldUnchanged() {
-        if (!this.inlineDiffEditor) {
-            this.orig.session.unfold();
-        }
-        this.edit.session.unfold();
+        this.diffSession.sessionA.unfold();
+        this.diffSession.sessionB.unfold();
 
         var chunks = this.chunks;
         var sep = "---";
@@ -126,15 +122,15 @@ class BaseDiffView {
         };
         for (var i = 0; i < chunks.length + 1; i++) {
             let current = chunks[i] || {
-                old: new Range(this.session.orig.getLength(), 0, this.session.orig.getLength(), 0),
-                new: new Range(this.edit.session.getLength(), 0, this.edit.session.getLength(), 0)
+                old: new Range(this.diffSession.sessionA.getLength(), 0, this.diffSession.sessionA.getLength(), 0),
+                new: new Range(this.diffSession.sessionB.getLength(), 0, this.diffSession.sessionB.getLength(), 0)
             };
             var l = current.new.start.row - prev.new.end.row - 5;
             if (l > 2) {
                 var s = prev.old.end.row + 2;
-                var f1 = this.session.orig.addFold(sep, new Range(s, 0, s + l, Number.MAX_VALUE));
+                var f1 = this.diffSession.sessionA.addFold(sep, new Range(s, 0, s + l, Number.MAX_VALUE));
                 s = prev.new.end.row + 2;
-                var f2 = this.edit.session.addFold(sep, new Range(s, 0, s + l, Number.MAX_VALUE));
+                var f2 = this.diffSession.sessionB.addFold(sep, new Range(s, 0, s + l, Number.MAX_VALUE));
                 if (f2 && f1) {
                     f1["other"] = f2;
                     f2["other"] = f1;
@@ -147,21 +143,19 @@ class BaseDiffView {
     }
 
     /**
-     *
-     * @param session
-     * @abstract
+     * @param {{ sessionA: any; sessionB: EditSession; chunks: AceDiff[] }} session
      */
-    setSession(session) {
-        if (this.session) {
+    setDiffSession(session) {
+        if (this.diffSession) {
             this.$detachEditorsEventHandlers();
         }
-        this.session = session;
-        if (this.session) {
-            this.chunks = this.session.chunks;
+        this.diffSession = session;
+        if (this.diffSession) {
+            this.chunks = this.diffSession.chunks;
             if (!this.inlineDiffEditor) {
-                this.orig.setSession(session.orig);
+                this.editorA.setSession(session.sessionA);
             }
-            this.edit.setSession(session.edit);
+            this.editorB.setSession(session.sessionB);
             this.$attachEditorsEventHandlers();
         }
     }
@@ -172,45 +166,45 @@ class BaseDiffView {
     $detachEditorsEventHandlers() {
     }
 
-    getSession() {
-        return this.session;
+    getDiffSession() {
+        return this.diffSession;
     }
 
     setTheme(theme) {
-        this.right.setTheme(theme);
+        this.editorB.setTheme(theme);
         if (!this.inlineDiffEditor) {
-            this.left.setTheme(theme);
+            this.editorA.setTheme(theme);
         }
     }
 
     getTheme() {
-        return this.left.getTheme();
+        return this.editorA.getTheme();
     }
 
     onChangeTheme() {
         if (!this.inlineDiffEditor) {
-            this.right.setTheme(this.left.getTheme());
+            this.editorB.setTheme(this.editorA.getTheme());
         }
     }
 
     resize() {
         if (!this.inlineDiffEditor) {
-            this.orig.resize();
+            this.editorA.resize();
         }
-        this.edit.resize();
+        this.editorB.resize();
     }
 
     onInput() {
-        var val1 = this.session.orig.doc.getAllLines();
-        var val2 = this.session.edit.doc.getAllLines();
+        var val1 = this.diffSession.sessionA.doc.getAllLines();
+        var val2 = this.diffSession.sessionB.doc.getAllLines();
 
         this.selectionSetBy = false;
-        this.leftSelectionRange = null;
-        this.rightSelectionRange = null;
+        this.selectionRangeA = null;
+        this.selectionRangeB = null;
 
         var chunks = this.$diffLines(val1, val2);
 
-        this.session.chunks = this.chunks = chunks;
+        this.diffSession.chunks = this.chunks = chunks;
         // if we"re dealing with too many chunks, fail silently
         if (this.chunks && this.chunks.length > this.options.maxDiffs) {
             return;
@@ -219,9 +213,9 @@ class BaseDiffView {
         if (this["$alignDiffs"]) this.align();
 
         if (!this.inlineDiffEditor) {
-            this.orig.renderer.updateBackMarkers();
+            this.editorA.renderer.updateBackMarkers();
         }
-        this.right.renderer.updateBackMarkers();
+        this.editorB.renderer.updateBackMarkers();
 
         if (this.options.foldUnchanged) {
             this.foldUnchanged();
@@ -262,8 +256,8 @@ class BaseDiffView {
         var fold = ev.data;
         if (this.$syncFold || !fold || !ev.action) return;
 
-        const isOrig = session === this.session.orig;
-        const other = isOrig ? this.session.edit : this.session.orig;
+        const isOrig = session === this.diffSession.sessionA;
+        const other = isOrig ? this.diffSession.sessionB : this.diffSession.sessionA;
 
         if (ev.action === "remove") {
             if (fold.other) {
@@ -306,14 +300,14 @@ class BaseDiffView {
     /*** other ***/
     destroy() {
         if (!this.inlineDiffEditor) {
-            this.left.destroy();
+            this.editorA.destroy();
         }
-        this.right.destroy();
+        this.editorB.destroy();
     }
 
     gotoNext(dir) { //TODO: wouldn't work in inline diff editor
         var orig = false;
-        var ace = orig ? this.orig : this.edit;
+        var ace = orig ? this.editorA : this.editorB;
         var row = ace.selection.lead.row;
         var i = findChunkIndex(this.chunks, row, orig);
         var chunk = this.chunks[i + dir] || this.chunks[i];
@@ -338,27 +332,27 @@ class BaseDiffView {
 
     /**
      * @param {import("ace-code").Ace.Range} range
-     * @param {boolean} orig
+     * @param {boolean} isOriginal
      */
-    transformRange(range, orig) {
-        return Range.fromPoints(this.transformPosition(range.start, orig), this.transformPosition(range.end, orig));
+    transformRange(range, isOriginal) {
+        return Range.fromPoints(this.transformPosition(range.start, isOriginal), this.transformPosition(range.end, isOriginal));
     }
 
     /**
      * @param {import("ace-code").Ace.Point} pos
-     * @param {boolean} isOrig
+     * @param {boolean} isOriginal
      * @return {import("ace-code").Ace.Point}
      */
-    transformPosition(pos, isOrig) {
-        var chunkIndex = findChunkIndex(this.chunks, pos.row, isOrig);
+    transformPosition(pos, isOriginal) {
+        var chunkIndex = findChunkIndex(this.chunks, pos.row, isOriginal);
         this.currentDiffIndex = chunkIndex;
 
         var chunk = this.chunks[chunkIndex];
 
-        var clonePos = this.right.session.doc.clonePos;
+        var clonePos = this.diffSession.sessionB.doc.clonePos;
         var result = clonePos(pos);
 
-        var [from, to] = isOrig ? ["old", "new"] : ["new", "old"];
+        var [from, to] = isOriginal ? ["old", "new"] : ["new", "old"];
         var deltaChar = 0;
         var ignoreIndent = false;
 
@@ -385,7 +379,7 @@ class BaseDiffView {
 
                             if (result.row > maxRow) {
                                 result.row = maxRow;
-                                result.column = (isOrig ? this.session.edit : this.session.orig).getLine(maxRow).length;
+                                result.column = (isOriginal ? this.diffSession.sessionB : this.diffSession.sessionA).getLine(maxRow).length;
                                 ignoreIndent = true;
                             }
                             result.row = Math.min(result.row, maxRow);
@@ -412,8 +406,8 @@ class BaseDiffView {
 
 
         if (!ignoreIndent) { //TODO:
-            var [fromEditSession, toEditSession] = isOrig ? [this.session.orig, this.session.edit] : [
-                this.session.edit, this.session.orig
+            var [fromEditSession, toEditSession] = isOriginal ? [this.diffSession.sessionA, this.diffSession.sessionB] : [
+                this.diffSession.sessionB, this.diffSession.sessionA
             ];
             deltaChar -= this.$getDeltaIndent(fromEditSession, toEditSession, pos.row, result.row);
         }
