@@ -34,6 +34,8 @@ function createEditor() {
     return editor;
 }
 
+//TODO:
+// editorA; editorB
 class BaseDiffView {
     /**
      * Constructs a new DiffView instance.
@@ -78,15 +80,12 @@ class BaseDiffView {
         element.appendChild(this.right.container);
         this.right.setOptions(diffEditorOptions);
         this.markerRight = new DiffHighlight(this, 1);
-        //TODO: experiment
         this.markerLeft = new DiffHighlight(this, -1);
 
         if (!this.inlineDiffEditor) {
             this.orig = this.left = createEditor();
             element.appendChild(this.left.container);
             this.left.setOptions(diffEditorOptions);
-            //TODO: experiment
-            //this.markerLeft = new DiffHighlight(this, -1);
 
             this.syncSelectionMarkerLeft = new SyncSelectionMarker();
             this.syncSelectionMarkerRight = new SyncSelectionMarker();

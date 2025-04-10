@@ -1,15 +1,11 @@
 "use strict";
 
-var dom = require("ace-code/src/lib/dom");
-
 var LineWidgets = require("ace-code/src/line_widgets").LineWidgets;
-
 var TextLayer = require("ace-code/src/layer/text").Text;
 var MarkerLayer = require("ace-code/src/layer/marker").Marker;
 var textLayer, markerLayer;
 
 const {BaseDiffView} = require("./base_diff_view");
-const {DiffHighlight} = require("./ace_diff");
 
 class InlineDiffView extends BaseDiffView {
     /**
@@ -30,7 +26,7 @@ class InlineDiffView extends BaseDiffView {
 
     init() {
         textLayer = new TextLayer(this.right.renderer.content);
-        this.edit.renderer.on("afterRender", renderWidgets);
+        this.edit.renderer.on("afterRender", renderWidgets.bind(this));
         textLayer.setSession(this.session.orig);
         textLayer.setPadding(4);
 
@@ -40,7 +36,6 @@ class InlineDiffView extends BaseDiffView {
         this.markerLayer.setSession(this.session.orig);
         this.markerLayer.setPadding(4);
 
-        this.markerLeft = new DiffHighlight(this, -1);
         //TODO: end experiment
 
 
@@ -50,53 +45,54 @@ class InlineDiffView extends BaseDiffView {
     align() {
         var diffView = this;
 
-        function add(editor, w) {
-            let lineWidget = editor.session.lineWidgets[w.row];
+        function add(session, w) {
+            let lineWidget = session.lineWidgets[w.row];
             if (lineWidget) {
                 w.rowsAbove += lineWidget.rowsAbove > w.rowsAbove ? lineWidget.rowsAbove : w.rowsAbove;
                 w.rowCount += lineWidget.rowCount;
             }
-            editor.session.lineWidgets[w.row] = w;
-            editor.session.widgetManager.lineWidgets[w.row] = w;
+            session.lineWidgets[w.row] = w;
+            session.widgetManager.lineWidgets[w.row] = w;
         }
 
-        function init(editor) {
-            var session = editor.session;
+        function init(session) {
             if (!session.widgetManager) {
                 session.widgetManager = new LineWidgets(session);
-                session.widgetManager.attach(editor);
+                if (session.$editor) session.widgetManager.attach(session.$editor);
             }
-            editor.session.lineWidgets = [];
-            editor.session.widgetManager.lineWidgets = [];
+            session.lineWidgets = [];
+            session.widgetManager.lineWidgets = [];
             textLayer.element.innerHTML = "";
         }
 
-        init(diffView.edit);
+        init(diffView.session.orig);
+        init(diffView.session.edit);
 
         diffView.chunks.forEach(function (ch) {
             var diff1 = ch.old.end.row - ch.old.start.row;
-            add(diffView.edit, {
+            var diff2 = ch.new.end.row - ch.new.start.row;
+            add(diffView.session.orig, {
+                rowCount: diff2,
+                rowsAbove: ch.old.end.row === 0 ? diff2 : 0,
+                row: ch.old.end.row === 0 ? 0 : ch.old.end.row - 1
+            });
+            add(diffView.session.edit, {
                 rowCount: diff1,
                 rowsAbove: diff1,
                 row: ch.new.start.row,
-                fixedWidth: true,
-                firstLine: ch.old.start.row,
-                lastLine: ch.old.end.row
             });
         });
+        diffView.session.orig["_emit"]("changeFold", {data: {start: {row: 0}}});
         diffView.edit.session["_emit"]("changeFold", {data: {start: {row: 0}}});
     }
 
     $attachEditorsEventHandlers() {
         this.$attachEditorEventHandlers(this.right, this.markerRight);
+        this.session.orig.addDynamicMarker(this.markerLeft);
     }
 
     $attachEditorEventHandlers(editor, marker) {
         editor.session.addDynamicMarker(marker);
-        //TODO: start experiment
-        editor.renderer.session1 = this.session.orig; //TODO: this is just for test
-        this.session.orig.addDynamicMarker(this.markerLeft);
-        //TODO: end experiment
     }
 
     $detachEditorsEventHandlers() {
@@ -110,6 +106,10 @@ class InlineDiffView extends BaseDiffView {
     $attachEventHandlers() {
         this.right.on("input", this.onInput.bind(this));
     }
+
+    onInput() {
+        super.onInput();
+    }
 }
 
 /**
@@ -118,54 +118,31 @@ class InlineDiffView extends BaseDiffView {
  */
 function renderWidgets(changes, renderer) {
     var config = renderer.layerConfig;
-    var session = renderer.session;
-    var lineWidgets = renderer.session.lineWidgets;
-    if (!lineWidgets) return;
-    var first = Math.min(0, config.firstRow);
-    var last = Math.max(config.lastRow, lineWidgets.length);
-
-    while (first > 0 && !lineWidgets[first]) first--;
-
-    //this.firstRow = config.firstRow;
-    //this.lastRow = config.lastRow;
-
-    renderer.$cursorLayer.config = config;
-    for (var i = first; i <= last; i++) {
-        var w = lineWidgets[i];
-        if (!w) continue;
-        if (!w.customEl) {
-            w.customEl = dom.buildDom(["div", {class: "ace_diff_widgets"}], textLayer.element);
-            w.customEl.style.position = "absolute";
-            w.customEl.style.zIndex = "5";
-            //TODO::::: !!!!!
-            for (let j = w.firstLine; j < w.lastLine; j++) {
-                let child = dom.createElement("div");
-                child.style.height = config.lineHeight + "px";
-                w.customEl.appendChild(child);
-                textLayer.$renderLine(child, j);
-            }
-        }
-        if (w.hidden) {
-            w.customEl.style.top = -100 - (w.pixelHeight || 0) + "px";
-            continue;
-        }
-        var top = renderer.$cursorLayer.getPixelPosition({
-            row: i,
-            column: 0
-        }, true).top;
-        w.customEl.style.top = top - config.lineHeight * w.rowsAbove - config.offset + "px";
-
-    }
-    //TODO: start experiment
     textLayer.element.style.top = `${config.offset}px`;
-    markerLayer.element.style.top = `${config.offset}px`;
 
-    markerLayer.setMarkers(renderer.session1.getMarkers());
-    let newConfig = {...config};
-    //newConfig.offset = 0;
-    newConfig.firstRowScreen = config.firstRowScreen - (lineWidgets[0].lastLine - lineWidgets[0].firstLine);
-    markerLayer.update(newConfig);
-    //TODO: end experiment
+    function filterLines(lines, chunks) {
+        const indicesToKeep = new Set();
+        chunks.forEach(ch => {
+            const start = ch.old.start.row;
+            const end   = ch.old.end.row;
+            for (let i = start; i < end; i++) {
+                indicesToKeep.add(i);
+            }
+        });
+
+        const filtered = lines.map((line, index) => {
+            return indicesToKeep.has(index) ? line : [];
+        });
+
+        return filtered;
+    }
+
+    this.session.orig.bgTokenizer.lines = filterLines(this.session.orig.bgTokenizer.lines, this.chunks);
+    textLayer.update(config);
+    //TODO: force update after onInput
+
+    markerLayer.setMarkers(this.session.orig.getMarkers());
+    markerLayer.update(config);
 }
 
 exports.InlineDiffView = InlineDiffView;
