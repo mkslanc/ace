@@ -19,7 +19,6 @@ require("ace-code/src/multi_select");
 var {
     AceDiff,
     DiffHighlight,
-    findChunkIndex
 } = require("./ace_diff");
 const {EditSession} = require("ace-code/src/edit_session");
 
@@ -309,7 +308,7 @@ class BaseDiffView {
         var orig = false;
         var ace = orig ? this.editorA : this.editorB;
         var row = ace.selection.lead.row;
-        var i = findChunkIndex(this.chunks, row, orig);
+        var i = this.findChunkIndex(this.chunks, row, orig);
         var chunk = this.chunks[i + dir] || this.chunks[i];
 
         var scrollTop = ace.session.getScrollTop();
@@ -323,11 +322,11 @@ class BaseDiffView {
 
 
     firstDiffSelected() {
-        return this.currentDiffIndex <= 0;
+        return this.currentDiffIndex <= 1;
     }
 
     lastDiffSelected() {
-        return this.currentDiffIndex == this.chunks.length - 1;
+        return this.currentDiffIndex > this.chunks.length - 1;
     }
 
     /**
@@ -344,8 +343,7 @@ class BaseDiffView {
      * @return {import("ace-code").Ace.Point}
      */
     transformPosition(pos, isOriginal) {
-        var chunkIndex = findChunkIndex(this.chunks, pos.row, isOriginal);
-        this.currentDiffIndex = chunkIndex;
+        var chunkIndex = this.findChunkIndex(this.chunks, pos.row, isOriginal);
 
         var chunk = this.chunks[chunkIndex];
 
@@ -440,6 +438,26 @@ class BaseDiffView {
         this.chunks.forEach((diff) => {
             console.log(diff.toString());
         });
+    }
+
+    /**
+     *
+     * @param {AceDiff[]} chunks
+     * @param {number} row
+     * @param {boolean} isOriginal
+     * @return {number}
+     */
+    findChunkIndex(chunks, row, isOriginal) {
+        for (var i = 0; i < chunks.length; i++) {
+            var ch = chunks[i];
+            var chunk = isOriginal ? ch.old : ch.new;
+            if (chunk.end.row < row) continue;
+            if (chunk.start.row > row) break;
+        }
+
+        this.currentDiffIndex = i;
+
+        return i - 1;
     }
 }
 

@@ -80,6 +80,11 @@ class InlineDiffView extends BaseDiffView {
         diffView.diffSession.sessionB["_emit"]("changeFold", {data: {start: {row: 0}}});
     }
 
+    onSelect(e, selection) {
+        var selectionRange = selection.getRange();
+        this.findChunkIndex(this.chunks, selectionRange.start.row, false);
+    }
+
     $attachEditorsEventHandlers() {
         this.$attachEditorEventHandlers(this.editorB, this.markerB);
         this.diffSession.sessionA.addDynamicMarker(this.markerA);
@@ -87,6 +92,8 @@ class InlineDiffView extends BaseDiffView {
 
     $attachEditorEventHandlers(editor, marker) {
         editor.session.addDynamicMarker(marker);
+        editor.selection.on("changeCursor", this.onSelect.bind(this));
+        editor.selection.on("changeSelection", this.onSelect.bind(this));
     }
 
     $detachEditorsEventHandlers() {
@@ -141,7 +148,7 @@ function renderWidgets(changes, renderer) {
     session.$scrollTop = renderer.scrollTop;
     session.$scrollLeft = renderer.scrollLeft;
 
-    var cloneRendrrer = {
+    var cloneRenderer = {
         scrollTop: renderer.scrollTop,
         scrollLeft: renderer.scrollLeft,
         $size: renderer.$size,
@@ -162,16 +169,13 @@ function renderWidgets(changes, renderer) {
         _signal: function () {},
     };
 
-    cloneRendrrer.$computeLayerConfig();
+    cloneRenderer.$computeLayerConfig();
 
-    // cloneRendrrer.layerConfig.offset = config.offset;
-    console.log(config, cloneRendrrer.layerConfig)
-    var newConfig = cloneRendrrer.layerConfig;
-    // newConfig.offset = config.offset + (newConfig.firstRowScreen - config.firstRowScreen) * config.lineHeight;
+    console.log(config, cloneRenderer.layerConfig);
+    var newConfig = cloneRenderer.layerConfig;
     newConfig.firstRowScreen = config.firstRowScreen;
 
     textLayer.update(newConfig);
-    //TODO: force update after onInput
 
     markerLayer.setMarkers(this.diffSession.sessionA.getMarkers());
     markerLayer.update(newConfig);

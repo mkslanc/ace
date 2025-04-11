@@ -132,8 +132,7 @@
             localStorage.edit = diffView.editorB.getValue();
         };
 
-        /*diffView.left.on("changeSelection", updateButtonsState);
-        diffView.right.on("changeSelection", updateButtonsState);*/
+        diffView.editorB.on("changeSelection", updateButtonsState);
     });
 
 </script>

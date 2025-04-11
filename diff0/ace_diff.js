@@ -195,24 +195,6 @@ class DiffHighlight {
     }
 }
 
-/**
- *
- * @param {AceDiff[]} chunks
- * @param {number} row
- * @param {boolean} isOrig
- * @return {number}
- */
-function findChunkIndex(chunks, row, isOrig) {
-    for (var i = 0; i < chunks.length; i++) {
-        var ch = chunks[i];
-        var chunk = isOrig ? ch.old : ch.new;
-        if (chunk.end.row < row) continue;
-        if (chunk.start.row > row) break;
-    }
-
-    return i - 1;
-}
 
 exports.AceDiff = AceDiff;
 exports.DiffHighlight = DiffHighlight;
-exports.findChunkIndex = findChunkIndex;

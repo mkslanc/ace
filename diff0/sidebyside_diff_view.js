@@ -5,7 +5,6 @@ var LineWidgets = require("ace-code/src/line_widgets").LineWidgets;
 
 const {
     AceDiff,
-    findChunkIndex
 } = require("./ace_diff");
 const { BaseDiffView } = require("./base_diff_view");
 
@@ -160,7 +159,7 @@ class SideBySideDiffView extends BaseDiffView {
             var midY = halfScreen + r.scrollTop;
             var mid = r.session.screenToDocumentRow(midY / lc.lineHeight, 0);
 
-            var i = findChunkIndex(chunks, mid, isOrig);
+            var i = this.findChunkIndex(chunks, mid, isOrig);
             /**
              *
              * @type {Partial<AceDiff>}
@@ -245,6 +244,10 @@ class SideBySideDiffView extends BaseDiffView {
         this.$attachEditorEventHandlers(this.editorB, this.markerB);
     }
 
+    /**
+     * @param {import("ace-code/src/editor").Editor} editor
+     * @param {import("./ace_diff").DiffHighlight} marker
+     */
     $attachEditorEventHandlers(editor, marker) {
         editor.session.on("changeScrollTop", this.onScroll.bind(this));
         editor.session.on("changeFold", this.onChangeFold.bind(this));
@@ -258,6 +261,10 @@ class SideBySideDiffView extends BaseDiffView {
         this.$detachEditorEventHandlers(this.editorB, this.markerB);
     }
 
+    /**
+     * @param {import("ace-code/src/editor").Editor} editor
+     * @param {import("./ace_diff").DiffHighlight} marker
+     */
     $detachEditorEventHandlers(editor, marker) {
         editor.session.off("changeScrollTop", this.onScroll.bind(this));
         editor.session.off("changeFold", this.onChangeFold.bind(this));
