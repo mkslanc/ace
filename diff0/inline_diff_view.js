@@ -108,31 +108,73 @@ class InlineDiffView extends BaseDiffView {
  */
 function renderWidgets(changes, renderer) {
     var config = renderer.layerConfig;
-    textLayer.element.style.top = `${config.offset}px`;
 
     function filterLines(lines, chunks) {
-        const indicesToKeep = new Set();
-        chunks.forEach(ch => {
-            const start = ch.old.start.row;
-            const end   = ch.old.end.row;
-            for (let i = start; i < end; i++) {
-                indicesToKeep.add(i);
+        var i = 0
+        var nextChunkIndex = 0;
+
+        var nextChunk = chunks[nextChunkIndex];
+        nextChunkIndex++;
+        var nextStart = nextChunk ? nextChunk.old.start.row : lines.length; 
+        var nextEnd = nextChunk ? nextChunk.old.end.row : lines.length;
+        while (i < lines.length) {
+            while (i < nextStart) {
+                if (lines[i] && lines[i].length) lines[i].length = 0;
+                i++;
             }
-        });
-
-        const filtered = lines.map((line, index) => {
-            return indicesToKeep.has(index) ? line : [];
-        });
-
-        return filtered;
+            while (i < nextEnd) {
+                if (lines[i] && lines[i].length == 0) lines[i] = undefined;
+                i++;
+            }
+            nextChunk = chunks[nextChunkIndex];
+            nextChunkIndex++;
+            nextStart = nextChunk ? nextChunk.old.start.row : lines.length; 
+            nextEnd = nextChunk ? nextChunk.old.end.row : lines.length;
+        }
     }
 
-    this.diffSession.sessionA.bgTokenizer.lines = filterLines(this.diffSession.sessionA.bgTokenizer.lines, this.chunks);
-    textLayer.update(config);
+    filterLines(this.diffSession.sessionA.bgTokenizer.lines, this.chunks);
+ 
+
+    var session = this.diffSession.sessionA;
+
+    session.$scrollTop = renderer.scrollTop;
+    session.$scrollLeft = renderer.scrollLeft;
+
+    var cloneRendrrer = {
+        scrollTop: renderer.scrollTop,
+        scrollLeft: renderer.scrollLeft,
+        $size: renderer.$size,
+        session: session,
+        $horizScroll: renderer.$horizScroll,
+        $vScroll: renderer.$vScroll,
+        $padding: renderer.$padding,
+        scrollMargin: renderer.scrollMargin,
+        characterWidth: renderer.characterWidth,
+        lineHeight: renderer.lineHeight,
+        $computeLayerConfig: renderer.$computeLayerConfig,
+        $getLongestLine: renderer.$getLongestLine,
+        scrollBarV: {
+            setVisible: function () {}
+        },
+        layerConfig: renderer.layerConfig,
+        $updateCachedSize: function () {},
+        _signal: function () {},
+    };
+
+    cloneRendrrer.$computeLayerConfig();
+
+    // cloneRendrrer.layerConfig.offset = config.offset;
+    console.log(config, cloneRendrrer.layerConfig)
+    var newConfig = cloneRendrrer.layerConfig;
+    // newConfig.offset = config.offset + (newConfig.firstRowScreen - config.firstRowScreen) * config.lineHeight;
+    newConfig.firstRowScreen = config.firstRowScreen;
+
+    textLayer.update(newConfig);
     //TODO: force update after onInput
 
     markerLayer.setMarkers(this.diffSession.sessionA.getMarkers());
-    markerLayer.update(config);
+    markerLayer.update(newConfig);
 }
 
 exports.InlineDiffView = InlineDiffView;
