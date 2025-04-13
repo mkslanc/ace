@@ -6,27 +6,39 @@ var MarkerLayer = require("ace-code/src/layer/marker").Marker;
 var textLayer, markerLayer;
 
 const {BaseDiffView} = require("./base_diff_view");
+const config = require("ace-code/src/config");
 
 class InlineDiffView extends BaseDiffView {
     /**
-     * Constructs a new DiffView instance.
-     *
+     * Constructs a new inline DiffView instance.
      * @param {HTMLElement} element - The container element for the DiffView.
-     * @param {Object} options - The configuration options for the DiffView.
-     * @param {boolean} [options.ignoreTrimWhitespace=true] - Whether to ignore whitespace changes when computing diffs.
-     * @param {boolean} [options.foldUnchanged=false] - Whether to fold unchanged regions in the diff view.
-     * @param {number} [options.maxComputationTimeMs=0] - The maximum time in milliseconds to spend computing diffs (0 means no limit).
-     * @param {boolean} [options.syncSelections=false] - Whether to synchronize selections between the original and edited views.
+     * @param {Object} [diffModel] - The model for the diff view.
+     * @param {import("ace-code").Editor} [diffModel.editorA] - The editor for the original view.
+     * @param {import("ace-code").Editor} [diffModel.editorB] - The editor for the edited view.
+     * @param {import("ace-code").EditSession} [diffModel.sessionA] - The edit session for the original view.
+     * @param {import("ace-code").EditSession} [diffModel.sessionB] - The edit session for the edited view.
+     * @param {string} [diffModel.valueA] - The original content.
+     * @param {string} [diffModel.valueB] - The modified content.
+     * @param {boolean} [diffModel.showSideA] - Whether to show the original view or modified view.
      */
-    constructor(element, options) {
-        options = options || {};
-        super(element, options, true);
-        this.init();
+    constructor(element, diffModel) {
+        //TODO: diffModel.showSideA is not used
+        diffModel = diffModel || {};
+        super(element, true);
+        this.init(diffModel);
     }
 
-    init() {
+    init(diffModel) {
+        this.onInput = this.onInput.bind(this);
+        this.onSelect = this.onSelect.bind(this);
+        this.onAfterRender = this.onAfterRender.bind(this)
+
+        this.$setupModels(diffModel);
+        this.onChangeTheme();
+        config.resetOptions(this);
+        config["_signal"]("diffView", this);
+
         textLayer = new TextLayer(this.editorB.renderer.content);
-        this.editorB.renderer.on("afterRender", renderWidgets.bind(this));
         textLayer.setSession(this.diffSession.sessionA);
         textLayer.setPadding(4);
         markerLayer = this.markerLayerA = new MarkerLayer(this.editorB.renderer.content);
@@ -34,6 +46,13 @@ class InlineDiffView extends BaseDiffView {
         this.markerLayerA.setPadding(4);
 
         this.$attachEventHandlers();
+    }
+
+    swapDirection() { //TODO: not working
+        super.swapDirection();
+        this.markerLayerA.setSession(this.diffSession.sessionA);
+        textLayer.setSession(this.diffSession.sessionA);
+        this.editorB.renderer.updateFull(true);
     }
 
     align() {
@@ -85,100 +104,119 @@ class InlineDiffView extends BaseDiffView {
         this.findChunkIndex(this.chunks, selectionRange.start.row, false);
     }
 
-    $attachEditorsEventHandlers() {
-        this.$attachEditorEventHandlers(this.editorB, this.markerB);
+    $attachSessionsEventHandlers() {
+        this.$attachSessionEventHandlers(this.editorB, this.markerB);
         this.diffSession.sessionA.addDynamicMarker(this.markerA);
     }
 
-    $attachEditorEventHandlers(editor, marker) {
+    $attachSessionEventHandlers(editor, marker) {
         editor.session.addDynamicMarker(marker);
-        editor.selection.on("changeCursor", this.onSelect.bind(this));
-        editor.selection.on("changeSelection", this.onSelect.bind(this));
+        editor.selection.on("changeCursor", this.onSelect);
+        editor.selection.on("changeSelection", this.onSelect);
     }
 
-    $detachEditorsEventHandlers() {
-        this.$detachEditorEventHandlers(this.editorB, this.markerB);
+    $detachSessionsEventHandlers() {
+        this.$detachSessionEventHandlers(this.editorB, this.markerB);
+        this.diffSession.sessionA.removeMarker(this.markerA.id);
     }
 
-    $detachEditorEventHandlers(editor, marker) {
+    $detachSessionEventHandlers(editor, marker) {
         editor.session.removeMarker(marker.id);
+        editor.selection.off("changeCursor", this.onSelect);
+        editor.selection.off("changeSelection", this.onSelect);
     }
 
     $attachEventHandlers() {
-        this.editorB.on("input", this.onInput.bind(this));
+        this.editorB.on("input", this.onInput);
+        this.editorB.renderer.on("afterRender", this.onAfterRender);
     }
-}
 
-/**
- * @param {number} changes
- * @param {import("ace-code").VirtualRenderer} renderer
- */
-function renderWidgets(changes, renderer) {
-    var config = renderer.layerConfig;
+    $detachEventHandlers() {
+        this.$detachSessionsEventHandlers();
+        this.editorB.off("input", this.onInput);
+        this.editorB.renderer.off("afterRender", this.onAfterRender);
 
-    function filterLines(lines, chunks) {
-        var i = 0
-        var nextChunkIndex = 0;
+        this.editorB.renderer["$scrollDecorator"].zones = [];
+        this.editorB.renderer["$scrollDecorator"].$updateDecorators(this.editorB.renderer.layerConfig);
 
-        var nextChunk = chunks[nextChunkIndex];
-        nextChunkIndex++;
-        var nextStart = nextChunk ? nextChunk.old.start.row : lines.length; 
-        var nextEnd = nextChunk ? nextChunk.old.end.row : lines.length;
-        while (i < lines.length) {
-            while (i < nextStart) {
-                if (lines[i] && lines[i].length) lines[i].length = 0;
-                i++;
-            }
-            while (i < nextEnd) {
-                if (lines[i] && lines[i].length == 0) lines[i] = undefined;
-                i++;
-            }
-            nextChunk = chunks[nextChunkIndex];
+        textLayer.element.textContent = "";
+        markerLayer.element.textContent = "";
+    }
+
+    /**
+     * @param {number} changes
+     * @param {import("ace-code").VirtualRenderer} renderer
+     */
+    onAfterRender(changes, renderer) {
+        var config = renderer.layerConfig;
+
+        function filterLines(lines, chunks) {
+            var i = 0;
+            var nextChunkIndex = 0;
+
+            var nextChunk = chunks[nextChunkIndex];
             nextChunkIndex++;
-            nextStart = nextChunk ? nextChunk.old.start.row : lines.length; 
-            nextEnd = nextChunk ? nextChunk.old.end.row : lines.length;
+            var nextStart = nextChunk ? nextChunk.old.start.row : lines.length;
+            var nextEnd = nextChunk ? nextChunk.old.end.row : lines.length;
+            while (i < lines.length) {
+                while (i < nextStart) {
+                    if (lines[i] && lines[i].length) lines[i].length = 0;
+                    i++;
+                }
+                while (i < nextEnd) {
+                    if (lines[i] && lines[i].length == 0) lines[i] = undefined;
+                    i++;
+                }
+                nextChunk = chunks[nextChunkIndex];
+                nextChunkIndex++;
+                nextStart = nextChunk ? nextChunk.old.start.row : lines.length;
+                nextEnd = nextChunk ? nextChunk.old.end.row : lines.length;
+            }
         }
+
+        filterLines(this.diffSession.sessionA.bgTokenizer.lines, this.chunks);
+
+
+        var session = this.diffSession.sessionA;
+
+        session.$scrollTop = renderer.scrollTop;
+        session.$scrollLeft = renderer.scrollLeft;
+
+        var cloneRenderer = {
+            scrollTop: renderer.scrollTop,
+            scrollLeft: renderer.scrollLeft,
+            $size: renderer.$size,
+            session: session,
+            $horizScroll: renderer.$horizScroll,
+            $vScroll: renderer.$vScroll,
+            $padding: renderer.$padding,
+            scrollMargin: renderer.scrollMargin,
+            characterWidth: renderer.characterWidth,
+            lineHeight: renderer.lineHeight,
+            $computeLayerConfig: renderer.$computeLayerConfig,
+            $getLongestLine: renderer.$getLongestLine,
+            scrollBarV: {
+                setVisible: function () {}
+            },
+            layerConfig: renderer.layerConfig,
+            $updateCachedSize: function () {},
+            _signal: function () {},
+        };
+
+        cloneRenderer.$computeLayerConfig();
+
+        console.log(config, cloneRenderer.layerConfig);
+        var newConfig = cloneRenderer.layerConfig;
+        newConfig.firstRowScreen = config.firstRowScreen;
+
+        textLayer.update(newConfig);
+
+        markerLayer.setMarkers(this.diffSession.sessionA.getMarkers());
+        markerLayer.update(newConfig);
     }
 
-    filterLines(this.diffSession.sessionA.bgTokenizer.lines, this.chunks);
- 
-
-    var session = this.diffSession.sessionA;
-
-    session.$scrollTop = renderer.scrollTop;
-    session.$scrollLeft = renderer.scrollLeft;
-
-    var cloneRenderer = {
-        scrollTop: renderer.scrollTop,
-        scrollLeft: renderer.scrollLeft,
-        $size: renderer.$size,
-        session: session,
-        $horizScroll: renderer.$horizScroll,
-        $vScroll: renderer.$vScroll,
-        $padding: renderer.$padding,
-        scrollMargin: renderer.scrollMargin,
-        characterWidth: renderer.characterWidth,
-        lineHeight: renderer.lineHeight,
-        $computeLayerConfig: renderer.$computeLayerConfig,
-        $getLongestLine: renderer.$getLongestLine,
-        scrollBarV: {
-            setVisible: function () {}
-        },
-        layerConfig: renderer.layerConfig,
-        $updateCachedSize: function () {},
-        _signal: function () {},
-    };
-
-    cloneRenderer.$computeLayerConfig();
-
-    console.log(config, cloneRenderer.layerConfig);
-    var newConfig = cloneRenderer.layerConfig;
-    newConfig.firstRowScreen = config.firstRowScreen;
-
-    textLayer.update(newConfig);
-
-    markerLayer.setMarkers(this.diffSession.sessionA.getMarkers());
-    markerLayer.update(newConfig);
 }
+
+
 
 exports.InlineDiffView = InlineDiffView;

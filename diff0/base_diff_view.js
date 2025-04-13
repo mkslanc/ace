@@ -22,91 +22,116 @@ var {
 } = require("./ace_diff");
 const {EditSession} = require("ace-code/src/edit_session");
 
-function createEditor() {
-    var editor = new Editor(new Renderer(), null, {
-        customScrollbar: true,
-        vScrollBarAlwaysVisible: true
-    });
-    editor.session.setUndoManager(new UndoManager());
-    // @ts-expect-error we should add this to the editor options
-    editor.renderer.setOption("decoratorType", "diff");
-    return editor;
-}
-
 class BaseDiffView {
     /**
-     * Constructs a new DiffView instance.
-     *
-     * @param {HTMLElement} element - The container element for the DiffView.
-     * @param {Object} options - The configuration options for the DiffView.
-     * @param {boolean} [options.ignoreTrimWhitespace=true] - Whether to ignore whitespace changes when computing diffs.
-     * @param {boolean} [options.foldUnchanged=false] - Whether to fold unchanged regions in the diff view.
-     * @param {number} [options.maxComputationTimeMs=0] - The maximum time in milliseconds to spend computing diffs (0 means no limit).
-     * @param {boolean} [options.syncSelections=false] - Whether to synchronize selections between the original and edited views.
+     * Constructs a new base DiffView instance.
      * @param {boolean} [inlineDiffEditor] - Whether to use an inline diff editor.
      */
-    constructor(element, options, inlineDiffEditor) {
+    constructor(element, inlineDiffEditor) {
         /**@type{{sessionA: EditSession, sessionB: EditSession, chunks: AceDiff[]}}*/this.diffSession;
         /**@type AceDiff[]*/this.chunks;
         this.inlineDiffEditor = inlineDiffEditor || false;
         this.currentDiffIndex = 0;
 
         dom.importCssString(css, "diffview.css");
-        if (options.ignoreTrimWhitespace === undefined) options.ignoreTrimWhitespace = true;
         this.options = {
-            ignoreTrimWhitespace: options.ignoreTrimWhitespace,
-            foldUnchanged: options.foldUnchanged || false,
-            maxComputationTimeMs: options.maxComputationTimeMs || 0, // time in milliseconds, 0 => no computation limit.
-            syncSelections: options.syncSelections || false //experimental option
+            ignoreTrimWhitespace: true,
+            foldUnchanged: false,
+            maxComputationTimeMs: 0, // time in milliseconds, 0 => no computation limit.
+            syncSelections: false //experimental option
         };
-        this.container = element;
-
         oop.mixin(this.options, {
             showDiffs: true,
             maxDiffs: 5000
         });
 
+        this.container = element;
+
+        this.markerB = new DiffHighlight(this, 1);
+        this.markerA = new DiffHighlight(this, -1);
+    }
+
+    /**
+     * @param {Object} options - The configuration options for the DiffView.
+     * @param {boolean} [options.ignoreTrimWhitespace=true] - Whether to ignore whitespace changes when computing diffs.
+     * @param {boolean} [options.foldUnchanged=false] - Whether to fold unchanged regions in the diff view.
+     * @param {number} [options.maxComputationTimeMs=0] - The maximum time in milliseconds to spend computing diffs (0 means no limit).
+     * @param {boolean} [options.syncSelections=false] - Whether to synchronize selections between the original and edited views.
+     */
+    setOptions(options) {
+        this.options = {
+            ignoreTrimWhitespace: options.ignoreTrimWhitespace || true,
+            foldUnchanged: options.foldUnchanged || false,
+            maxComputationTimeMs: options.maxComputationTimeMs || 0, // time in milliseconds, 0 => no computation limit.
+            syncSelections: options.syncSelections || false //experimental option
+        };
+        oop.mixin(this.options, {
+            showDiffs: true,
+            maxDiffs: 5000
+        });
+        config.resetOptions(this);
+    }
+
+    /**
+     * @param {Object} [diffModel] - The model for the diff view.
+     * @param {Editor} [diffModel.editorA] - The editor for the original view.
+     * @param {Editor} [diffModel.editorB] - The editor for the edited view.
+     * @param {EditSession} [diffModel.sessionA] - The edit session for the original view.
+     * @param {EditSession} [diffModel.sessionB] - The edit session for the edited view.
+     * @param {string} [diffModel.valueA] - The original content.
+     * @param {string} [diffModel.valueB] - The modified content.
+     * @param {boolean} [diffModel.showSideA] - Whether to show the original view or modified view.
+     */
+    $setupModels(diffModel) {
         const diffEditorOptions = {
             "scrollPastEnd": 0.5,
             "highlightActiveLine": false,
             "highlightGutterLine": false,
-            "animatedScroll": true
+            "animatedScroll": true,
+            "customScrollbar": true,
+            "vScrollBarAlwaysVisible": true
         };
 
-        this.editorB = createEditor();
-        element.appendChild(this.editorB.container);
-        this.editorB.setOptions(diffEditorOptions);
-        this.markerB = new DiffHighlight(this, 1);
-        this.markerA = new DiffHighlight(this, -1);
-
         if (!this.inlineDiffEditor) {
-            this.editorA = createEditor();
-            element.appendChild(this.editorA.container);
+            this.editorA = diffModel.editorA || this.$setupModel(diffModel.sessionA, diffModel.valueA);
+            this.container.appendChild(this.editorA.container);
             this.editorA.setOptions(diffEditorOptions);
-
-            this.syncSelectionMarkerA = new SyncSelectionMarker();
-            this.syncSelectionMarkerB = new SyncSelectionMarker();
-            this.editorA.session.addDynamicMarker(this.syncSelectionMarkerA);
-            this.editorB.session.addDynamicMarker(this.syncSelectionMarkerB);
-
-            this.setDiffSession({
-                sessionA: this.editorA.session,
-                sessionB: this.editorB.session,
-                chunks: []
-            });
         }
-        else {
-            this.setDiffSession({
-                sessionA: new EditSession(""),
-                sessionB: this.editorB.session,
-                chunks: []
-            });
+        this.editorB = diffModel.editorB || this.$setupModel(diffModel.sessionB, diffModel.valueB);
+        this.container.appendChild(this.editorB.container);
+        this.editorB.setOptions(diffEditorOptions);
+
+        this.setDiffSession({
+            sessionA: diffModel.sessionA || (this.editorA ? this.editorA.session : new EditSession(
+                diffModel.valueA || "")),
+            sessionB: diffModel.sessionB || this.editorB.session,
+            chunks: []
+        });
+    }
+
+    /**
+     * @param {EditSession} [session]
+     * @param {string} [value]
+     */
+    $setupModel(session, value) {
+        var editor = new Editor(new Renderer(), session);
+        editor.session.setUndoManager(new UndoManager());
+        // @ts-expect-error we should add this to the editor options
+        editor.renderer.setOption("decoratorType", "diff");
+        if (value) {
+            editor.setValue(value, -1);
         }
+        return editor;
+    }
 
-        this.onChangeTheme();
-
-        config.resetOptions(this);
-        config["_signal"]("diffView", this);
+    swapDirection() {
+        const tempSession = this.diffSession.sessionA;
+        this.diffSession.sessionA = this.diffSession.sessionB;
+        this.diffSession.sessionB = tempSession;
+        if (!this.inlineDiffEditor) {
+            this.editorA.setSession(this.diffSession.sessionA);
+        }
+        this.editorB.setSession(this.diffSession.sessionB);
     }
 
     foldUnchanged() {
@@ -146,7 +171,7 @@ class BaseDiffView {
      */
     setDiffSession(session) {
         if (this.diffSession) {
-            this.$detachEditorsEventHandlers();
+            this.$detachSessionsEventHandlers();
         }
         this.diffSession = session;
         if (this.diffSession) {
@@ -155,14 +180,20 @@ class BaseDiffView {
                 this.editorA.setSession(session.sessionA);
             }
             this.editorB.setSession(session.sessionB);
-            this.$attachEditorsEventHandlers();
+            this.$attachSessionsEventHandlers();
         }
     }
 
-    $attachEditorsEventHandlers() {
+    /**
+     * @abstract
+     */
+    $attachSessionsEventHandlers() {
     }
 
-    $detachEditorsEventHandlers() {
+    /**
+     * @abstract
+     */
+    $detachSessionsEventHandlers() {
     }
 
     getDiffSession() {
@@ -296,8 +327,29 @@ class BaseDiffView {
         }
     }
 
-    /*** other ***/
+    detach() {
+        this.$detachEventHandlers();
+        if (!this.inlineDiffEditor) {
+            this.$removeLineWidgets(this.editorA);
+        }
+        this.$removeLineWidgets(this.editorB);
+    }
+
+    $removeLineWidgets(editor) {
+        editor.session.lineWidgets = [];
+        editor.session.widgetManager.lineWidgets = [];
+        editor.session["_emit"]("changeFold", {data: {start: {row: 0}}});
+    }
+
+    /**
+     * @abstract
+     */
+    $detachEventHandlers() {
+
+    }
+
     destroy() {
+        this.detach();
         if (!this.inlineDiffEditor) {
             this.editorA.destroy();
         }
@@ -470,25 +522,5 @@ config.defineOptions(BaseDiffView.prototype, "editor", {
         initialValue: true
     }
 });
-
-class SyncSelectionMarker {
-    constructor() {
-        this.type = "fullLine";
-        this.clazz = "ace_diff selection";
-    }
-
-    update(html, markerLayer, session, config) {
-    }
-
-    /**
-     * @param {import("ace-code").Ace.Range} range
-     */
-    setRange(range) {//TODO
-        var newRange = range.clone();
-        newRange.end.column++;
-
-        this.range = newRange;
-    }
-}
 
 exports.BaseDiffView = BaseDiffView;

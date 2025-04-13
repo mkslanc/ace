@@ -7,25 +7,49 @@ const {
     AceDiff,
 } = require("./ace_diff");
 const { BaseDiffView } = require("./base_diff_view");
+const config = require("ace-code/src/config");
 
 class SideBySideDiffView extends BaseDiffView {
     /**
-     * Constructs a new DiffView instance.
+     * Constructs a new side by side DiffView instance.
      *
      * @param {HTMLElement} element - The container element for the DiffView.
-     * @param {Object} options - The configuration options for the DiffView.
-     * @param {boolean} [options.ignoreTrimWhitespace=true] - Whether to ignore whitespace changes when computing diffs.
-     * @param {boolean} [options.foldUnchanged=false] - Whether to fold unchanged regions in the diff view.
-     * @param {number} [options.maxComputationTimeMs=0] - The maximum time in milliseconds to spend computing diffs (0 means no limit).
-     * @param {boolean} [options.syncSelections=false] - Whether to synchronize selections between the original and edited views.
+     * @param {Object} [diffModel] - The model for the diff view.
+     * @param {import("ace-code").Editor} [diffModel.editorA] - The editor for the original view.
+     * @param {import("ace-code").Editor} [diffModel.editorB] - The editor for the edited view.
+     * @param {import("ace-code").EditSession} [diffModel.sessionA] - The edit session for the original view.
+     * @param {import("ace-code").EditSession} [diffModel.sessionB] - The edit session for the edited view.
+     * @param {string} [diffModel.valueA] - The original content.
+     * @param {string} [diffModel.valueB] - The modified content.
+     * @param {boolean} [diffModel.showSideA] - Whether to show the original view or modified view.
      */
-    constructor(element, options) {
-        options = options || {};
-        super(element, options);
-        this.init();
+    constructor(element, diffModel) {
+        //TODO: diffModel.showSideA is not used
+        diffModel = diffModel || {};
+        super(element);
+        this.init(diffModel);
     }
 
-    init() {
+    init(diffModel) {
+        this.onChangeTheme = this.onChangeTheme.bind(this);
+        this.onInput = this.onInput.bind(this);
+        this.onMouseWheel = this.onMouseWheel.bind(this);
+        this.onScroll = this.onScroll.bind(this);
+        this.onChangeFold = this.onChangeFold.bind(this);
+        this.onSelect = this.onSelect.bind(this);
+
+        this.$setupModels(diffModel);
+
+        this.syncSelectionMarkerA = new SyncSelectionMarker();
+        this.syncSelectionMarkerB = new SyncSelectionMarker();
+        this.editorA.session.addDynamicMarker(this.syncSelectionMarkerA);
+        this.editorB.session.addDynamicMarker(this.syncSelectionMarkerB);
+
+        this.onChangeTheme();
+
+        config.resetOptions(this);
+        config["_signal"]("diffView", this);
+
         this.$attachEventHandlers();
     }
 
@@ -239,49 +263,84 @@ class SideBySideDiffView extends BaseDiffView {
         }
     }
 
-    $attachEditorsEventHandlers() {
-        this.$attachEditorEventHandlers(this.editorA, this.markerA);
-        this.$attachEditorEventHandlers(this.editorB, this.markerB);
+    $attachSessionsEventHandlers() {
+        this.$attachSessionEventHandlers(this.editorA, this.markerA);
+        this.$attachSessionEventHandlers(this.editorB, this.markerB);
     }
 
     /**
      * @param {import("ace-code/src/editor").Editor} editor
      * @param {import("./ace_diff").DiffHighlight} marker
      */
-    $attachEditorEventHandlers(editor, marker) {
-        editor.session.on("changeScrollTop", this.onScroll.bind(this));
-        editor.session.on("changeFold", this.onChangeFold.bind(this));
+    $attachSessionEventHandlers(editor, marker) {
+        editor.session.on("changeScrollTop", this.onScroll);
+        editor.session.on("changeFold", this.onChangeFold);
         editor.session.addDynamicMarker(marker);
-        editor.selection.on("changeCursor", this.onSelect.bind(this));
-        editor.selection.on("changeSelection", this.onSelect.bind(this));
+        editor.selection.on("changeCursor", this.onSelect);
+        editor.selection.on("changeSelection", this.onSelect);
     }
 
-    $detachEditorsEventHandlers() {
-        this.$detachEditorEventHandlers(this.editorA, this.markerA);
-        this.$detachEditorEventHandlers(this.editorB, this.markerB);
+    $detachSessionsEventHandlers() {
+        this.$detachSessionHandlers(this.editorA, this.markerA);
+        this.$detachSessionHandlers(this.editorB, this.markerB);
     }
 
     /**
      * @param {import("ace-code/src/editor").Editor} editor
      * @param {import("./ace_diff").DiffHighlight} marker
      */
-    $detachEditorEventHandlers(editor, marker) {
-        editor.session.off("changeScrollTop", this.onScroll.bind(this));
-        editor.session.off("changeFold", this.onChangeFold.bind(this));
+    $detachSessionHandlers(editor, marker) {
+        editor.session.off("changeScrollTop", this.onScroll);
+        editor.session.off("changeFold", this.onChangeFold);
         editor.session.removeMarker(marker.id);
-        editor.selection.off("changeCursor", this.onSelect.bind(this));
-        editor.selection.off("changeSelection", this.onSelect.bind(this));
+        editor.selection.off("changeCursor", this.onSelect);
+        editor.selection.off("changeSelection", this.onSelect);
     }
 
     $attachEventHandlers() {
-        this.editorA.renderer.on("themeLoaded", this.onChangeTheme.bind(this));
+        this.editorA.renderer.on("themeLoaded", this.onChangeTheme);
 
-        this.editorA.on("mousewheel", this.onMouseWheel.bind(this));
-        this.editorB.on("mousewheel", this.onMouseWheel.bind(this));
+        this.editorA.on("mousewheel", this.onMouseWheel);
+        this.editorB.on("mousewheel", this.onMouseWheel);
 
-        this.editorA.on("input", this.onInput.bind(this));
-        this.editorB.on("input", this.onInput.bind(this));
+        this.editorA.on("input", this.onInput);
+        this.editorB.on("input", this.onInput);
 
+    }
+
+    $detachEventHandlers() {
+        this.$detachSessionsEventHandlers();
+        this.editorA.renderer.off("themeLoaded", this.onChangeTheme);
+        this.$detachEditorEventHandlers(this.editorA);
+        this.$detachEditorEventHandlers(this.editorB);
+    }
+
+    $detachEditorEventHandlers(editor) {
+        editor.off("mousewheel", this.onMouseWheel);
+        editor.off("input", this.onInput);
+        editor.session.removeMarker(this.syncSelectionMarkerA.id);
+        editor.renderer["$scrollDecorator"].zones = [];
+        editor.renderer["$scrollDecorator"].$updateDecorators(editor.renderer.layerConfig);
+    }
+}
+
+class SyncSelectionMarker {
+    constructor() {
+        this.type = "fullLine";
+        this.clazz = "ace_diff selection";
+    }
+
+    update(html, markerLayer, session, config) {
+    }
+
+    /**
+     * @param {import("ace-code").Ace.Range} range
+     */
+    setRange(range) {//TODO
+        var newRange = range.clone();
+        newRange.end.column++;
+
+        this.range = newRange;
     }
 }
 

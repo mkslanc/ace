@@ -43,6 +43,8 @@
 <div class="toolbar">
     <button id="btn-prev" onclick="goToPrevious()">Previous</button>
     <button id="btn-next" onclick="goToNext()">Next</button>
+    <button id="btn-next" onclick="swapDirection()">Swap direction</button>
+    <button id="btn-next" onclick="detach()">Detach from editor</button>
     <label>
         <input type="checkbox" id="btn-whitespace" checked onclick="trimWhitespace()"> Ignore Trim Whitespaces
     </label>
@@ -90,6 +92,14 @@
             window.diffView.diffSession.sessionB.unfold();
         }
     };
+
+    var swapDirection = () => {
+            window.diffView.swapDirection();
+    };
+
+    var detach = () => {
+        window.diffView.detach();
+    }
 
     var paths = {
         "ace": "../src",
