@@ -3,7 +3,6 @@
 var LineWidgets = require("ace-code/src/line_widgets").LineWidgets;
 var TextLayer = require("ace-code/src/layer/text").Text;
 var MarkerLayer = require("ace-code/src/layer/marker").Marker;
-var textLayer, markerLayer;
 
 const {BaseDiffView} = require("./base_diff_view");
 const config = require("ace-code/src/config");
@@ -22,37 +21,32 @@ class InlineDiffView extends BaseDiffView {
      * @param {boolean} [diffModel.showSideA] - Whether to show the original view or modified view.
      */
     constructor(element, diffModel) {
-        //TODO: diffModel.showSideA is not used
         diffModel = diffModel || {};
         super(element, true);
         this.init(diffModel);
     }
 
     init(diffModel) {
+        this.showSideA = diffModel.showSideA == undefined ? true : diffModel.showSideA;
+
         this.onInput = this.onInput.bind(this);
         this.onSelect = this.onSelect.bind(this);
-        this.onAfterRender = this.onAfterRender.bind(this)
+        this.onAfterRender = this.onAfterRender.bind(this);
 
         this.$setupModels(diffModel);
         this.onChangeTheme();
         config.resetOptions(this);
         config["_signal"]("diffView", this);
 
-        textLayer = new TextLayer(this.editorB.renderer.content);
-        textLayer.setSession(this.diffSession.sessionA);
-        textLayer.setPadding(4);
-        markerLayer = this.markerLayerA = new MarkerLayer(this.editorB.renderer.content);
+        this.textLayerA = new TextLayer(this.editorB.renderer.content);
+        this.textLayerA.setSession(this.diffSession.sessionA);
+        this.textLayerA.setPadding(4);
+        this.markerLayerA = new MarkerLayer(this.editorB.renderer.content);
         this.markerLayerA.setSession(this.diffSession.sessionA);
         this.markerLayerA.setPadding(4);
+        this.markerLayerA.element.style.position = "static"; //TODO: check for side effects
 
         this.$attachEventHandlers();
-    }
-
-    swapDirection() { //TODO: not working
-        super.swapDirection();
-        this.markerLayerA.setSession(this.diffSession.sessionA);
-        textLayer.setSession(this.diffSession.sessionA);
-        this.editorB.renderer.updateFull(true);
     }
 
     align() {
@@ -68,15 +62,15 @@ class InlineDiffView extends BaseDiffView {
             session.widgetManager.lineWidgets[w.row] = w;
         }
 
-        function init(session) {
+        var init = (session) => {
             if (!session.widgetManager) {
                 session.widgetManager = new LineWidgets(session);
                 if (session.$editor) session.widgetManager.attach(session.$editor);
             }
             session.lineWidgets = [];
             session.widgetManager.lineWidgets = [];
-            textLayer.element.innerHTML = "";
-        }
+            this.textLayerA.element.innerHTML = "";
+        };
 
         init(diffView.diffSession.sessionA);
         init(diffView.diffSession.sessionB);
@@ -84,6 +78,8 @@ class InlineDiffView extends BaseDiffView {
         diffView.chunks.forEach(function (ch) {
             var diff1 = ch.old.end.row - ch.old.start.row;
             var diff2 = ch.new.end.row - ch.new.start.row;
+
+            //TODO: diffView.showSideA is not used
             add(diffView.diffSession.sessionA, {
                 rowCount: diff2,
                 rowsAbove: ch.old.end.row === 0 ? diff2 : 0,
@@ -94,6 +90,7 @@ class InlineDiffView extends BaseDiffView {
                 rowsAbove: diff1,
                 row: ch.new.start.row,
             });
+
         });
         diffView.diffSession.sessionA["_emit"]("changeFold", {data: {start: {row: 0}}});
         diffView.diffSession.sessionB["_emit"]("changeFold", {data: {start: {row: 0}}});
@@ -139,8 +136,8 @@ class InlineDiffView extends BaseDiffView {
         this.editorB.renderer["$scrollDecorator"].zones = [];
         this.editorB.renderer["$scrollDecorator"].$updateDecorators(this.editorB.renderer.layerConfig);
 
-        textLayer.element.textContent = "";
-        markerLayer.element.textContent = "";
+        this.textLayerA.element.textContent = "";
+        this.markerLayerA.element.textContent = "";
     }
 
     /**
@@ -209,10 +206,10 @@ class InlineDiffView extends BaseDiffView {
         var newConfig = cloneRenderer.layerConfig;
         newConfig.firstRowScreen = config.firstRowScreen;
 
-        textLayer.update(newConfig);
+        this.textLayerA.update(newConfig);
 
-        markerLayer.setMarkers(this.diffSession.sessionA.getMarkers());
-        markerLayer.update(newConfig);
+        this.markerLayerA.setMarkers(this.diffSession.sessionA.getMarkers());
+        this.markerLayerA.update(newConfig);
     }
 
 }

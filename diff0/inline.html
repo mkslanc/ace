@@ -43,7 +43,6 @@
 <div class="toolbar">
     <button id="btn-prev" onclick="goToPrevious()">Previous</button>
     <button id="btn-next" onclick="goToNext()">Next</button>
-    <button id="btn-next" onclick="swapDirection()">Swap direction</button>
     <button id="btn-next" onclick="detach()">Detach from editor</button>
     <label>
         <input type="checkbox" id="btn-whitespace" checked onclick="trimWhitespace()"> Ignore Trim Whitespaces
@@ -93,10 +92,6 @@
         }
     };
 
-    var swapDirection = () => {
-            window.diffView.swapDirection();
-    };
-
     var detach = () => {
         window.diffView.detach();
     }
@@ -124,16 +119,27 @@
         var useLocalStorage = /save=1/.test(location.search);
 
         var InlineDiffView = require("diff/inline_diff_view").InlineDiffView;
-        var diffView = new InlineDiffView(document.querySelector(".ace_diff-container"), {});
-        window.diffView = diffView;
+        var EditSession = require("ace-code/src/edit_session").EditSession;
+        var sessionA, sessionB, diffView, valueA, valueB;
 
         require("ace-code/src/lib/net").get("./diff/0.ts", function (v) {
-            diffView.diffSession.sessionA.setValue(useLocalStorage && localStorage.orig || v, -1);
-        });
-        require("ace-code/src/lib/net").get("./diff/1.ts", function (v) {
-            diffView.editorB.setValue(useLocalStorage && localStorage.edit || v, -1);
-            diffView.diffSession.sessionB.setMode("ace-code/src/mode/typescript");
-            diffView.diffSession.sessionA.setMode("ace-code/src/mode/typescript");
+            valueA = v;
+            sessionA = new EditSession(useLocalStorage && localStorage.orig || v);
+            require("ace-code/src/lib/net").get("./diff/1.ts", function (val) {
+                sessionB = new EditSession(useLocalStorage && localStorage.edit || val);
+                valueB = val;
+                diffView = new InlineDiffView(document.querySelector(".ace_diff-container"), {
+                    //sessionA,
+                    //sessionB,
+                    valueA,
+                    valueB,
+                    showSideA: false
+                });
+                window.diffView = diffView;
+                diffView.diffSession.sessionB.setMode("ace-code/src/mode/typescript");
+                diffView.diffSession.sessionA.setMode("ace-code/src/mode/typescript");
+                diffView.editorB.on("changeSelection", updateButtonsState);
+            });
         });
 
         window.onbeforeunload = function () {
@@ -142,7 +148,7 @@
             localStorage.edit = diffView.editorB.getValue();
         };
 
-        diffView.editorB.on("changeSelection", updateButtonsState);
+
     });
 
 </script>

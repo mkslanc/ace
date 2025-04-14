@@ -21,10 +21,8 @@ class SideBySideDiffView extends BaseDiffView {
      * @param {import("ace-code").EditSession} [diffModel.sessionB] - The edit session for the edited view.
      * @param {string} [diffModel.valueA] - The original content.
      * @param {string} [diffModel.valueB] - The modified content.
-     * @param {boolean} [diffModel.showSideA] - Whether to show the original view or modified view.
      */
     constructor(element, diffModel) {
-        //TODO: diffModel.showSideA is not used
         diffModel = diffModel || {};
         super(element);
         this.init(diffModel);

@@ -43,7 +43,6 @@
 <div class="toolbar">
     <button id="btn-prev" onclick="goToPrevious()">Previous</button>
     <button id="btn-next" onclick="goToNext()">Next</button>
-    <button id="btn-next" onclick="swapDirection()">Swap direction</button>
     <button id="btn-next" onclick="detach()">Detach from editors</button>
     <!--  <button id="btn-use-old">Use Old</button>
       <button id="btn-use-new">Use New</button>
@@ -97,10 +96,6 @@
             window.diffView.diffSession.sessionA.unfold();
             window.diffView.diffSession.sessionB.unfold();
         }
-    };
-
-    var swapDirection = () => {
-        window.diffView.swapDirection();
     };
 
     var detach = () => {

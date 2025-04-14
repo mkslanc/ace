@@ -75,10 +75,10 @@ class DiffHighlight {
         var diffView = this.diffView;
         if (this.type === -1) {// original editor
             dir = "old";
-            operation = "delete";
-            opOperation = "insert";
+            operation = diffView.showSideA ? "delete" : "insert";
+            opOperation = diffView.showSideA ? "insert" : "delete";
             if (diffView.inlineDiffEditor) {
-                markerLayer = this.diffView.markerLayerA; //this is separate marker layer for inline diff
+                markerLayer = diffView.markerLayerA; //this is separate marker layer for inline diff
                 editor = diffView.editorB;
             } else {
                 editor = diffView.editorA;
@@ -86,8 +86,8 @@ class DiffHighlight {
         }
         else { //modified editor
             dir = "new";
-            operation = "insert";
-            opOperation = "delete";
+            operation = diffView.showSideA ? "insert" : "delete";
+            opOperation = diffView.showSideA ? "delete" : "insert";
             editor = diffView.editorB;
         }
 
