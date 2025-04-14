@@ -36,6 +36,8 @@ declare module "ace-code" {
         type DragdropHandler = import("ace-code/src/mouse/dragdrop_handler").DragdropHandler;
         type AppConfig = import("ace-code/src/lib/app_config").AppConfig;
         type Config = typeof import("ace-code/src/config");
+        type GutterTooltip = import("ace-code/src/mouse/default_gutter_handler").GutterTooltip;
+        type GutterKeyboardEvent = import("ace-code/src/keyboard/gutter_handler").GutterKeyboardEvent;
         type AfterLoadCallback = (err: Error | null, module: unknown) => void;
         type LoaderFunction = (moduleName: string, afterLoad: AfterLoadCallback) => void;
         export interface ConfigOptions {
@@ -420,7 +422,10 @@ declare module "ace-code" {
             /**
              * Emitted when text is pasted.
              **/
-            "paste": (text: string, event: any) => void;
+            "paste": (e: {
+                text: string;
+                event?: ClipboardEvent;
+            }) => void;
             /**
              * Emitted when the selection style changes, via [[Editor.setSelectionStyle]].
              * @param data Contains one property, `data`, which indicates the new selection style
@@ -437,6 +442,11 @@ declare module "ace-code" {
             //from code_lens extension
             "codeLensClick": (e: any) => void;
             "select": () => void;
+            "gutterkeydown": (e: GutterKeyboardEvent) => void;
+            "gutterclick": (e: MouseEvent) => void;
+            "showGutterTooltip": (e: GutterTooltip) => void;
+            "hideGutterTooltip": (e: GutterTooltip) => void;
+            "compositionStart": () => void;
         }
         interface AcePopupEvents {
             "click": (e: MouseEvent) => void;
@@ -749,8 +759,9 @@ declare module "ace-code" {
             args: any[];
         }) => void;
         interface CommandManagerEvents {
-            on(name: "exec", callback: execEventHandler): Function;
-            on(name: "afterExec", callback: execEventHandler): Function;
+            "exec": execEventHandler;
+            "afterExec": execEventHandler;
+            "commandUnavailable": execEventHandler;
         }
         type CommandManager = import("ace-code/src/commands/command_manager").CommandManager;
         interface SavedSelection {
@@ -960,6 +971,30 @@ declare module "ace-code" {
             docChanged?: boolean;
             selectionChanged?: boolean;
         }
+        export interface CommandBarEvents {
+            "hide": () => void;
+            "show": () => void;
+            "alwaysShow": (e: boolean) => void;
+        }
+        export interface FontMetricsEvents {
+            "changeCharacterSize": (e: {
+                data: {
+                    height: number;
+                    width: number;
+                };
+            }) => void;
+        }
+        export interface OptionPanelEvents {
+            "setOption": (e: {
+                name: string;
+                value: any;
+            }) => void;
+        }
+        export interface ScrollbarEvents {
+            "scroll": (e: {
+                data: number;
+            }) => void;
+        }
     }
     export const config: typeof import("ace-code/src/config");
     export function edit(el?: string | (HTMLElement & {
@@ -972,6 +1007,6 @@ declare module "ace-code" {
     import { Range } from "ace-code/src/range";
     import { UndoManager } from "ace-code/src/undomanager";
     import { VirtualRenderer as Renderer } from "ace-code/src/virtual_renderer";
-    export var version: "1.36.5";
+    export var version: "1.39.1";
     export { Range, Editor, EditSession, UndoManager, Renderer as VirtualRenderer };
 }

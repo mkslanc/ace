@@ -19,8 +19,8 @@ declare module "ace-code/src/ext/command_bar" {
         eventListeners: {};
         elements: {};
         commands: {};
-        tooltipEl: any[] | HTMLElement | Text;
-        moreOptionsEl: any[] | HTMLElement | Text;
+        tooltipEl: HTMLDivElement;
+        moreOptionsEl: HTMLDivElement;
         /**
          * Registers a command on the command bar tooltip.
          *
@@ -74,8 +74,9 @@ declare module "ace-code/src/ext/command_bar" {
         type EventEmitter<T extends {
             [K in keyof T]: (...args: any[]) => any;
         }> = import("ace-code").Ace.EventEmitter<T>;
+        type CommandBarEvents = import("ace-code").Ace.CommandBarEvents;
     }
-    export interface CommandBarTooltip extends Ace.EventEmitter<any> {
+    export interface CommandBarTooltip extends Ace.EventEmitter<Ace.CommandBarEvents> {
     }
 }
 declare module "ace-code/src/ext/language_tools" {
@@ -169,12 +170,13 @@ declare module "ace-code/src/ext/searchbox" {
     export type Editor = import("ace-code/src/editor").Editor;
     export class SearchBox {
         constructor(editor: Editor, range?: never, showReplaceForm?: never);
-        activeInput: any;
-        element: any;
+        activeInput: HTMLInputElement;
+        element: HTMLDivElement;
         setSession(e: any): void;
         setEditor(editor: Editor): void;
         editor: Editor;
         searchRange: any;
+        onEditorInput(): void;
         searchBox: HTMLElement;
         replaceBox: HTMLElement;
         searchOption: HTMLInputElement;
@@ -252,7 +254,7 @@ declare module "ace-code/src/ext/code_lens" {
 }
 declare module "ace-code/src/ext/emmet" {
     export const commands: HashHandler;
-    export function runEmmetCommand(editor: Editor): number | boolean;
+    export function runEmmetCommand(editor: Editor): ReturnType<typeof setTimeout> | boolean;
     export function updateCommands(editor: Editor, enabled?: boolean): void;
     export function isSupportedMode(mode: any): boolean;
     export function isAvailable(editor: Editor, command: string): boolean;
@@ -400,17 +402,32 @@ declare module "ace-code/src/ext/modelist" {
         mode: string;
         extensions: string;
         extRe: RegExp;
-        supportsFile(filename: string): RegExpMatchArray;
+        supportsFile(filename: string): RegExpMatchArray | null;
     }
 }
 declare module "ace-code/src/ext/themelist" {
-    export const themesByName: {};
-    export const themes: {
+    export const themesByName: {
+        [x: string]: Theme;
+    };
+    export const themes: Theme[];
+    export type Theme = {
+        /**
+         * - The display caption of the theme.
+         */
         caption: string;
+        /**
+         * - The path or identifier for the ACE theme.
+         */
         theme: string;
+        /**
+         * - Indicates whether the theme is dark or light.
+         */
         isDark: boolean;
+        /**
+         * - The normalized name used as the key.
+         */
         name: string;
-    }[];
+    };
 }
 declare module "ace-code/src/ext/options" {
     export class OptionPanel {
@@ -434,8 +451,9 @@ declare module "ace-code/src/ext/options" {
         type EventEmitter<T extends {
             [K in keyof T]: (...args: any[]) => any;
         }> = import("ace-code").Ace.EventEmitter<T>;
+        type OptionPanelEvents = import("ace-code").Ace.OptionPanelEvents;
     }
-    export interface OptionPanel extends Ace.EventEmitter<any> {
+    export interface OptionPanel extends Ace.EventEmitter<Ace.OptionPanelEvents> {
     }
 }
 declare module "ace-code/src/ext/prompt" {

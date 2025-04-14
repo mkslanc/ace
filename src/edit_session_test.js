@@ -496,6 +496,31 @@ module.exports = {
         assert.equal(session.$foldData[3].range.start.row, 12);
         editor.execCommand("unfoldall");
         assert.equal(session.$foldData.length, 0);
+
+        editor.execCommand("foldall");
+        assert.equal(session.$foldData.length, 4);
+        assert.equal(session.$foldData[1].range.start.row, 3);
+
+        // fold function arguments
+        editor.selection.moveTo(3, 13);
+        editor.execCommand("fold");
+        assert.equal(editor.session.getAllFolds().length, 5);
+        assert.equal(session.$foldData[1].range.start.row, 3);
+        
+        // unfold function arguments
+        editor.execCommand("unfold");
+        assert.equal(editor.session.getAllFolds().length, 4);
+        assert.equal(session.$foldData[1].range.start.row, 3);
+        
+        // unfold function
+        editor.execCommand("unfold");
+        assert.equal(session.$foldData.length, 4);
+        assert.equal(session.$foldData[1].range.start.row, 4);
+
+        // check that calling unfold without folds does not add folds
+        editor.execCommand("unfold");
+        assert.equal(session.$foldData.length, 4);
+        assert.equal(session.$foldData[1].range.start.row, 4);
     },
 
     "test setting undefined value": function() {
@@ -1125,7 +1150,17 @@ module.exports = {
             }
         });
         var session = new EditSession([]);
-        session.setMode("ace/mode/javascript");
+        
+        var onChangeModeCallCount = 0;
+        var originalOnChangeMode = session.$onChangeMode;
+
+        // Create spy
+        session.$onChangeMode = function(...arguments) {
+            onChangeModeCallCount++;
+            originalOnChangeMode.apply(this, arguments);
+        };
+
+        session.setMode("ace/mode/javascript");   
         assert.equal(session.$modeId, "ace/mode/javascript");
 
         var modeChangeCallbacks = 0;
@@ -1147,12 +1182,15 @@ module.exports = {
             assert.equal(session.$mode.$id, "ace/mode/sh");
             session.setMode("ace/mode/css");
             assert.equal(session.$mode.$id, "ace/mode/sh");
-            // TODO this should not error
-            // session.destroy();
+            // destory session to check if the last mode which is being loaded is aborted or not
+            session.destroy();
             setTimeout(function() {
-                next();
+            // check if last setmode is aborted due to destroy
+            assert.equal(onChangeModeCallCount, 4);
+            session.$onChangeMode = originalOnChangeMode;
+            next();
             });
-        }, 0);
+        });
     },
 
     "test: sets destroyed flag when destroy called and tokenizer is never null": function() {

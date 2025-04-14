@@ -27,6 +27,8 @@ export namespace Ace {
     type DragdropHandler = import("./src/mouse/dragdrop_handler").DragdropHandler;
     type AppConfig = import("./src/lib/app_config").AppConfig;
     type Config = typeof import("./src/config");
+    type GutterTooltip = import( "./src/mouse/default_gutter_handler").GutterTooltip;
+    type GutterKeyboardEvent = import( "./src/keyboard/gutter_handler").GutterKeyboardEvent;
 
     type AfterLoadCallback = (err: Error | null, module: unknown) => void;
     type LoaderFunction = (moduleName: string, afterLoad: AfterLoadCallback) => void;
@@ -509,7 +511,7 @@ export namespace Ace {
         /**
          * Emitted when text is pasted.
          **/
-        "paste": (text: string, event: any) => void;
+        "paste": (e: { text: string, event?: ClipboardEvent }) => void;
         /**
          * Emitted when the selection style changes, via [[Editor.setSelectionStyle]].
          * @param data Contains one property, `data`, which indicates the new selection style
@@ -524,6 +526,11 @@ export namespace Ace {
         "codeLensClick": (e: any) => void;
 
         "select": () => void;
+        "gutterkeydown": (e: GutterKeyboardEvent) => void;
+        "gutterclick": (e: MouseEvent) => void;
+        "showGutterTooltip": (e: GutterTooltip) => void;
+        "hideGutterTooltip": (e: GutterTooltip) => void;
+        "compositionStart": () => void;
     }
 
     interface AcePopupEvents {
@@ -939,9 +946,9 @@ export namespace Ace {
     }) => void;
 
     interface CommandManagerEvents {
-        on(name: 'exec', callback: execEventHandler): Function;
-
-        on(name: 'afterExec', callback: execEventHandler): Function;
+        "exec": execEventHandler
+        "afterExec": execEventHandler;
+        "commandUnavailable": execEventHandler;
     }
 
     type CommandManager = import("./src/commands/command_manager").CommandManager;
@@ -1229,6 +1236,24 @@ export namespace Ace {
         docChanged?: boolean;
         selectionChanged?: boolean;
     }
+
+    export interface CommandBarEvents {
+        "hide": () => void;
+        "show": () => void;
+        "alwaysShow": (e: boolean) => void;
+    }
+
+    export interface FontMetricsEvents {
+        "changeCharacterSize": (e: { data: { height: number, width: number } }) => void;
+    }
+
+    export interface OptionPanelEvents {
+        "setOption": (e: { name: string, value: any }) => void;
+    }
+
+    export interface ScrollbarEvents {
+        "scroll": (e: { data: number }) => void;
+    }
 }
 
 
@@ -1328,6 +1353,7 @@ declare module "./src/editor" {
         showSettingsMenu?: () => void,
         searchBox?: Ace.SearchBox,
         _eventRegistry?: any,
+        $textInputAriaLabel?: string
     }
 }
 
@@ -1386,18 +1412,18 @@ declare module "./src/placeholder" {
 }
 
 declare module "./src/scrollbar" {
-    export interface VScrollBar extends Ace.EventEmitter<any> {
+    export interface VScrollBar extends Ace.EventEmitter<Ace.ScrollbarEvents> {
     }
 
-    export interface HScrollBar extends Ace.EventEmitter<any> {
+    export interface HScrollBar extends Ace.EventEmitter<Ace.ScrollbarEvents> {
     }
 }
 
 declare module "./src/scrollbar_custom" {
-    export interface VScrollBar extends Ace.EventEmitter<any> {
+    export interface VScrollBar extends Ace.EventEmitter<Ace.ScrollbarEvents> {
     }
 
-    export interface HScrollBar extends Ace.EventEmitter<any> {
+    export interface HScrollBar extends Ace.EventEmitter<Ace.ScrollbarEvents> {
     }
 }
 
@@ -1459,13 +1485,13 @@ declare module "./src/snippets" {
 }
 
 declare module "./src/ext/command_bar" {
-    export interface CommandBarTooltip extends Ace.EventEmitter<any> {
+    export interface CommandBarTooltip extends Ace.EventEmitter<Ace.CommandBarEvents> {
         $shouldHideMoreOptions?: boolean,
     }
 }
 
 declare module "./src/commands/command_manager" {
-    export interface CommandManager extends Ace.EventEmitter<any> {
+    export interface CommandManager extends Ace.EventEmitter<Ace.CommandManagerEvents> {
         $checkCommandState?: boolean
     }
 }
@@ -1545,12 +1571,12 @@ declare module "./src/mouse/mouse_handler" {
 }
 
 declare module "./src/ext/options" {
-    export interface OptionPanel extends Ace.EventEmitter<any> {
+    export interface OptionPanel extends Ace.EventEmitter<Ace.OptionPanelEvents> {
     }
 }
 
 declare module "./src/layer/font_metrics" {
-    export interface FontMetrics extends Ace.EventEmitter<any> {
+    export interface FontMetrics extends Ace.EventEmitter<Ace.FontMetricsEvents> {
     }
 }
 

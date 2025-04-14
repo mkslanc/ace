@@ -57,6 +57,9 @@ class EditSession {
             return this.join("\n");
         };
 
+        // @experimental
+        this.$gutterCustomWidgets = {};
+
         // Set default background tokenizer with Text mode until editor session mode is set
         this.bgTokenizer = new BackgroundTokenizer((new TextMode()).getTokenizer(), this);
 
@@ -193,7 +196,7 @@ class EditSession {
 
     /**
      * Get "widgetManager" from EditSession
-     * 
+     *
      * @returns {LineWidgets} object
      */
     get widgetManager() {
@@ -203,18 +206,18 @@ class EditSession {
 
         if (this.$editor)
             widgetManager.attach(this.$editor);
-        
+
         return widgetManager;
     }
 
     /**
      * Set "widgetManager" in EditSession
-     * 
+     *
      * @returns void
      */
     set widgetManager(value) {
         Object.defineProperty(this, "widgetManager", {
-            writable: true, 
+            writable: true,
             enumerable: true,
             configurable: true,
             value: value,
@@ -586,6 +589,34 @@ class EditSession {
     }
 
     /**
+     * Replaces the custom icon with the fold widget if present from a specific row in the gutter
+     * @param {number} row The row number for which to hide the custom icon
+     * @experimental
+     */
+    removeGutterCustomWidget(row) {
+        if(this.$editor) {
+            this.$editor.renderer.$gutterLayer.$removeCustomWidget(row);
+        }
+    }
+
+    /**
+     * Replaces the fold widget if present with the custom icon from a specific row in the gutter
+     * @param {number} row - The row number where the widget will be displayed
+     * @param {Object} attributes - Configuration attributes for the widget
+     * @param {string} attributes.className - CSS class name for styling the widget
+     * @param {string} attributes.label - Text label to display in the widget
+     * @param {string} attributes.title - Tooltip text for the widget
+     * @param {Object} attributes.callbacks - Event callback functions for the widget e.g onClick; 
+     * @returns {void}
+     * @experimental
+    */
+    addGutterCustomWidget(row,attributes) {
+        if(this.$editor) {
+            this.$editor.renderer.$gutterLayer.$addCustomWidget(row,attributes);
+        }
+    }
+
+    /**
      * Removes `className` from the `row`.
      * @param {Number} row The row number
      * @param {String} className The class to add
@@ -934,6 +965,9 @@ class EditSession {
         // load on demand
         this.$modeId = path;
         config.loadModule(["mode", path], function(m) {
+            if (this.destroyed) {
+                return;
+            }
             if (this.$modeId !== path)
                 return cb && cb();
             if (this.$modes[path] && !options) {
@@ -2748,4 +2782,3 @@ config.defineOptions(EditSession.prototype, "session", {
 });
 
 exports.EditSession = EditSession;
-
