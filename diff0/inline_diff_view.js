@@ -44,7 +44,12 @@ class InlineDiffView extends BaseDiffView {
         this.markerLayerA = new MarkerLayer(this.editorB.renderer.content);
         this.markerLayerA.setSession(this.diffSession.sessionA);
         this.markerLayerA.setPadding(4);
-        this.markerLayerA.element.style.position = "static"; //TODO: check for side effects
+        // this.markerLayerA.element.style.position = "static"; //TODO: check for side effects
+        
+        this.markerLayerA.element.parentNode.insertBefore(
+            this.markerLayerA.element,
+            this.markerLayerA.element.parentNode.firstChild
+        )
 
         this.$attachEventHandlers();
     }

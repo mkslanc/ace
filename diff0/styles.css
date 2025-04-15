@@ -29,12 +29,7 @@
 .ace_diff {
     position: absolute;
     z-index: 20;
-
-    border-top: 1px solid;
-    border-bottom: 1px solid;
-    border-color: rgba(0, 0, 0, 0.5);
-
-    background-color: rgba(0, 0, 0, 0.15);
+ 
 }
 
 /*
@@ -53,16 +48,7 @@
     border-color: transparent;
     background: none;
 }
-.ace_diff.inline:after {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    display: block;
-    content: "";
-    background: transparent;
-}
+ 
 
 /*
  * Light Colors 
@@ -86,16 +72,16 @@
 }
 
 .ace_diff.inline {
-    border-color: transparent;
-    background: none;
+  /  border-color: transparent;
+   / background: none;
 }
-.ace_diff.insert.inline:after {
-    background-color: rgba(49, 230, 96, 0.28);
+.ace_diff.insert.inline {
+    background-color: rgb(74 251 74 / 12%);/* #eaffea*/
 }
-.ace_diff.delete.inline:after {
-    background-color: rgba(255, 128, 79, 0.26);
+.ace_diff.delete.inline {
+    background-color: rgb(251 74 74 / 12%); #ffecec; ;
 }
-.ace_diff.aligned_diff.inline:after {
+.ace_diff.aligned_diff.inline {
     background: rgba(206, 194, 191, 0.26);
     /*background: repeating-linear-gradient(*/
     /*        45deg,          !* Angle of the stripes *!*/
@@ -156,29 +142,4 @@
     border-color: white;
     background: transparent;
 }
-
-/*
- * Diff merge arrows
- */
-.diff-arrow {
-    position: absolute;
-    border: double 6px;
-    color: gray;
-    width: 0.5em;
-    height: 0.5em;
-    z-index: 100000;
-    border-left: none;
-    border-bottom: none;
-    cursor: pointer;
-    transition: 0.1s opacity;
-    opacity: 0.4;
-}
-.diff-arrow:hover {
-    opacity: 1;
-}
-.diff-arrow-left {
-    transform: rotate(45deg);
-}
-.diff-arrow-right {
-    transform: rotate(225deg);
-}
+ 
