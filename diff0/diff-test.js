@@ -14,60 +14,67 @@ const { diff_match_patch, DIFF_DELETE, DIFF_INSERT, DIFF_EQUAL } = require("./di
  */
 function generateGitDiffDMP(oldText, newText, fileName) {
     const dmp = new diff_match_patch();
-    const diffs = dmp.diff_main(oldText, newText);
+    dmp.Diff_Timeout = 0;
+    const diffs = dmp.diff_main(oldText, newText, false);
     dmp.diff_cleanupSemantic(diffs);
 
     const patchLines = [];
-    patchLines.push(`diff --git a/${fileName} b/${fileName}`);
-    patchLines.push(`--- a/${fileName}`);
-    patchLines.push(`+++ b/${fileName}`);
+    if (diffs.length > 0) {
 
-    let oldLine = 1;
-    let newLine = 1;
-    let hunkHeaderAdded = false;
-    let hunkLines = [];
 
-    diffs.forEach(([type, text]) => {
-        const lines = text.split("\n");
+        let oldLine = 1;
+        let newLine = 1;
+        let hunkHeaderAdded = false;
+        let hunkLines = [];
 
-        if (type === DIFF_EQUAL) {
-            lines.forEach((line, index) => {
-                if (line && !hunkHeaderAdded) {
-                    patchLines.push(`@@ -${oldLine},${lines.length} +${newLine},${lines.length} @@`);
-                    hunkHeaderAdded = true;
-                }
-                if (line) {
-                    hunkLines.push(` ${line}`);
-                    oldLine++;
-                    newLine++;
-                }
-            });
-        } else if (type === DIFF_DELETE) {
-            lines.forEach((line, index) => {
-                if (line) {
-                    if (!hunkHeaderAdded) {
+        diffs.forEach(([type, text]) => {
+            const lines = text.split("\n");
+
+            /*if (type === DIFF_EQUAL) {
+                lines.forEach((line, index) => {
+                    if (line && !hunkHeaderAdded) {
                         patchLines.push(`@@ -${oldLine},${lines.length} +${newLine},${lines.length} @@`);
                         hunkHeaderAdded = true;
                     }
-                    hunkLines.push(`-${line}`);
-                    oldLine++;
-                }
-            });
-        } else if (type === DIFF_INSERT) {
-            lines.forEach((line, index) => {
-                if (line) {
-                    if (!hunkHeaderAdded) {
-                        patchLines.push(`@@ -${oldLine},${lines.length} +${newLine},${lines.length} @@`);
-                        hunkHeaderAdded = true;
+                    if (line) {
+                        hunkLines.push(` ${line}`);
+                        oldLine++;
+                        newLine++;
                     }
-                    hunkLines.push(`+${line}`);
-                    newLine++;
-                }
-            });
+                });
+            } else */if (type === DIFF_DELETE) {
+                lines.forEach((line, index) => {
+                    if (line) {
+                        if (!hunkHeaderAdded) {
+                            patchLines.push(`@@ -${oldLine},${lines.length} +${newLine},${lines.length} @@`);
+                            hunkHeaderAdded = true;
+                        }
+                        hunkLines.push(`-${line}`);
+                        oldLine++;
+                    }
+                });
+            } else if (type === DIFF_INSERT) {
+                lines.forEach((line, index) => {
+                    if (line) {
+                        if (!hunkHeaderAdded) {
+                            patchLines.push(`@@ -${oldLine},${lines.length} +${newLine},${lines.length} @@`);
+                            hunkHeaderAdded = true;
+                        }
+                        hunkLines.push(`+${line}`);
+                        newLine++;
+                    }
+                });
+            }
+        });
+
+        if (hunkLines.length > 0) {
+            patchLines.push(`diff --git a/${fileName} b/${fileName}`);
+            patchLines.push(`--- a/${fileName}`);
+            patchLines.push(`+++ b/${fileName}`);
+            patchLines.push(...hunkLines);
         }
-    });
+    }
 
-    patchLines.push(...hunkLines);
     return patchLines.join("\n");
 }
 
@@ -82,61 +89,64 @@ const { computeDiff } = require("./vscode-diff/index");
  * @returns {string} - The Git diff-like patch.
  */
 function generateGitDiffFromComputeDiff(oldText, newText, fileName) {
-    const oldLines = oldText.split("\n");
-    const newLines = newText.split("\n");
+    const oldLines = oldText.split(/\r?\n/);
+    const newLines = newText.split(/\r?\n/);
 
     // Call computeDiff to get the changes
-    const changes = computeDiff(oldLines, newLines, { ignoreTrimWhitespace: true });
+    const changes = computeDiff(oldLines, newLines, { ignoreTrimWhitespace: true, maxComputationTimeMs: 0 });
 
     const patchLines = [];
-    patchLines.push(`diff --git a/${fileName} b/${fileName}`);
-    patchLines.push(`--- a/${fileName}`);
-    patchLines.push(`+++ b/${fileName}`);
+    if (changes.length > 0) {
+        patchLines.push(`diff --git a/${fileName} b/${fileName}`);
+        patchLines.push(`--- a/${fileName}`);
+        patchLines.push(`+++ b/${fileName}`);
 
-    changes.forEach(change => {
-        const { origStart, origEnd, editStart, editEnd, charChanges } = change;
+        changes.forEach(change => {
+            const { origStart, origEnd, editStart, editEnd, charChanges } = change;
 
-        // Add hunk header
-        const oldRange = `${origStart + 1},${origEnd - origStart}`;
-        const newRange = `${editStart + 1},${editEnd - editStart}`;
-        patchLines.push(`@@ -${oldRange} +${newRange} @@`);
+            // Add hunk header
+            const oldRange = `${origStart + 1},${origEnd - origStart}`;
+            const newRange = `${editStart + 1},${editEnd - editStart}`;
+            patchLines.push(`@@ -${oldRange} +${newRange} @@`);
 
-        // Add line changes
-        let oldLineIndex = origStart;
-        let newLineIndex = editStart;
+            // Add line changes
+            let oldLineIndex = origStart;
+            let newLineIndex = editStart;
 
-        charChanges?.forEach(charChange => {
-            while (oldLineIndex < charChange.originalStartLineNumber) {
+            charChanges && charChanges.forEach(charChange => {
+                while (oldLineIndex < charChange.originalStartLineNumber) {
+                    patchLines.push(` ${oldLines[oldLineIndex]}`);
+                    oldLineIndex++;
+                    newLineIndex++;
+                }
+
+                if (charChange.originalStartLineNumber === charChange.originalEndLineNumber) {
+                    // Handle deletions
+                    for (let i = charChange.originalStartColumn; i < charChange.originalEndColumn; i++) {
+                        patchLines.push(`-${oldLines[charChange.originalStartLineNumber].slice(i)}`);
+                    }
+                }
+
+                if (charChange.modifiedStartLineNumber === charChange.modifiedEndLineNumber) {
+                    // Handle insertions
+                    for (let i = charChange.modifiedStartColumn; i < charChange.modifiedEndColumn; i++) {
+                        patchLines.push(`+${newLines[charChange.modifiedStartLineNumber].slice(i)}`);
+                    }
+                }
+
+                oldLineIndex = charChange.originalEndLineNumber;
+                newLineIndex = charChange.modifiedEndLineNumber;
+            });
+
+            // Add remaining unchanged lines
+            while (oldLineIndex < origEnd) {
                 patchLines.push(` ${oldLines[oldLineIndex]}`);
                 oldLineIndex++;
                 newLineIndex++;
             }
-
-            if (charChange.originalStartLineNumber === charChange.originalEndLineNumber) {
-                // Handle deletions
-                for (let i = charChange.originalStartColumn; i < charChange.originalEndColumn; i++) {
-                    patchLines.push(`-${oldLines[charChange.originalStartLineNumber].slice(i)}`);
-                }
-            }
-
-            if (charChange.modifiedStartLineNumber === charChange.modifiedEndLineNumber) {
-                // Handle insertions
-                for (let i = charChange.modifiedStartColumn; i < charChange.modifiedEndColumn; i++) {
-                    patchLines.push(`+${newLines[charChange.modifiedStartLineNumber].slice(i)}`);
-                }
-            }
-
-            oldLineIndex = charChange.originalEndLineNumber;
-            newLineIndex = charChange.modifiedEndLineNumber;
         });
 
-        // Add remaining unchanged lines
-        while (oldLineIndex < origEnd) {
-            patchLines.push(` ${oldLines[oldLineIndex]}`);
-            oldLineIndex++;
-            newLineIndex++;
-        }
-    });
+    }
 
     return patchLines.join("\n");
 }
@@ -185,10 +195,11 @@ function runGitCommand(command) {
 function compareDiffs() {
     var max = 2;
     const outputDir = path.join(__dirname, "diff_mismatches");
-    fs.rmdirSync(outputDir, { recursive: true, force: true });
-    if (!fs.existsSync(outputDir)) {
-        fs.mkdirSync(outputDir);
+    if (fs.existsSync(outputDir)) {
+        fs.rmdirSync(outputDir, { recursive: true, force: true });
     }
+
+    fs.mkdirSync(outputDir);
 
     // Fetch all commits in the repository history
     const commits = runGitCommand("git rev-list --all").split("\n");
@@ -211,6 +222,11 @@ function compareDiffs() {
 
                 // Fetch the git diff for the file
                 const gitDiff = runGitCommand(`git diff ${commit}^ ${commit} -- ${file}`);
+
+                if (gitDiff != "") {
+                    console.log("just for test");
+                }
+
 
                 userDiffs.forEach((userDiff, i) => {
                     // Generate the diff using the user-provided function
