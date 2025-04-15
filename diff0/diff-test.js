@@ -1,4 +1,4 @@
-const { execSync } = require("child_process");
+const { execFileSync } = require("child_process");
 const fs = require("fs");
 const path = require("path");
 
@@ -40,14 +40,23 @@ function generateGitDiffFromComputeDiff(oldText, newText, fileName) {
 
 var userDiffs = [generateGitDiffDMP, generateGitDiffFromComputeDiff];
 
+var gitRootDir = ""
 // Helper function to run a git command and return the output
-function runGitCommand(command) {
-    return execSync(command, { encoding: "utf8" }).trim();
+function runGitCommand(args) {
+    if (!gitRootDir && args != "git rev-parse --show-toplevel") {
+        gitRootDir = process.cwd()
+        gitRootDir = runGitCommand("git rev-parse --show-toplevel")
+        console.log(gitRootDir)
+    }
+    if (typeof args == "string") args = args.split(/ +/);
+    if (args[0] == "git") args.shift()
+    console.log("git", args)
+    return execFileSync("git", args, { encoding: "utf8", cwd: gitRootDir }).trim();
 }
 
 // Main function
 function compareDiffs() {
-    var max = 2;
+    var max = 6;
     const outputDir = path.join(__dirname, "diff_mismatches");
     if (fs.existsSync(outputDir)) {
         fs.rmdirSync(outputDir, { recursive: true, force: true });
@@ -56,9 +65,9 @@ function compareDiffs() {
     fs.mkdirSync(outputDir);
 
     // Fetch all commits in the repository history
-    const commits = runGitCommand("git rev-list --all").split("\n");
+    const commits = runGitCommand("rev-list --all").split("\n");
 
-    commits.forEach(commit => {
+    commits.forEach((commit, index) => {
         console.log(`Processing commit: ${commit}`);
 
         // Fetch the list of files changed in the commit
@@ -95,7 +104,8 @@ function compareDiffs() {
                         console.log(`    Diff mismatch found for file: ${file}`);
 
                         // Create a folder for the mismatched diff
-                        const fileOutputDir = path.join(outputDir, `${userDiff.name}___${commit}_${file.replace(/\//g, "_")}`);
+                        var fileIndexString = index.toString().padStart(5, 0);
+                        const fileOutputDir = path.join(outputDir, `${userDiff.name}__${fileIndexString}__${commit}_${file.replace(/\//g, "_")}`);
                         if (!fs.existsSync(fileOutputDir)) {
                             fs.mkdirSync(fileOutputDir);
                         }
