@@ -1,26 +1,26 @@
 "use strict";
 
-var oop = require("ace-code/src/lib/oop");
-var Range = require("ace-code/src/range").Range;
-var dom = require("ace-code/src/lib/dom");
-var config = require("ace-code/src/config");
+var oop = require("ace/lib/oop");
+var Range = require("ace/range").Range;
+var dom = require("ace/lib/dom");
+var config = require("ace/config");
 
 // @ts-ignore
 var css = require("text!./styles.css");
 var computeDiff = require("./vscode-diff/index").computeDiff;
 
-var Editor = require("ace-code/src/editor").Editor;
-var Renderer = require("ace-code/src/virtual_renderer").VirtualRenderer;
-var UndoManager = require("ace-code/src/undomanager").UndoManager;
-require("ace-code/src/theme/textmate");
+var Editor = require("ace/editor").Editor;
+var Renderer = require("ace/virtual_renderer").VirtualRenderer;
+var UndoManager = require("ace/undomanager").UndoManager;
+require("ace/theme/textmate");
 // enable multiselect
-require("ace-code/src/multi_select");
+require("ace/multi_select");
 
 var {
     AceDiff,
     DiffHighlight,
 } = require("./ace_diff");
-const {EditSession} = require("ace-code/src/edit_session");
+const {EditSession} = require("ace/edit_session");
 
 class BaseDiffView {
     /**

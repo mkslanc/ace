@@ -109,7 +109,7 @@
 
     require(["diff/inline_diff_view"], function () {
 
-        var config = require("ace-code/src/config");
+        var config = require("ace/config");
         config.setLoader(function (moduleName, cb) {
             require([moduleName], function (module) {
                 cb(null, module);
@@ -119,13 +119,13 @@
         var useLocalStorage = /save=1/.test(location.search);
 
         var InlineDiffView = require("diff/inline_diff_view").InlineDiffView;
-        var EditSession = require("ace-code/src/edit_session").EditSession;
+        var EditSession = require("ace/edit_session").EditSession;
         var sessionA, sessionB, diffView, valueA, valueB;
 
-        require("ace-code/src/lib/net").get("./diff/0.ts", function (v) {
+        require("ace/lib/net").get("./diff/0.ts", function (v) {
             valueA = v;
             sessionA = new EditSession(useLocalStorage && localStorage.orig || v);
-            require("ace-code/src/lib/net").get("./diff/1.ts", function (val) {
+            require("ace/lib/net").get("./diff/1.ts", function (val) {
                 sessionB = new EditSession(useLocalStorage && localStorage.edit || val);
                 valueB = val;
                 diffView = new InlineDiffView(document.querySelector(".ace_diff-container"), {
@@ -136,8 +136,8 @@
                     showSideA: false
                 });
                 window.diffView = diffView;
-                diffView.diffSession.sessionB.setMode("ace-code/src/mode/typescript");
-                diffView.diffSession.sessionA.setMode("ace-code/src/mode/typescript");
+                diffView.diffSession.sessionB.setMode("ace/mode/typescript");
+                diffView.diffSession.sessionA.setMode("ace/mode/typescript");
                 diffView.editorB.on("changeSelection", updateButtonsState);
             });
         });

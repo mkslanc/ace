@@ -1,4 +1,4 @@
-var Range = require("ace-code/src/range").Range;
+var Range = require("ace/range").Range;
 
 class AceDiff {
     constructor(originalRange, modifiedRange, charChanges) {
@@ -127,7 +127,8 @@ class DiffHighlight {
             let startRow = lineChange[dir].start.row;
             let endRow = lineChange[dir].end.row;
             let range = new Range(startRow, 0, endRow - 1, 1 << 30);
-            editor.renderer.$scrollDecorator.addZone(range.start.row, range.end.row, operation);
+            // TODO: why does this throw an error?
+            // editor.renderer.$scrollDecorator.addZone(range.start.row, range.end.row, operation);
             if (startRow !== endRow) {
                 range = range.toScreenRange(session);
                 markerLayer.drawFullLineMarker(html, range, "ace_diff " + operation + " inline", config);

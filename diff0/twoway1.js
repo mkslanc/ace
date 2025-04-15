@@ -1,24 +1,24 @@
 "use strict";
 
-var oop = require("ace-code/src/lib/oop");
-var event = require("ace-code/src/lib/event");
-var Range = require("ace-code/src/range").Range;
-var dom = require("ace-code/src/lib/dom");
-var config = require("ace-code/src/config");
+var oop = require("ace/lib/oop");
+var event = require("ace/lib/event");
+var Range = require("ace/range").Range;
+var dom = require("ace/lib/dom");
+var config = require("ace/config");
 
-var LineWidgets = require("ace-code/src/line_widgets").LineWidgets;
+var LineWidgets = require("ace/line_widgets").LineWidgets;
 var css = require("text!./styles.css");
 var diff_match_patch = require("./diff_match_patch").diff_match_patch; 
 
 var SVG_NS = "http://www.w3.org/2000/svg";
 
-var Editor = require("ace-code/src/editor").Editor;
-var Renderer = require("ace-code/src/virtual_renderer").VirtualRenderer;
-var UndoManager = require("ace-code/src/undomanager").UndoManager;
-var EditSession = require("ace-code/src/edit_session").EditSession;
-require("ace-code/src/theme/textmate");
+var Editor = require("ace/editor").Editor;
+var Renderer = require("ace/virtual_renderer").VirtualRenderer;
+var UndoManager = require("ace/undomanager").UndoManager;
+var EditSession = require("ace/edit_session").EditSession;
+require("ace/theme/textmate");
 // enable multiselect
-require("ace-code/src/multi_select");
+require("ace/multi_select");
 function createEditor() {
     var editor = new Editor(new Renderer(), null);
     editor.session.setUndoManager(new UndoManager());

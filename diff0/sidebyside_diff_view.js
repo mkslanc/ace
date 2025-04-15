@@ -1,13 +1,13 @@
 "use strict";
 
-var Range = require("ace-code/src/range").Range;
-var LineWidgets = require("ace-code/src/line_widgets").LineWidgets;
+var Range = require("ace/range").Range;
+var LineWidgets = require("ace/line_widgets").LineWidgets;
 
 const {
     AceDiff,
 } = require("./ace_diff");
 const { BaseDiffView } = require("./base_diff_view");
-const config = require("ace-code/src/config");
+const config = require("ace/config");
 
 class SideBySideDiffView extends BaseDiffView {
     /**
@@ -149,7 +149,7 @@ class SideBySideDiffView extends BaseDiffView {
     }
 
     /**
-     * @param {import("ace-code/src/virtual_renderer").VirtualRenderer} renderer
+     * @param {import("ace/virtual_renderer").VirtualRenderer} renderer
      */
     syncScroll(renderer) {
         if (this.$syncScroll == false) return;
@@ -267,7 +267,7 @@ class SideBySideDiffView extends BaseDiffView {
     }
 
     /**
-     * @param {import("ace-code/src/editor").Editor} editor
+     * @param {import("ace/editor").Editor} editor
      * @param {import("./ace_diff").DiffHighlight} marker
      */
     $attachSessionEventHandlers(editor, marker) {
@@ -284,7 +284,7 @@ class SideBySideDiffView extends BaseDiffView {
     }
 
     /**
-     * @param {import("ace-code/src/editor").Editor} editor
+     * @param {import("ace/editor").Editor} editor
      * @param {import("./ace_diff").DiffHighlight} marker
      */
     $detachSessionHandlers(editor, marker) {

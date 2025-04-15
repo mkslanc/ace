@@ -1,11 +1,11 @@
 "use strict";
 
-var LineWidgets = require("ace-code/src/line_widgets").LineWidgets;
-var TextLayer = require("ace-code/src/layer/text").Text;
-var MarkerLayer = require("ace-code/src/layer/marker").Marker;
+var LineWidgets = require("ace/line_widgets").LineWidgets;
+var TextLayer = require("ace/layer/text").Text;
+var MarkerLayer = require("ace/layer/marker").Marker;
 
 const {BaseDiffView} = require("./base_diff_view");
-const config = require("ace-code/src/config");
+const config = require("ace/config");
 
 class InlineDiffView extends BaseDiffView {
     /**
@@ -198,6 +198,9 @@ class InlineDiffView extends BaseDiffView {
             $computeLayerConfig: renderer.$computeLayerConfig,
             $getLongestLine: renderer.$getLongestLine,
             scrollBarV: {
+                setVisible: function () {}
+            },
+            scrollBarH: {
                 setVisible: function () {}
             },
             layerConfig: renderer.layerConfig,

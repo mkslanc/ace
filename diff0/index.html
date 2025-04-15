@@ -43,7 +43,10 @@
 <div class="toolbar">
     <button id="btn-prev" onclick="goToPrevious()">Previous</button>
     <button id="btn-next" onclick="goToNext()">Next</button>
-    <button id="btn-next" onclick="detach()">Detach from editors</button>
+    <button id="" onclick="setMode('inlineA')">inlineA</button>
+    <button id="" onclick="setMode('inlineA')">inlineB</button>
+    <button id="" onclick="setMode('split')">split</button>
+    <button id="" onclick="setMode('off')">off</button>
     <!--  <button id="btn-use-old">Use Old</button>
       <button id="btn-use-new">Use New</button>
       <button id="btn-use-both">Use Both</button>-->
@@ -56,56 +59,112 @@
     <label>
     <input type="checkbox" id="btn-foldunchanged" onclick="foldUnchanged()"> Collapse unchanged lines
     </label>
+
+    <button id="btn-reset" onclick="reset()">Reset</button>
 </div>
 
 <div class="ace_diff-container"></div>
 
 <script>
+    var ignoreTrimWhitespace = localStorage["ignoreTrimWhitespace"] == "true";
+    var foldUnchanged = localStorage["foldunchanged"] == "true";
+
+    var initialValueA = "";
+    var initialValueB = "";
+
+    var diffView = null;
+    var editorA = null;
+    var editorB = null;
     var updateButtonsState = () => {
-        document.getElementById("btn-prev").disabled = window.diffView.firstDiffSelected();
-        document.getElementById("btn-next").disabled = window.diffView.lastDiffSelected();
+        if (!diffView) return;
+        document.getElementById("btn-prev").disabled = diffView.firstDiffSelected();
+        document.getElementById("btn-next").disabled = diffView.lastDiffSelected();
     };
 
     var goToNext = () => {
-        window.diffView.gotoNext(1);
+        diffView.gotoNext(1);
         updateButtonsState();
     };
 
     var goToPrevious = () => {
-        window.diffView.gotoNext(-1);
+        diffView.gotoNext(-1);
         updateButtonsState();
     };
 
     var trimWhitespace = () => {
         var checked = document.getElementById("btn-whitespace").checked;
-        window.diffView.options.ignoreTrimWhitespace = checked;
-        window.diffView.onInput();
+        diffView.options.ignoreTrimWhitespace = checked;
+        diffView.onInput();
+        localStorage.setItem("ignoreTrimWhitespace", ignoreTrimWhitespace);
     };
 
     var syncSelections = () => {
         var checked = document.getElementById("btn-syncselections").checked;
-        window.diffView.options.syncSelections = checked;
-        window.diffView.onInput();
+        diffView.options.syncSelections = checked;
+        diffView.onInput();
     };
 
     var foldUnchanged = () => {
         var checked = document.getElementById("btn-foldunchanged").checked;
-        window.diffView.options.foldUnchanged = checked;
-        window.diffView.onInput();
+        diffView.options.foldUnchanged = checked;
+        diffView.onInput();
         if (!checked) {
-            window.diffView.diffSession.sessionA.unfold();
-            window.diffView.diffSession.sessionB.unfold();
+            diffView.diffSession.sessionA.unfold();
+            diffView.diffSession.sessionB.unfold();
         }
+        localStorage.setItem("foldunchanged", checked);
     };
 
-    var detach = () => {
-        window.diffView.detach();
+    function reset() {
+        editorA.setValue(initialValueA, -1);
+        editorB.setValue(initialValueB, -1);
+        
+        localStorage.removeItem("valueA");
+        localStorage.removeItem("valueB");
+    }
+
+    var diffViewMode = "off";
+    var diffVewContainer = document.querySelector(".ace_diff-container");
+    var setMode = (mode) => {
+        if (diffViewMode == mode || !editorA) return;
+
+        localStorage.diffViewMode = diffViewMode = mode;
+
+        if (diffView) {
+            diffView.detach();
+        }
+        switch (mode) {
+            case "inlineA":
+                
+                var {InlineDiffView} = require("diff/inline_diff_view");
+                diffView = new InlineDiffView(document.querySelector(".ace_diff-container"), {
+                    editorA, editorB,
+                    showSideA: true
+                });
+                break;
+            case "inlineB":
+                var {InlineDiffView} = require("diff/inline_diff_view");
+                diffView = new InlineDiffView(document.querySelector(".ace_diff-container"), {
+                    editorA, editorB,
+                    showSideA: false
+                });
+                break;
+            case "split":
+                var {SideBySideDiffView} = require("diff/sidebyside_diff_view");
+                diffView = new SideBySideDiffView(diffVewContainer, {editorA, editorB});
+                break;
+            case "off":
+                diffView.detach("off");
+                diffView = undefined;
+                break;
+        }
     }
 
     var paths = {
         "ace": "../src",
         "ace-code": "..",
-        diff: "."
+        diff: ".",
+        demo: "../demo",
     };
 
     require.config({
@@ -113,39 +172,41 @@
     });
 
 
-    require(["diff/sidebyside_diff_view"], function () {
+    require(["diff/sidebyside_diff_view", "diff/inline_diff_view", "demo/kitchen-sink/util"], function () {
 
-        var config = require("ace-code/src/config");
+        var config = require("ace/config");
         config.setLoader(function (moduleName, cb) {
             require([moduleName], function (module) {
                 cb(null, module);
             });
         });
 
-        var useLocalStorage = /save=1/.test(location.search);
+        var util = require("demo/kitchen-sink/util");
+        splitEditor = util.createSplitEditor(diffVewContainer);
 
-        var SideBySideDiffView = require("diff/sidebyside_diff_view").SideBySideDiffView;
-        var diffView = new SideBySideDiffView(document.querySelector(".ace_diff-container"));
-        window.diffView = diffView;
+        editorA = splitEditor.editor0;
+        editorB = splitEditor.editor1; 
 
-        require("ace-code/src/lib/net").get("./diff/0.ts", function (v) {
-
-            diffView.editorA.setValue(useLocalStorage && localStorage.orig || v, -1);
-            diffView.editorA.session.setMode("ace-code/src/mode/typescript");
+        require("ace/lib/net").get("./diff/0.ts", function (v) {
+            initialValueA = v;
+            editorA.setValue(localStorage.valueA || v, -1);
+            editorA.session.setMode("ace/mode/typescript");
         });
-        require("ace-code/src/lib/net").get("./diff/1.ts", function (v) {
-            diffView.editorB.setValue(useLocalStorage && localStorage.edit || v, -1);
-            diffView.editorB.session.setMode("ace-code/src/mode/typescript");
+        require("ace/lib/net").get("./diff/1.ts", function (v) {
+            initialValueB = v;
+            editorB.setValue(localStorage.valueB || v, -1);
+            editorB.session.setMode("ace/mode/typescript");
         });
 
         window.onbeforeunload = function () {
-            if (!useLocalStorage) return;
-            localStorage.orig = diffView.editorA.getValue();
-            localStorage.edit = diffView.editorB.getValue();
+            localStorage.valueA = editorA.getValue();
+            localStorage.valueB = editorB.getValue();
         };
 
-        diffView.editorA.on("changeSelection", updateButtonsState);
-        diffView.editorB.on("changeSelection", updateButtonsState);
+        editorA.on("changeSelection", updateButtonsState);
+        editorB.on("changeSelection", updateButtonsState);
+
+        setMode(localStorage.diffViewMode || "split");
     });
 
 </script>
