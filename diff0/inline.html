@@ -128,13 +128,13 @@
             require("ace/lib/net").get("./diff/1.ts", function (val) {
                 sessionB = new EditSession(useLocalStorage && localStorage.edit || val);
                 valueB = val;
-                diffView = new InlineDiffView(document.querySelector(".ace_diff-container"), {
+                diffView = new InlineDiffView({
                     //sessionA,
                     //sessionB,
                     valueA,
                     valueB,
-                    showSideA: false
-                });
+                    showSideA: true
+                }, document.querySelector(".ace_diff-container"));
                 window.diffView = diffView;
                 diffView.diffSession.sessionB.setMode("ace/mode/typescript");
                 diffView.diffSession.sessionA.setMode("ace/mode/typescript");

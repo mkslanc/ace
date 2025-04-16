@@ -75,20 +75,22 @@ class DiffHighlight {
         var diffView = this.diffView;
         if (this.type === -1) {// original editor
             dir = "old";
-            operation = diffView.showSideA ? "delete" : "insert";
-            opOperation = diffView.showSideA ? "insert" : "delete";
-            if (diffView.inlineDiffEditor) {
-                markerLayer = diffView.markerLayerA; //this is separate marker layer for inline diff
-                editor = diffView.editorB;
-            } else {
-                editor = diffView.editorA;
-            }
+            operation = "delete";
+            opOperation = "insert";
+            editor = diffView.editorA;
         }
         else { //modified editor
             dir = "new";
-            operation = diffView.showSideA ? "insert" : "delete";
-            opOperation = diffView.showSideA ? "delete" : "insert";
+            operation = "insert";
+            opOperation = "delete";
             editor = diffView.editorB;
+        }
+
+        if (diffView.inlineDiffEditor) {
+            if (diffView.showSideA && this.type === 1 || !diffView.showSideA && this.type === -1) {
+                markerLayer = diffView.markerLayer; //this is separate marker layer for inline diff
+            }
+            editor = diffView.activeEditor;
         }
 
         var ignoreTrimWhitespace = diffView.options.ignoreTrimWhitespace;

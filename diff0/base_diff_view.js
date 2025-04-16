@@ -26,12 +26,16 @@ class BaseDiffView {
     /**
      * Constructs a new base DiffView instance.
      * @param {boolean} [inlineDiffEditor] - Whether to use an inline diff editor.
+     * @param {HTMLElement} [container] - optional container element for the DiffView.
      */
-    constructor(element, inlineDiffEditor) {
+    constructor(inlineDiffEditor, container) {
         /**@type{{sessionA: EditSession, sessionB: EditSession, chunks: AceDiff[]}}*/this.diffSession;
         /**@type AceDiff[]*/this.chunks;
         this.inlineDiffEditor = inlineDiffEditor || false;
         this.currentDiffIndex = 0;
+        if (container) {
+            this.container = container;
+        }
 
         dom.importCssString(css, "diffview.css");
         this.options = {
@@ -44,8 +48,6 @@ class BaseDiffView {
             showDiffs: true,
             maxDiffs: 5000
         });
-
-        this.container = element;
 
         this.markerB = new DiffHighlight(this, 1);
         this.markerA = new DiffHighlight(this, -1);
@@ -92,19 +94,22 @@ class BaseDiffView {
             "vScrollBarAlwaysVisible": true
         };
 
-        if (!this.inlineDiffEditor) {
+        if (!this.inlineDiffEditor || diffModel.showSideA) {
             this.editorA = diffModel.editorA || this.$setupModel(diffModel.sessionA, diffModel.valueA);
-            this.container.appendChild(this.editorA.container);
+            this.container && this.container.appendChild(this.editorA.container);
             this.editorA.setOptions(diffEditorOptions);
         }
-        this.editorB = diffModel.editorB || this.$setupModel(diffModel.sessionB, diffModel.valueB);
-        this.container.appendChild(this.editorB.container);
-        this.editorB.setOptions(diffEditorOptions);
+        if (!this.inlineDiffEditor || !diffModel.showSideA) {
+            this.editorB = diffModel.editorB || this.$setupModel(diffModel.sessionB, diffModel.valueB);
+            this.container && this.container.appendChild(this.editorB.container);
+            this.editorB.setOptions(diffEditorOptions);
+        }
 
         this.setDiffSession({
-            sessionA: diffModel.sessionA || (this.editorA ? this.editorA.session : new EditSession(
+            sessionA: diffModel.sessionA || (diffModel.editorA ? diffModel.editorA.session : new EditSession(
                 diffModel.valueA || "")),
-            sessionB: diffModel.sessionB || this.editorB.session,
+            sessionB: diffModel.sessionB || (diffModel.editorB ? diffModel.editorB.session : new EditSession(
+                diffModel.valueB || "")),
             chunks: []
         });
     }
@@ -176,10 +181,8 @@ class BaseDiffView {
         this.diffSession = session;
         if (this.diffSession) {
             this.chunks = this.diffSession.chunks;
-            if (!this.inlineDiffEditor) {
-                this.editorA.setSession(session.sessionA);
-            }
-            this.editorB.setSession(session.sessionB);
+            this.editorA && this.editorA.setSession(session.sessionA);
+            this.editorB && this.editorB.setSession(session.sessionB);
             this.$attachSessionsEventHandlers();
         }
     }
@@ -242,10 +245,8 @@ class BaseDiffView {
 
         if (this["$alignDiffs"]) this.align();
 
-        if (!this.inlineDiffEditor) {
-            this.editorA.renderer.updateBackMarkers();
-        }
-        this.editorB.renderer.updateBackMarkers();
+        this.editorA && this.editorA.renderer.updateBackMarkers();
+        this.editorB && this.editorB.renderer.updateBackMarkers();
 
         if (this.options.foldUnchanged) {
             this.foldUnchanged();
@@ -329,10 +330,8 @@ class BaseDiffView {
 
     detach() {
         this.$detachEventHandlers();
-        if (!this.inlineDiffEditor) {
-            this.$removeLineWidgets(this.editorA);
-        }
-        this.$removeLineWidgets(this.editorB);
+        this.editorA && this.$removeLineWidgets(this.editorA);
+        this.editorB && this.$removeLineWidgets(this.editorB);
     }
 
     $removeLineWidgets(editor) {

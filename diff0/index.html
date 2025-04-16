@@ -44,7 +44,7 @@
     <button id="btn-prev" onclick="goToPrevious()">Previous</button>
     <button id="btn-next" onclick="goToNext()">Next</button>
     <button id="" onclick="setMode('inlineA')">inlineA</button>
-    <button id="" onclick="setMode('inlineA')">inlineB</button>
+    <button id="" onclick="setMode('inlineB')">inlineB</button>
     <button id="" onclick="setMode('split')">split</button>
     <button id="" onclick="setMode('off')">off</button>
     <!--  <button id="btn-use-old">Use Old</button>
@@ -126,7 +126,7 @@
     var diffViewMode = "off";
     var diffVewContainer = document.querySelector(".ace_diff-container");
     var setMode = (mode) => {
-        if (diffViewMode == mode || !editorA) return;
+        if (diffViewMode == mode) return;
 
         localStorage.diffViewMode = diffViewMode = mode;
 
@@ -137,27 +137,32 @@
             case "inlineA":
                 
                 var {InlineDiffView} = require("diff/inline_diff_view");
-                diffView = new InlineDiffView(document.querySelector(".ace_diff-container"), {
+                diffView = new InlineDiffView({
                     editorA, editorB,
                     showSideA: true
                 });
+                // editorA.container.style.display = "none";
                 break;
             case "inlineB":
                 var {InlineDiffView} = require("diff/inline_diff_view");
-                diffView = new InlineDiffView(document.querySelector(".ace_diff-container"), {
+                diffView = new InlineDiffView({
                     editorA, editorB,
                     showSideA: false
                 });
+                // editorA.container.style.display = "none";
                 break;
             case "split":
                 var {SideBySideDiffView} = require("diff/sidebyside_diff_view");
-                diffView = new SideBySideDiffView(diffVewContainer, {editorA, editorB});
+                diffView = new SideBySideDiffView({editorA, editorB});
+                // editorA.container.style.display = "";
                 break;
             case "off":
                 diffView.detach("off");
                 diffView = undefined;
+                // editorA.container.style.display = "";
                 break;
         }
+        diffView.onInput();
     }
 
     var paths = {

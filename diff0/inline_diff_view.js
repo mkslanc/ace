@@ -3,6 +3,7 @@
 var LineWidgets = require("ace/line_widgets").LineWidgets;
 var TextLayer = require("ace/layer/text").Text;
 var MarkerLayer = require("ace/layer/marker").Marker;
+var EditSession = require("ace/edit_session").EditSession;
 
 const {BaseDiffView} = require("./base_diff_view");
 const config = require("ace/config");
@@ -10,7 +11,6 @@ const config = require("ace/config");
 class InlineDiffView extends BaseDiffView {
     /**
      * Constructs a new inline DiffView instance.
-     * @param {HTMLElement} element - The container element for the DiffView.
      * @param {Object} [diffModel] - The model for the diff view.
      * @param {import("ace-code").Editor} [diffModel.editorA] - The editor for the original view.
      * @param {import("ace-code").Editor} [diffModel.editorB] - The editor for the edited view.
@@ -19,10 +19,11 @@ class InlineDiffView extends BaseDiffView {
      * @param {string} [diffModel.valueA] - The original content.
      * @param {string} [diffModel.valueB] - The modified content.
      * @param {boolean} [diffModel.showSideA] - Whether to show the original view or modified view.
+     * @param {HTMLElement} [container] - optional container element for the DiffView.
      */
-    constructor(element, diffModel) {
+    constructor(diffModel, container) {
         diffModel = diffModel || {};
-        super(element, true);
+        super( true, container);
         this.init(diffModel);
     }
 
@@ -38,18 +39,18 @@ class InlineDiffView extends BaseDiffView {
         config.resetOptions(this);
         config["_signal"]("diffView", this);
 
-        this.textLayerA = new TextLayer(this.editorB.renderer.content);
-        this.textLayerA.setSession(this.diffSession.sessionA);
-        this.textLayerA.setPadding(4);
-        this.markerLayerA = new MarkerLayer(this.editorB.renderer.content);
-        this.markerLayerA.setSession(this.diffSession.sessionA);
-        this.markerLayerA.setPadding(4);
-        // this.markerLayerA.element.style.position = "static"; //TODO: check for side effects
+        this.textLayer = new TextLayer(this.activeEditor.renderer.content);
+        this.textLayer.setSession(this.otherSession);
+        this.textLayer.setPadding(4);
+        this.markerLayer = new MarkerLayer(this.activeEditor.renderer.content);
+        this.markerLayer.setSession(this.otherSession);
+        this.markerLayer.setPadding(4);
+        //this.markerLayer.element.style.position = "static"; //TODO: check for side effects
         
-        this.markerLayerA.element.parentNode.insertBefore(
-            this.markerLayerA.element,
-            this.markerLayerA.element.parentNode.firstChild
-        )
+        this.markerLayer.element.parentNode.insertBefore(
+            this.markerLayer.element,
+            this.markerLayer.element.parentNode.firstChild
+        );
 
         this.$attachEventHandlers();
     }
@@ -74,7 +75,7 @@ class InlineDiffView extends BaseDiffView {
             }
             session.lineWidgets = [];
             session.widgetManager.lineWidgets = [];
-            this.textLayerA.element.innerHTML = "";
+            this.textLayer.element.innerHTML = "";
         };
 
         init(diffView.diffSession.sessionA);
@@ -84,13 +85,20 @@ class InlineDiffView extends BaseDiffView {
             var diff1 = ch.old.end.row - ch.old.start.row;
             var diff2 = ch.new.end.row - ch.new.start.row;
 
+
+
             //TODO: diffView.showSideA is not used
-            add(diffView.diffSession.sessionA, {
+            let sessionA = diffView.diffSession.sessionA;
+            let sessionB = diffView.diffSession.sessionB;
+            if (!diffView.showSideA) {
+                [sessionA, sessionB] = [sessionB, sessionA];
+            }
+            add(sessionA, {
                 rowCount: diff2,
                 rowsAbove: ch.old.end.row === 0 ? diff2 : 0,
                 row: ch.old.end.row === 0 ? 0 : ch.old.end.row - 1
             });
-            add(diffView.diffSession.sessionB, {
+            add(sessionB, {
                 rowCount: diff1,
                 rowsAbove: diff1,
                 row: ch.new.start.row,
@@ -107,8 +115,25 @@ class InlineDiffView extends BaseDiffView {
     }
 
     $attachSessionsEventHandlers() {
-        this.$attachSessionEventHandlers(this.editorB, this.markerB);
-        this.diffSession.sessionA.addDynamicMarker(this.markerA);
+        if (this.showSideA) {
+            this.activeEditor = this.editorA;
+            this.otherSession = this.diffSession.sessionB;
+        } else {
+            this.activeEditor = this.editorB;
+            this.otherSession = this.diffSession.sessionA;
+        }
+        // this.otherSession = EditSession.fromJSON(this.otherSession.toJSON());//TODO attempt to not mess with sessions
+
+        let activeMarker, dynamicMarker;
+        if (this.showSideA) {
+            activeMarker = this.markerA;
+            dynamicMarker = this.markerB;
+        } else {
+            activeMarker = this.markerB;
+            dynamicMarker = this.markerA;
+        }
+        this.$attachSessionEventHandlers(this.activeEditor, activeMarker);
+        this.otherSession.addDynamicMarker(dynamicMarker);
     }
 
     $attachSessionEventHandlers(editor, marker) {
@@ -118,8 +143,16 @@ class InlineDiffView extends BaseDiffView {
     }
 
     $detachSessionsEventHandlers() {
-        this.$detachSessionEventHandlers(this.editorB, this.markerB);
-        this.diffSession.sessionA.removeMarker(this.markerA.id);
+        let activeMarker, dynamicMarker;//TODO: duplicate code
+        if (this.showSideA) {
+            activeMarker = this.markerA;
+            dynamicMarker = this.markerB;
+        } else {
+            activeMarker = this.markerB;
+            dynamicMarker = this.markerA;
+        }
+        this.$detachSessionEventHandlers(this.activeEditor, activeMarker);
+        this.otherSession.removeMarker(dynamicMarker.id);
     }
 
     $detachSessionEventHandlers(editor, marker) {
@@ -129,20 +162,20 @@ class InlineDiffView extends BaseDiffView {
     }
 
     $attachEventHandlers() {
-        this.editorB.on("input", this.onInput);
-        this.editorB.renderer.on("afterRender", this.onAfterRender);
+        this.activeEditor.on("input", this.onInput);
+        this.activeEditor.renderer.on("afterRender", this.onAfterRender);
     }
 
     $detachEventHandlers() {
         this.$detachSessionsEventHandlers();
-        this.editorB.off("input", this.onInput);
-        this.editorB.renderer.off("afterRender", this.onAfterRender);
+        this.activeEditor.off("input", this.onInput);
+        this.activeEditor.renderer.off("afterRender", this.onAfterRender);
 
-        this.editorB.renderer["$scrollDecorator"].zones = [];
-        this.editorB.renderer["$scrollDecorator"].$updateDecorators(this.editorB.renderer.layerConfig);
+        this.activeEditor.renderer["$scrollDecorator"].zones = [];
+        this.activeEditor.renderer["$scrollDecorator"].$updateDecorators(this.activeEditor.renderer.layerConfig);
 
-        this.textLayerA.element.textContent = "";
-        this.markerLayerA.element.textContent = "";
+        this.textLayer.element.textContent = "";
+        this.markerLayer.element.textContent = "";
     }
 
     /**
@@ -176,10 +209,9 @@ class InlineDiffView extends BaseDiffView {
             }
         }
 
-        filterLines(this.diffSession.sessionA.bgTokenizer.lines, this.chunks);
+        // filterLines(this.otherSession.bgTokenizer.lines, this.chunks);//TODO messes text layers
 
-
-        var session = this.diffSession.sessionA;
+        var session = this.otherSession;
 
         session.$scrollTop = renderer.scrollTop;
         session.$scrollLeft = renderer.scrollLeft;
@@ -214,10 +246,10 @@ class InlineDiffView extends BaseDiffView {
         var newConfig = cloneRenderer.layerConfig;
         newConfig.firstRowScreen = config.firstRowScreen;
 
-        this.textLayerA.update(newConfig);
+        this.textLayer.update(newConfig);
 
-        this.markerLayerA.setMarkers(this.diffSession.sessionA.getMarkers());
-        this.markerLayerA.update(newConfig);
+        this.markerLayer.setMarkers(this.otherSession.getMarkers());
+        this.markerLayer.update(newConfig);
     }
 
 }

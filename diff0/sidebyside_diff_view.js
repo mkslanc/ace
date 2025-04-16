@@ -13,7 +13,6 @@ class SideBySideDiffView extends BaseDiffView {
     /**
      * Constructs a new side by side DiffView instance.
      *
-     * @param {HTMLElement} element - The container element for the DiffView.
      * @param {Object} [diffModel] - The model for the diff view.
      * @param {import("ace-code").Editor} [diffModel.editorA] - The editor for the original view.
      * @param {import("ace-code").Editor} [diffModel.editorB] - The editor for the edited view.
@@ -22,9 +21,9 @@ class SideBySideDiffView extends BaseDiffView {
      * @param {string} [diffModel.valueA] - The original content.
      * @param {string} [diffModel.valueB] - The modified content.
      */
-    constructor(element, diffModel) {
+    constructor(diffModel) {
         diffModel = diffModel || {};
-        super(element);
+        super();
         this.init(diffModel);
     }
 
