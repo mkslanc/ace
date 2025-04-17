@@ -46,7 +46,7 @@ class InlineDiffView extends BaseDiffView {
         this.markerLayer = new MarkerLayer(this.activeEditor.renderer.content);
         this.markerLayer.setSession(this.otherSession);
         this.markerLayer.setPadding(padding);
-        
+
         this.markerLayer.$update = this.markerLayer.update
         this.markerLayer.update = function(...args) {
             console.trace()
@@ -91,20 +91,12 @@ class InlineDiffView extends BaseDiffView {
             var diff1 = ch.old.end.row - ch.old.start.row;
             var diff2 = ch.new.end.row - ch.new.start.row;
 
-
-
-            //TODO: diffView.showSideA is not used
-            let sessionA = diffView.diffSession.sessionA;
-            let sessionB = diffView.diffSession.sessionB;
-            if (!diffView.showSideA) {
-                [sessionA, sessionB] = [sessionB, sessionA];
-            }
-            add(sessionA, {
+            add(diffView.diffSession.sessionA, {
                 rowCount: diff2,
                 rowsAbove: ch.old.end.row === 0 ? diff2 : 0,
                 row: ch.old.end.row === 0 ? 0 : ch.old.end.row - 1
             });
-            add(sessionB, {
+            add(diffView.diffSession.sessionB, {
                 rowCount: diff1,
                 rowsAbove: diff1,
                 row: ch.new.start.row,
@@ -128,7 +120,6 @@ class InlineDiffView extends BaseDiffView {
             this.activeEditor = this.editorB;
             this.otherSession = this.diffSession.sessionA;
         }
-        // this.otherSession = EditSession.fromJSON(this.otherSession.toJSON());//TODO attempt to not mess with sessions
 
         let activeMarker, dynamicMarker;
         if (this.showSideA) {
@@ -210,7 +201,7 @@ class InlineDiffView extends BaseDiffView {
                 while (i < nextEnd) {
                     if (lines[i] && lines[i].length == 0) lines[i] = undefined;
                     i++;
-                } 
+                }
                 nextChunk = chunks[nextChunkIndex]?.[useOld ? "old" : "new"];
                 nextChunkIndex++;
                 nextStart = nextChunk ? nextChunk.start.row : lines.length;

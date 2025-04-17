@@ -129,16 +129,6 @@ class BaseDiffView {
         return editor;
     }
 
-    swapDirection() {
-        const tempSession = this.diffSession.sessionA;
-        this.diffSession.sessionA = this.diffSession.sessionB;
-        this.diffSession.sessionB = tempSession;
-        if (!this.inlineDiffEditor) {
-            this.editorA.setSession(this.diffSession.sessionA);
-        }
-        this.editorB.setSession(this.diffSession.sessionB);
-    }
-
     foldUnchanged() {
         this.diffSession.sessionA.unfold();
         this.diffSession.sessionB.unfold();
@@ -204,27 +194,22 @@ class BaseDiffView {
     }
 
     setTheme(theme) {
-        this.editorB.setTheme(theme);
-        if (!this.inlineDiffEditor) {
-            this.editorA.setTheme(theme);
-        }
+        this.editorA && this.editorA.setTheme(theme);
+        this.editorB && this.editorB.setTheme(theme);
     }
 
     getTheme() {
-        return this.editorA.getTheme();
+        return (this.editorA || this.editorB).getTheme();
     }
 
     onChangeTheme() {
-        if (!this.inlineDiffEditor) {
-            this.editorB.setTheme(this.editorA.getTheme());
-        }
+        this.editorA && this.editorA.setTheme(this.getTheme());
+        this.editorB && this.editorB.setTheme(this.getTheme());
     }
 
     resize() {
-        if (!this.inlineDiffEditor) {
-            this.editorA.resize();
-        }
-        this.editorB.resize();
+        this.editorA && this.editorA.resize();
+        this.editorB && this.editorB.resize();
     }
 
     onInput() {
@@ -351,10 +336,8 @@ class BaseDiffView {
 
     destroy() {
         this.detach();
-        if (!this.inlineDiffEditor) {
-            this.editorA.destroy();
-        }
-        this.editorB.destroy();
+        this.editorA && this.editorA.destroy();
+        this.editorB && this.editorB.destroy();
     }
 
     gotoNext(dir) { //TODO: wouldn't work in inline diff editor
