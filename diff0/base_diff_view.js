@@ -316,7 +316,7 @@ class BaseDiffView {
     detach() {
         this.$detachEventHandlers();
         this.$removeLineWidgets(this.diffSession.sessionA);
-        this.$removeLineWidgets(this.diffSession.sessionA);
+        this.$removeLineWidgets(this.diffSession.sessionB);
     }
 
     $removeLineWidgets(session) {

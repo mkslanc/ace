@@ -67,10 +67,10 @@
 
 <script>
     var ignoreTrimWhitespace = localStorage["ignoreTrimWhitespace"] == "true";
-    var foldUnchanged = localStorage["foldunchanged"] == "true";
+    var shouldFoldUnchanged = localStorage["foldunchanged"] == "true";
 
     document.getElementById("btn-whitespace").checked = ignoreTrimWhitespace;
-    document.getElementById("btn-foldunchanged").checked = foldUnchanged;
+    document.getElementById("btn-foldunchanged").checked = shouldFoldUnchanged;
 
     var initialValueA = "";
     var initialValueB = "";
@@ -171,7 +171,7 @@
         }
         if (diffView) {
             diffView.options.ignoreTrimWhitespace = ignoreTrimWhitespace
-            diffView.options.foldUnchanged = foldUnchanged
+            diffView.options.foldUnchanged = shouldFoldUnchanged
         }
         diffView?.onInput();
     }
