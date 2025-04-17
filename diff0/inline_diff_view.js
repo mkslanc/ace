@@ -39,13 +39,19 @@ class InlineDiffView extends BaseDiffView {
         config.resetOptions(this);
         config["_signal"]("diffView", this);
 
+        var padding = this.activeEditor.renderer.$padding;
         this.textLayer = new TextLayer(this.activeEditor.renderer.content);
         this.textLayer.setSession(this.otherSession);
-        this.textLayer.setPadding(4);
+        this.textLayer.setPadding(padding);
         this.markerLayer = new MarkerLayer(this.activeEditor.renderer.content);
         this.markerLayer.setSession(this.otherSession);
-        this.markerLayer.setPadding(4);
-        //this.markerLayer.element.style.position = "static"; //TODO: check for side effects
+        this.markerLayer.setPadding(padding);
+        
+        this.markerLayer.$update = this.markerLayer.update
+        this.markerLayer.update = function(...args) {
+            console.trace()
+            return this.$update(...args)
+        }
         
         this.markerLayer.element.parentNode.insertBefore(
             this.markerLayer.element,
@@ -153,6 +159,8 @@ class InlineDiffView extends BaseDiffView {
         }
         this.$detachSessionEventHandlers(this.activeEditor, activeMarker);
         this.otherSession.removeMarker(dynamicMarker.id);
+        this.otherSession.bgTokenizer.lines.fill(undefined);
+        this.otherSession.bgTokenizer._signal("update", {data: {firstRow: 0, lastRow: this.otherSession.bgTokenizer.lines.length}});
     }
 
     $detachSessionEventHandlers(editor, marker) {
@@ -184,15 +192,16 @@ class InlineDiffView extends BaseDiffView {
      */
     onAfterRender(changes, renderer) {
         var config = renderer.layerConfig;
+        var useOld = this.showSideA
 
         function filterLines(lines, chunks) {
             var i = 0;
             var nextChunkIndex = 0;
 
-            var nextChunk = chunks[nextChunkIndex];
+            var nextChunk = chunks[nextChunkIndex]?.[useOld ? "old" : "new"];
             nextChunkIndex++;
-            var nextStart = nextChunk ? nextChunk.old.start.row : lines.length;
-            var nextEnd = nextChunk ? nextChunk.old.end.row : lines.length;
+            var nextStart = nextChunk ? nextChunk.start.row : lines.length;
+            var nextEnd = nextChunk ? nextChunk.end.row : lines.length;
             while (i < lines.length) {
                 while (i < nextStart) {
                     if (lines[i] && lines[i].length) lines[i].length = 0;
@@ -201,15 +210,15 @@ class InlineDiffView extends BaseDiffView {
                 while (i < nextEnd) {
                     if (lines[i] && lines[i].length == 0) lines[i] = undefined;
                     i++;
-                }
-                nextChunk = chunks[nextChunkIndex];
+                } 
+                nextChunk = chunks[nextChunkIndex]?.[useOld ? "old" : "new"];
                 nextChunkIndex++;
-                nextStart = nextChunk ? nextChunk.old.start.row : lines.length;
-                nextEnd = nextChunk ? nextChunk.old.end.row : lines.length;
+                nextStart = nextChunk ? nextChunk.start.row : lines.length;
+                nextEnd = nextChunk ? nextChunk.end.row : lines.length;
             }
         }
 
-        // filterLines(this.otherSession.bgTokenizer.lines, this.chunks);//TODO messes text layers
+        filterLines(this.otherSession.bgTokenizer.lines, this.chunks);//TODO messes text layers
 
         var session = this.otherSession;
 

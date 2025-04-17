@@ -330,14 +330,16 @@ class BaseDiffView {
 
     detach() {
         this.$detachEventHandlers();
-        this.editorA && this.$removeLineWidgets(this.editorA);
-        this.editorB && this.$removeLineWidgets(this.editorB);
+        this.$removeLineWidgets(this.diffSession.sessionA);
+        this.$removeLineWidgets(this.diffSession.sessionA);
     }
 
-    $removeLineWidgets(editor) {
-        editor.session.lineWidgets = [];
-        editor.session.widgetManager.lineWidgets = [];
-        editor.session["_emit"]("changeFold", {data: {start: {row: 0}}});
+    $removeLineWidgets(session) {
+        // TODO remove only our widgets
+        // session.widgetManager.removeLineWidget
+        session.lineWidgets = [];
+        session.widgetManager.lineWidgets = [];
+        session._signal("changeFold", {data: {start: {row: 0}}});
     }
 
     /**
