@@ -98,7 +98,7 @@
         var checked = document.getElementById("btn-whitespace").checked;
         diffView.options.ignoreTrimWhitespace = checked;
         diffView.onInput();
-        localStorage.setItem("ignoreTrimWhitespace", ignoreTrimWhitespace);
+        localStorage.setItem("ignoreTrimWhitespace", checked);
     };
 
     var syncSelections = () => {
