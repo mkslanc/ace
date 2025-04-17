@@ -22,6 +22,8 @@ var {
 } = require("./ace_diff");
 const {EditSession} = require("ace/edit_session");
 
+var DirtyDiffDecorator = require("./gutter_decorator").DirtyDiffDecorator;
+
 class BaseDiffView {
     /**
      * Constructs a new base DiffView instance.
@@ -98,11 +100,13 @@ class BaseDiffView {
             this.editorA = diffModel.editorA || this.$setupModel(diffModel.sessionA, diffModel.valueA);
             this.container && this.container.appendChild(this.editorA.container);
             this.editorA.setOptions(diffEditorOptions);
+            this.gutterDecoratorA = new DirtyDiffDecorator(this.editorA);
         }
         if (!this.inlineDiffEditor || !diffModel.showSideA) {
             this.editorB = diffModel.editorB || this.$setupModel(diffModel.sessionB, diffModel.valueB);
             this.container && this.container.appendChild(this.editorB.container);
             this.editorB.setOptions(diffEditorOptions);
+            this.gutterDecoratorB = new DirtyDiffDecorator(this.editorB);
         }
 
         this.setDiffSession({
@@ -223,6 +227,8 @@ class BaseDiffView {
         var chunks = this.$diffLines(val1, val2);
 
         this.diffSession.chunks = this.chunks = chunks;
+        this.gutterDecoratorA && this.gutterDecoratorA.setDecorations(chunks);
+        this.gutterDecoratorB && this.gutterDecoratorB.setDecorations(chunks);
         // if we"re dealing with too many chunks, fail silently
         if (this.chunks && this.chunks.length > this.options.maxDiffs) {
             return;
