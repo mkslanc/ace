@@ -47,12 +47,6 @@ class InlineDiffView extends BaseDiffView {
         this.markerLayer.setSession(this.otherSession);
         this.markerLayer.setPadding(padding);
 
-        // this.markerLayer.$update = this.markerLayer.update
-        // this.markerLayer.update = function(...args) {
-            // console.trace()
-            // return this.$update(...args)
-        // }
-        
         this.markerLayer.element.parentNode.insertBefore(
             this.markerLayer.element,
             this.markerLayer.element.parentNode.firstChild
@@ -81,7 +75,6 @@ class InlineDiffView extends BaseDiffView {
             }
             session.lineWidgets = [];
             session.widgetManager.lineWidgets = [];
-            //this.textLayer.element.innerHTML = "";
         };
 
         init(diffView.diffSession.sessionA);
@@ -183,7 +176,7 @@ class InlineDiffView extends BaseDiffView {
      * @param {number} changes
      * @param {import("ace-code").VirtualRenderer} renderer
      */
-    onAfterRender(changes, renderer) { return
+    onAfterRender(changes, renderer) {
         var config = renderer.layerConfig;
         var useOld = !this.showSideA
 

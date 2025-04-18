@@ -66,6 +66,7 @@
 <div class="ace_diff-container"></div>
 
 <script>
+    var debugInline = false
     var ignoreTrimWhitespace = localStorage["ignoreTrimWhitespace"] == "true";
     var shouldFoldUnchanged = localStorage["foldunchanged"] == "true";
 
@@ -144,8 +145,8 @@
                     editorA, editorB,
                     showSideA: true
                 });
-                // editorA.container.style.display = "none";
-                // editorB.container.style.display = "";
+                if (!debugInline) editorB.container.style.display = "none";
+                editorA.container.style.display = "";
                 break;
             case "inlineB":
                 var {InlineDiffView} = require("diff/inline_diff_view");
@@ -153,20 +154,20 @@
                     editorA, editorB,
                     showSideA: false
                 });
-                // editorA.container.style.display = "";
-                // editorB.container.style.display = "none";
+                editorB.container.style.display = "";
+                if (!debugInline) editorA.container.style.display = "none";
                 break;
             case "split":
                 var {SideBySideDiffView} = require("diff/sidebyside_diff_view");
                 diffView = new SideBySideDiffView({editorA, editorB});
-                // editorA.container.style.display = "";
-                // editorB.container.style.display = "";
+                editorA.container.style.display = "";
+                editorB.container.style.display = "";
                 break;
             case "off":
                 diffView.detach("off");
                 diffView = undefined;
-                // editorA.container.style.display = "";
-                // editorB.container.style.display = "";
+                editorA.container.style.display = "";
+                editorB.container.style.display = "";
                 break;
         }
         if (diffView) {

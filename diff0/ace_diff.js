@@ -71,27 +71,18 @@ class DiffHighlight {
     static MAX_RANGES = 500;
 
     update(html, markerLayer, session, config) {
-        let side, dir, operation, opOperation, editor;
+        let side, dir, operation, opOperation;
         var diffView = this.diffView;
         if (this.type === -1) {// original editor
             dir = "old";
             operation = "delete";
             opOperation = "insert";
-            //editor = diffView.editorA;
         }
         else { //modified editor
             dir = "new";
             operation = "insert";
             opOperation = "delete";
-            //editor = diffView.editorB;
         }
-
-        // if (diffView.inlineDiffEditor) {
-            // if (diffView.showSideA && this.type === 1 || !diffView.showSideA && this.type === -1) {
-                // markerLayer = diffView.markerLayer; //this is separate marker layer for inline diff
-            // }
-            // editor = diffView.activeEditor;
-        // }
 
         var ignoreTrimWhitespace = diffView.options.ignoreTrimWhitespace;
         var lineChanges = diffView.chunks;
@@ -139,6 +130,11 @@ class DiffHighlight {
             if (lineChange.charChanges) {
                 for (var i = 0; i < lineChange.charChanges.length; i++) {
                     var changeRange = lineChange.charChanges[i][dir]
+                    if (changeRange.end.column == 0 && changeRange.end.row > changeRange.start.row && changeRange.end.row == lineChange[dir].end.row ) {
+                        changeRange.end.row --
+                        changeRange.end.column = Number.MAX_VALUE
+                    }
+                        
                     if (ignoreTrimWhitespace) {
                         for (let lineNumber = changeRange.start.row;
                              lineNumber <= changeRange.end.row; lineNumber++) {
