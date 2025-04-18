@@ -154,3 +154,7 @@
     background-color: rgba(255, 0, 0, 0.19);
     border-left: 3px solid #FF0000;
 }
+
+.ace_layer.ace_marker-layer {
+    overflow: visible!important; 
+}

@@ -77,27 +77,27 @@ class DiffHighlight {
             dir = "old";
             operation = "delete";
             opOperation = "insert";
-            editor = diffView.editorA;
+            //editor = diffView.editorA;
         }
         else { //modified editor
             dir = "new";
             operation = "insert";
             opOperation = "delete";
-            editor = diffView.editorB;
+            //editor = diffView.editorB;
         }
 
-        if (diffView.inlineDiffEditor) {
-            if (diffView.showSideA && this.type === 1 || !diffView.showSideA && this.type === -1) {
-                markerLayer = diffView.markerLayer; //this is separate marker layer for inline diff
-            }
-            editor = diffView.activeEditor;
-        }
+        // if (diffView.inlineDiffEditor) {
+            // if (diffView.showSideA && this.type === 1 || !diffView.showSideA && this.type === -1) {
+                // markerLayer = diffView.markerLayer; //this is separate marker layer for inline diff
+            // }
+            // editor = diffView.activeEditor;
+        // }
 
         var ignoreTrimWhitespace = diffView.options.ignoreTrimWhitespace;
         var lineChanges = diffView.chunks;
 
-        if (editor.session.lineWidgets && !diffView.inlineDiffEditor) {
-            let ranges = editor.session.lineWidgets.reduce((allRanges, lineWidget, row) => {
+        if (session.lineWidgets && !diffView.inlineDiffEditor) {
+            let ranges = session.lineWidgets.reduce((allRanges, lineWidget, row) => {
                 if (!lineWidget) {
                     console.log("Shouldn't get here");
                     return allRanges;
@@ -106,7 +106,7 @@ class DiffHighlight {
                 if (lineWidget.hidden)
                     return allRanges;
 
-                let start = editor.session.documentToScreenRow(row, 0);
+                let start = session.documentToScreenRow(row, 0);
 
                 if (lineWidget.rowsAbove > 0) {
                     start -= lineWidget.rowsAbove;
@@ -124,7 +124,7 @@ class DiffHighlight {
             })
         }
 
-        editor.renderer.$scrollDecorator.zones = [];
+        //editor.renderer.$scrollDecorator.zones = [];
         lineChanges.forEach((lineChange) => {
             let startRow = lineChange[dir].start.row;
             let endRow = lineChange[dir].end.row;
@@ -137,23 +137,24 @@ class DiffHighlight {
             }
 
             if (lineChange.charChanges) {
-                for (const charChange of lineChange.charChanges) {
+                for (var i = 0; i < lineChange.charChanges.length; i++) {
+                    var changeRange = lineChange.charChanges[i][dir]
                     if (ignoreTrimWhitespace) {
-                        for (let lineNumber = charChange[dir].start.row;
-                             lineNumber <= charChange[dir].end.row; lineNumber++) {
+                        for (let lineNumber = changeRange.start.row;
+                             lineNumber <= changeRange.end.row; lineNumber++) {
                             let startColumn;
                             let endColumn;
                             let sessionLineStart = session.getLine(lineNumber).match(/^\s*/)[0].length;
                             let sessionLineEnd = session.getLine(lineNumber).length;
 
-                            if (lineNumber === charChange[dir].start.row) {
-                                startColumn = charChange[dir].start.column;
+                            if (lineNumber === changeRange.start.row) {
+                                startColumn = changeRange.start.column;
                             }
                             else {
                                 startColumn = sessionLineStart;
                             }
-                            if (lineNumber === charChange[dir].end.row) {
-                                endColumn = charChange[dir].end.column;
+                            if (lineNumber === changeRange.end.row) {
+                                endColumn = changeRange.end.column;
                             }
                             else {
                                 endColumn = sessionLineEnd;
@@ -174,17 +175,17 @@ class DiffHighlight {
                         }
                     }
                     else {
-                        let range = new Range(charChange[dir].start.row, charChange[dir].start.column,
-                            charChange[dir].end.row, charChange[dir].end.column
+                        let range = new Range(changeRange.start.row, changeRange.start.column,
+                            changeRange.end.row, changeRange.end.column
                         );
                         var screenRange = range.toScreenRange(session);
                         let cssClass = "inline " + operation;
-                        if (range.isEmpty() && charChange[dir].start.column !== 0) {
+                        if (range.isEmpty() && changeRange.start.column !== 0) {
                             cssClass = "inline empty " + opOperation;
                         }
 
                         if (screenRange.isMultiLine()) {
-                            markerLayer.drawTextMarker(html, range, "ace_diff " + cssClass, config);
+                            markerLayer.drawTextMarker(html, screenRange, "ace_diff " + cssClass, config);
                         }
                         else {
                             markerLayer.drawSingleLineMarker(html, screenRange, "ace_diff " + cssClass, config);
@@ -194,7 +195,7 @@ class DiffHighlight {
             }
         });
         //TODO: hack for decorators to be forcely updated until we got new change type in VirtualRenderer
-        editor.renderer.$scrollDecorator.$updateDecorators(config);
+        //editor.renderer.$scrollDecorator.$updateDecorators(config);
     }
 }
 

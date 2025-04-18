@@ -47,11 +47,11 @@ class InlineDiffView extends BaseDiffView {
         this.markerLayer.setSession(this.otherSession);
         this.markerLayer.setPadding(padding);
 
-        this.markerLayer.$update = this.markerLayer.update
-        this.markerLayer.update = function(...args) {
-            console.trace()
-            return this.$update(...args)
-        }
+        // this.markerLayer.$update = this.markerLayer.update
+        // this.markerLayer.update = function(...args) {
+            // console.trace()
+            // return this.$update(...args)
+        // }
         
         this.markerLayer.element.parentNode.insertBefore(
             this.markerLayer.element,
@@ -81,7 +81,7 @@ class InlineDiffView extends BaseDiffView {
             }
             session.lineWidgets = [];
             session.widgetManager.lineWidgets = [];
-            this.textLayer.element.innerHTML = "";
+            //this.textLayer.element.innerHTML = "";
         };
 
         init(diffView.diffSession.sessionA);
@@ -163,12 +163,14 @@ class InlineDiffView extends BaseDiffView {
     $attachEventHandlers() {
         this.activeEditor.on("input", this.onInput);
         this.activeEditor.renderer.on("afterRender", this.onAfterRender);
+        this.otherSession.on("change", this.onInput);
     }
 
     $detachEventHandlers() {
         this.$detachSessionsEventHandlers();
         this.activeEditor.off("input", this.onInput);
         this.activeEditor.renderer.off("afterRender", this.onAfterRender);
+        this.otherSession.off("change", this.onInput);
 
         this.activeEditor.renderer["$scrollDecorator"].zones = [];
         this.activeEditor.renderer["$scrollDecorator"].$updateDecorators(this.activeEditor.renderer.layerConfig);
@@ -181,9 +183,9 @@ class InlineDiffView extends BaseDiffView {
      * @param {number} changes
      * @param {import("ace-code").VirtualRenderer} renderer
      */
-    onAfterRender(changes, renderer) {
+    onAfterRender(changes, renderer) { return
         var config = renderer.layerConfig;
-        var useOld = this.showSideA
+        var useOld = !this.showSideA
 
         function filterLines(lines, chunks) {
             var i = 0;
@@ -204,6 +206,7 @@ class InlineDiffView extends BaseDiffView {
                 }
                 nextChunk = chunks[nextChunkIndex]?.[useOld ? "old" : "new"];
                 nextChunkIndex++;
+                
                 nextStart = nextChunk ? nextChunk.start.row : lines.length;
                 nextEnd = nextChunk ? nextChunk.end.row : lines.length;
             }
