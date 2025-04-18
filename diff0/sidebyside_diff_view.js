@@ -51,7 +51,7 @@ class SideBySideDiffView extends BaseDiffView {
     }
 
     /*** scroll locking ***/
-    align() {
+    /*align() {
         var diffView = this;
 
         function add(editor, w) {
@@ -97,6 +97,53 @@ class SideBySideDiffView extends BaseDiffView {
         });
         diffView.editorA.session["_emit"]("changeFold", {data: {start: {row: 0}}});
         diffView.editorB.session["_emit"]("changeFold", {data: {start: {row: 0}}});
+    }*/
+
+    //TODO: this just for test
+    align() {
+        var diffView = this;
+
+        function add(session, w) {
+            let lineWidget = session.lineWidgets[w.row];
+            if (lineWidget) {
+                w.rowsAbove += lineWidget.rowsAbove > w.rowsAbove ? lineWidget.rowsAbove : w.rowsAbove;
+                w.rowCount += lineWidget.rowCount;
+            }
+            session.lineWidgets[w.row] = w;
+            session.widgetManager.lineWidgets[w.row] = w;
+        }
+
+        var init = (session) => {
+            if (!session.widgetManager) {
+                session.widgetManager = new LineWidgets(session);
+                if (session.$editor) session.widgetManager.attach(session.$editor);
+            }
+            session.lineWidgets = [];
+            session.widgetManager.lineWidgets = [];
+            //this.textLayer.element.innerHTML = "";
+        };
+
+        init(diffView.diffSession.sessionA);
+        init(diffView.diffSession.sessionB);
+
+        diffView.chunks.forEach(function (ch) {
+            var diff1 = ch.old.end.row - ch.old.start.row;
+            var diff2 = ch.new.end.row - ch.new.start.row;
+
+            add(diffView.diffSession.sessionA, {
+                rowCount: diff2,
+                rowsAbove: ch.old.end.row === 0 ? diff2 : 0,
+                row: ch.old.end.row === 0 ? 0 : ch.old.end.row - 1
+            });
+            add(diffView.diffSession.sessionB, {
+                rowCount: diff1,
+                rowsAbove: diff1,
+                row: ch.new.start.row,
+            });
+
+        });
+        diffView.diffSession.sessionA["_emit"]("changeFold", {data: {start: {row: 0}}});
+        diffView.diffSession.sessionB["_emit"]("changeFold", {data: {start: {row: 0}}});
     }
 
     onSelect(e, selection) {
