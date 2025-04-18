@@ -37,11 +37,13 @@ class MinimalGutterDiffDecorator {
         this.chunks.forEach((lineChange) => {
             let startRow = lineChange[dir].start.row;
             let endRow = lineChange[dir].end.row - 1;
-            for (var i = startRow; i <= endRow; i++) {
-                cells[i].element.classList.add(diffClass);
-            }
-        });
 
+            cells.forEach((cell) => {
+                if (cell.row >= startRow && cell.row <= endRow) {
+                    cell.element.classList.add(diffClass);
+                }
+            });
+        });
     }
 
     setDecorations(changes) {
