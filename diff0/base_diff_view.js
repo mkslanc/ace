@@ -100,13 +100,13 @@ class BaseDiffView {
             this.editorA = diffModel.editorA || this.$setupModel(diffModel.sessionA, diffModel.valueA);
             this.container && this.container.appendChild(this.editorA.container);
             this.editorA.setOptions(diffEditorOptions);
-            this.gutterDecoratorA = new MinimalGutterDiffDecorator(diffModel.editorA, -1);
+            this.gutterDecoratorA = new MinimalGutterDiffDecorator(this.editorA, -1);
         }
         if (!this.inlineDiffEditor || !diffModel.showSideA) {
             this.editorB = diffModel.editorB || this.$setupModel(diffModel.sessionB, diffModel.valueB);
             this.container && this.container.appendChild(this.editorB.container);
             this.editorB.setOptions(diffEditorOptions);
-            this.gutterDecoratorB = new MinimalGutterDiffDecorator(diffModel.editorB, 1);
+            this.gutterDecoratorB = new MinimalGutterDiffDecorator(this.editorB, 1);
         }
 
         this.setDiffSession({
