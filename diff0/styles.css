@@ -145,77 +145,12 @@
 
 
 /* gutter changes */
-.ace_folding-enabled.ace_diff_gutter-enabled > .ace_gutter-cell {
-    padding-right: 17px;
-}
-.ace_diff_gutter-enabled > .ace_gutter-cell {
-    padding-right: 10px;
+.ace_mini-diff_gutter-enabled > .mini-diff-added {
+    background-color: rgba(0, 255, 0, 0.19);
+    border-left: 3px solid #00FF00;
 }
 
-.dirty-diff-glyph:before {
-    position: absolute;
-    content: "";
-    height: 100%;
-    width: 3px;
-    z-index: 5;
-}
-.ace_folding-enabled.ace_diff_gutter-enabled .dirty-diff-glyph:before {
-    margin-left: 14px;
-}
-.ace_diff_gutter-enabled .dirty-diff-glyph:before {
-    margin-left: 7px;
-}
-.ace_gutter-compact .ace_diff_gutter-enabled .dirty-diff-glyph:before {
-    margin-left: 2px;
-}
-
-.ace_gutter-cell:hover .dirty-diff-glyph:before {
-    width: 6px;
-}
-.ace_folding-enabled.ace_diff_gutter-enabled .ace_gutter-cell:hover .dirty-diff-glyph:before {
-    margin-left: 11px;
-}
-.ace_diff_gutter-enabled .ace_gutter-cell:hover .dirty-diff-glyph:before {
-    margin-left: 4px;
-}
-.ace_gutter-compact .ace_diff_gutter-enabled .ace_gutter-cell:hover .dirty-diff-glyph:before {
-    margin-left: -1px;
-}
-
-.dirty-diff-added:before {
-    background: #00FF00;
-}
-
-.dirty-diff-modified:before {
-    background: #d13212;
-            /*var(--dirty-diff-modified-color);*/
-}
-
-.dirty-diff-deleted::after {
-    border-left: 6px solid var(--dirty-diff-deleted-color);
-    content: "";
-    position: absolute;
-    bottom: -4px;
-    height: 0;
-    z-index: 9;
-    border-top: 4px solid transparent;
-    border-bottom: 4px solid transparent;
-    pointer-events: none;
-}
-.ace_folding-enabled.ace_diff_gutter-enabled .dirty-diff-deleted:after {
-    margin-left: 11px;
-}
-.ace_diff_gutter-enabled .dirty-diff-deleted:after {
-    margin-left: 4px;
-}
-.ace_gutter-compact .ace_diff_gutter-enabled .dirty-diff-deleted:after {
-    margin-left: -1px;
-}
-
-.ace_gutter-cell:hover .dirty-diff-deleted:before {
-    width: 6px;
-    background: var(--dirty-diff-deleted-color);
-}
-.ace_gutter-cell:hover .dirty-diff-deleted:after {
-    bottom: 0px;
+.ace_mini-diff_gutter-enabled > .mini-diff-deleted {
+    background-color: rgba(255, 0, 0, 0.19);
+    border-left: 3px solid #FF0000;
 }

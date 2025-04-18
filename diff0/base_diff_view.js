@@ -22,7 +22,7 @@ var {
 } = require("./ace_diff");
 const {EditSession} = require("ace/edit_session");
 
-var DirtyDiffDecorator = require("./gutter_decorator").DirtyDiffDecorator;
+var MinimalGutterDiffDecorator = require("./gutter_decorator").MinimalGutterDiffDecorator;
 
 class BaseDiffView {
     /**
@@ -100,13 +100,13 @@ class BaseDiffView {
             this.editorA = diffModel.editorA || this.$setupModel(diffModel.sessionA, diffModel.valueA);
             this.container && this.container.appendChild(this.editorA.container);
             this.editorA.setOptions(diffEditorOptions);
-            this.gutterDecoratorA = new DirtyDiffDecorator(this.editorA);
+            this.gutterDecoratorA = new MinimalGutterDiffDecorator(diffModel.editorA, -1);
         }
         if (!this.inlineDiffEditor || !diffModel.showSideA) {
             this.editorB = diffModel.editorB || this.$setupModel(diffModel.sessionB, diffModel.valueB);
             this.container && this.container.appendChild(this.editorB.container);
             this.editorB.setOptions(diffEditorOptions);
-            this.gutterDecoratorB = new DirtyDiffDecorator(this.editorB);
+            this.gutterDecoratorB = new MinimalGutterDiffDecorator(diffModel.editorB, 1);
         }
 
         this.setDiffSession({
@@ -323,6 +323,8 @@ class BaseDiffView {
         this.$detachEventHandlers();
         this.$removeLineWidgets(this.diffSession.sessionA);
         this.$removeLineWidgets(this.diffSession.sessionB);
+        this.gutterDecoratorA && this.gutterDecoratorA.dispose();
+        this.gutterDecoratorB && this.gutterDecoratorB.dispose();
     }
 
     $removeLineWidgets(session) {
