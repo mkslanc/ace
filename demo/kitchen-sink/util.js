@@ -50,8 +50,7 @@ exports.createSplitEditor = function(el) {
 
     split.editor0 = split[0] = new Editor(new Renderer(e0));
     split.editor0.session.setUndoManager(new UndoManager());
-    //TODO: not to forget to revert this
-    split.editor1 = split[1] = new Editor(new Renderer(e0));
+    split.editor1 = split[1] = new Editor(new Renderer(e1));
     split.editor1.session.setUndoManager(new UndoManager());
     split.splitter = s;
 
