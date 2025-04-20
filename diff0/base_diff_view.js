@@ -7,7 +7,6 @@ var config = require("ace/config");
 
 // @ts-ignore
 var css = require("text!./styles.css");
-var computeDiff = require("./vscode-diff/index").computeDiff;
 
 var Editor = require("ace/editor").Editor;
 var Renderer = require("ace/virtual_renderer").VirtualRenderer;
@@ -21,6 +20,7 @@ var {
     DiffHighlight,
 } = require("./ace_diff");
 const {EditSession} = require("ace/edit_session");
+const { DefaultDiffProvider } = require("./diff_providers");
 
 var MinimalGutterDiffDecorator = require("./gutter_decorator").MinimalGutterDiffDecorator;
 
@@ -35,6 +35,7 @@ class BaseDiffView {
         /**@type AceDiff[]*/this.chunks;
         this.inlineDiffEditor = inlineDiffEditor || false;
         this.currentDiffIndex = 0;
+        this.diffProvider = new DefaultDiffProvider();
         if (container) {
             this.container = container;
         }
@@ -251,17 +252,17 @@ class BaseDiffView {
      * @return {AceDiff[]}
      */
     $diffLines(val1, val2) {
-        var chunks = computeDiff(val1, val2, {
+        return this.diffProvider.compute(val1, val2, {
             ignoreTrimWhitespace: this.options.ignoreTrimWhitespace,
             maxComputationTimeMs: this.options.maxComputationTimeMs
         });
-        if (chunks) {
-            return chunks.map((changes) => {
-                return new AceDiff(new Range(changes.origStart, 0, changes.origEnd, 0),
-                    new Range(changes.editStart, 0, changes.editEnd, 0), changes.charChanges
-                );
-            });
-        }
+    }
+
+    /**
+     * @param {import("./diff_providers").DiffProvider} provider
+     */
+    setProvider(provider) {
+        this.diffProvider = provider;
     }
 
     /** scroll locking

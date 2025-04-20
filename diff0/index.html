@@ -47,9 +47,10 @@
     <button id="" onclick="setMode('inlineB')">inlineB</button>
     <button id="" onclick="setMode('split')">split</button>
     <button id="" onclick="setMode('off')">off</button>
-    <!--  <button id="btn-use-old">Use Old</button>
-      <button id="btn-use-new">Use New</button>
-      <button id="btn-use-both">Use Both</button>-->
+    <select id="provider" onchange="changeProvider(this.value)">
+        <option value="vscode">Vscode diff</option>
+        <option value="dmp">Diff match patch</option>
+    </select>
     <label>
         <input type="checkbox" id="btn-whitespace" checked onclick="trimWhitespace()"> Ignore Trim Whitespaces
     </label>
@@ -61,6 +62,8 @@
     </label>
 
     <button id="btn-reset" onclick="reset()">Reset</button>
+
+
 </div>
 
 <div class="ace_diff-container"></div>
@@ -177,6 +180,9 @@
         diffView?.onInput();
     }
 
+    var changeProvider;
+
+
     var paths = {
         "ace": "../src",
         "ace-code": "..",
@@ -189,7 +195,19 @@
     });
 
 
-    require(["diff/sidebyside_diff_view", "diff/inline_diff_view", "demo/kitchen-sink/util", "demo/kitchen-sink/layout"], function () {
+
+    require(["diff/sidebyside_diff_view", "diff/inline_diff_view", "demo/kitchen-sink/util",
+        "demo/kitchen-sink/layout"], function () {
+        var {DiffMatchPatchProvider, DefaultDiffProvider} = require("diff/diff_providers");
+
+        changeProvider = (value) => {
+            if (value === "vscode") {
+                diffView.setProvider(new DefaultDiffProvider());
+            } else {
+                diffView.setProvider(new DiffMatchPatchProvider());
+            }
+            diffView.onInput();
+        }
 
         var config = require("ace/config");
         config.setLoader(function (moduleName, cb) {
