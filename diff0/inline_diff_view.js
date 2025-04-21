@@ -3,6 +3,8 @@
 var LineWidgets = require("ace/line_widgets").LineWidgets;
 var TextLayer = require("ace/layer/text").Text;
 var MarkerLayer = require("ace/layer/marker").Marker;
+var Editor = require("ace/editor").Editor;
+var Renderer = require("ace/virtual_renderer").VirtualRenderer;
 var EditSession = require("ace/edit_session").EditSession;
 
 const {BaseDiffView} = require("./base_diff_view");
@@ -40,17 +42,43 @@ class InlineDiffView extends BaseDiffView {
         config["_signal"]("diffView", this);
 
         var padding = this.activeEditor.renderer.$padding;
-        this.textLayer = new TextLayer(this.activeEditor.renderer.content);
-        this.textLayer.setSession(this.otherSession);
-        this.textLayer.setPadding(padding);
-        this.markerLayer = new MarkerLayer(this.activeEditor.renderer.content);
-        this.markerLayer.setSession(this.otherSession);
-        this.markerLayer.setPadding(padding);
 
-        this.markerLayer.element.parentNode.insertBefore(
-            this.markerLayer.element,
-            this.markerLayer.element.parentNode.firstChild
+        this.otherEditor = new Editor(new Renderer(null), this.otherSession, this.activeEditor.getOptions());
+        if (this.showSideA) {
+            this.editorB = this.otherEditor;
+        } else {
+            this.editorA = this.otherEditor;
+        }
+        this.addGutterDecorators();
+
+        this.otherEditor.renderer.setPadding(padding);
+        this.textLayer = this.otherEditor.renderer.$textLayer;
+        this.markerLayer = this.otherEditor.renderer.$markerBack;
+        this.gutterLayer = this.otherEditor.renderer.$gutterLayer;
+
+        var textLayerElement = this.activeEditor.renderer.$textLayer.element;
+        textLayerElement.parentNode.insertBefore(
+            this.textLayer.element,
+            textLayerElement
         );
+
+        var markerLayerElement = this.activeEditor.renderer.$markerBack.element;
+        markerLayerElement.parentNode.insertBefore(
+            this.markerLayer.element,
+            markerLayerElement
+        );
+
+        var guteerLayerElement = this.activeEditor.renderer.$gutterLayer.element;
+        guteerLayerElement.parentNode.insertBefore(
+            this.gutterLayer.element,
+            guteerLayerElement
+        );
+        guteerLayerElement.style.position = "absolute";
+        this.gutterLayer.element.style.position = "absolute";
+        this.gutterLayer.element.style.width = "100%";
+
+        this.gutterLayer.$updateGutterWidth = function() {}
+        
 
         this.$attachEventHandlers();
     }
@@ -170,6 +198,9 @@ class InlineDiffView extends BaseDiffView {
 
         this.textLayer.element.textContent = "";
         this.markerLayer.element.textContent = "";
+
+        this.otherEditor.setSession(null)
+        this.otherEditor.destroy();
     }
 
     /**
@@ -205,7 +236,7 @@ class InlineDiffView extends BaseDiffView {
             }
         }
 
-        filterLines(this.otherSession.bgTokenizer.lines, this.chunks);//TODO messes text layers
+        filterLines(this.otherSession.bgTokenizer.lines, this.chunks);
 
         var session = this.otherSession;
 
@@ -240,6 +271,9 @@ class InlineDiffView extends BaseDiffView {
 
         console.log(config, cloneRenderer.layerConfig);
         var newConfig = cloneRenderer.layerConfig;
+        
+        this.gutterLayer.update(newConfig);
+
         newConfig.firstRowScreen = config.firstRowScreen;
 
         this.textLayer.update(newConfig);

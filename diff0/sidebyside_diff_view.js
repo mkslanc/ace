@@ -42,6 +42,8 @@ class SideBySideDiffView extends BaseDiffView {
         this.editorA.session.addDynamicMarker(this.syncSelectionMarkerA);
         this.editorB.session.addDynamicMarker(this.syncSelectionMarkerB);
 
+        this.addGutterDecorators();
+
         this.onChangeTheme();
 
         config.resetOptions(this);
@@ -54,14 +56,14 @@ class SideBySideDiffView extends BaseDiffView {
     align() {
         var diffView = this;
 
-        function add(editor, w) {
-            let lineWidget = editor.session.lineWidgets[w.row];
+        function add(session, w) {
+            let lineWidget = session.lineWidgets[w.row];
             if (lineWidget) {
                 w.rowsAbove += lineWidget.rowsAbove > w.rowsAbove ? lineWidget.rowsAbove : w.rowsAbove;
                 w.rowCount += lineWidget.rowCount;
             }
-            editor.session.lineWidgets[w.row] = w;
-            editor.session.widgetManager.lineWidgets[w.row] = w;
+            session.lineWidgets[w.row] = w;
+            session.widgetManager.lineWidgets[w.row] = w;
         }
 
         function init(editor) {
@@ -81,14 +83,14 @@ class SideBySideDiffView extends BaseDiffView {
             var diff1 = ch.old.end.row - ch.old.start.row;
             var diff2 = ch.new.end.row - ch.new.start.row;
             if (diff1 < diff2) {
-                add(diffView.editorA, {
+                add(diffView.editorA.session, {
                     rowCount: diff2 - diff1,
                     rowsAbove: ch.old.end.row === 0 ? diff2 : 0,
                     row: ch.old.end.row === 0 ? 0 : ch.old.end.row - 1
                 });
             }
             else if (diff1 > diff2) {
-                add(diffView.editorB, {
+                add(diffView.editorB.session, {
                     rowCount: diff1 - diff2,
                     rowsAbove: ch.new.end.row === 0 ? diff1 : 0,
                     row: ch.new.end.row === 0 ? 0 : ch.new.end.row - 1

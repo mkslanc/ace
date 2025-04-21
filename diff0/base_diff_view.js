@@ -94,20 +94,19 @@ class BaseDiffView {
             "highlightGutterLine": false,
             "animatedScroll": true,
             "customScrollbar": true,
-            "vScrollBarAlwaysVisible": true
+            "vScrollBarAlwaysVisible": true,
+            fadeFoldWidgets: true,
         };
 
         if (!this.inlineDiffEditor || diffModel.showSideA) {
             this.editorA = diffModel.editorA || this.$setupModel(diffModel.sessionA, diffModel.valueA);
             this.container && this.container.appendChild(this.editorA.container);
             this.editorA.setOptions(diffEditorOptions);
-            this.gutterDecoratorA = new MinimalGutterDiffDecorator(this.editorA, -1);
         }
         if (!this.inlineDiffEditor || !diffModel.showSideA) {
             this.editorB = diffModel.editorB || this.$setupModel(diffModel.sessionB, diffModel.valueB);
             this.container && this.container.appendChild(this.editorB.container);
             this.editorB.setOptions(diffEditorOptions);
-            this.gutterDecoratorB = new MinimalGutterDiffDecorator(this.editorB, 1);
         }
 
         this.setDiffSession({
@@ -117,6 +116,13 @@ class BaseDiffView {
                 diffModel.valueB || "")),
             chunks: []
         });
+    }
+
+    addGutterDecorators() { 
+        if (!this.gutterDecoratorA)
+            this.gutterDecoratorA = new MinimalGutterDiffDecorator(this.editorA, -1);
+        if (!this.gutterDecoratorB)
+            this.gutterDecoratorB = new MinimalGutterDiffDecorator(this.editorB, 1);
     }
 
     /**

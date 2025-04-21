@@ -144,6 +144,10 @@
 }
 
 
+.ace_mini-diff_gutter-enabled > .ace_gutter-cell {
+    background-color: #f0f0f0;
+}
+
 /* gutter changes */
 .ace_mini-diff_gutter-enabled > .mini-diff-added {
     background-color: #eaffea;
@@ -153,6 +157,27 @@
 .ace_mini-diff_gutter-enabled > .mini-diff-deleted {
     background-color: #ffecec;
     border-left: 3px solid #FF0000;
+}
+
+
+.ace_mini-diff_gutter-enabled > .mini-diff-added:after {
+    position: absolute;
+    right: 2px;
+    content: "+";
+    color: darkgray;
+}
+
+.ace_mini-diff_gutter-enabled > .mini-diff-deleted:after {
+    position: absolute;
+    right: 2px;
+    content: "-";
+    color: darkgray;
+}
+.ace_fade-fold-widgets:hover .mini-diff-added:after {
+    display: none; ;
+}
+.ace_fade-fold-widgets:hover .mini-diff-deleted:after {
+    display: none; ;
 }
 
 .ace_layer.ace_marker-layer {
