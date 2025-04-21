@@ -1,11 +1,8 @@
 "use strict";
 
 var LineWidgets = require("../../line_widgets").LineWidgets;
-var TextLayer = require("../../layer/text").Text;
-var MarkerLayer = require("../../layer/marker").Marker;
 var Editor = require("../../editor").Editor;
 var Renderer = require("../../virtual_renderer").VirtualRenderer;
-var EditSession = require("../../edit_session").EditSession;
 
 const {BaseDiffView} = require("./base_diff_view");
 const config = require("../../config");
@@ -68,17 +65,16 @@ class InlineDiffView extends BaseDiffView {
             markerLayerElement
         );
 
-        var guteerLayerElement = this.activeEditor.renderer.$gutterLayer.element;
-        guteerLayerElement.parentNode.insertBefore(
+        var gutterLayerElement = this.activeEditor.renderer.$gutterLayer.element;
+        gutterLayerElement.parentNode.insertBefore(
             this.gutterLayer.element,
-            guteerLayerElement
+            gutterLayerElement
         );
-        guteerLayerElement.style.position = "absolute";
+        gutterLayerElement.style.position = "absolute";
         this.gutterLayer.element.style.position = "absolute";
         this.gutterLayer.element.style.width = "100%";
 
         this.gutterLayer.$updateGutterWidth = function() {}
-        
 
         this.$attachEventHandlers();
     }

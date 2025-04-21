@@ -20,7 +20,6 @@ var {
     DiffHighlight,
 } = require("./ace_diff");
 var {EditSession} = require("../../edit_session");
-// var { DefaultDiffProvider } = require("../../../diff0/diff_providers");
 
 var MinimalGutterDiffDecorator = require("./gutter_decorator").MinimalGutterDiffDecorator;
 
@@ -35,12 +34,12 @@ class BaseDiffView {
         /**@type AceDiff[]*/this.chunks;
         this.inlineDiffEditor = inlineDiffEditor || false;
         this.currentDiffIndex = 0;
-        // this.diffProvider = new DefaultDiffProvider();
         this.diffProvider = {
             compute: function(val1, val2, options) {
                 return [];
             }
-        }
+        };
+
         if (container) {
             this.container = container;
         }
@@ -107,11 +106,13 @@ class BaseDiffView {
             this.editorA = diffModel.editorA || this.$setupModel(diffModel.sessionA, diffModel.valueA);
             this.container && this.container.appendChild(this.editorA.container);
             this.editorA.setOptions(diffEditorOptions);
+            //this.editorA.renderer.setOption("decoratorType", "diff");
         }
         if (!this.inlineDiffEditor || !diffModel.showSideA) {
             this.editorB = diffModel.editorB || this.$setupModel(diffModel.sessionB, diffModel.valueB);
             this.container && this.container.appendChild(this.editorB.container);
             this.editorB.setOptions(diffEditorOptions);
+            //this.editorB.renderer.setOption("decoratorType", "diff");
         }
 
         this.setDiffSession({
@@ -137,8 +138,7 @@ class BaseDiffView {
     $setupModel(session, value) {
         var editor = new Editor(new Renderer(), session);
         editor.session.setUndoManager(new UndoManager());
-        // @ts-expect-error we should add this to the editor options
-        editor.renderer.setOption("decoratorType", "diff");
+        // editor.renderer.setOption("decoratorType", "diff");
         if (value) {
             editor.setValue(value, -1);
         }
@@ -251,10 +251,37 @@ class BaseDiffView {
         this.editorA && this.editorA.renderer.updateBackMarkers();
         this.editorB && this.editorB.renderer.updateBackMarkers();
 
+        //this.updateScrollBarDecorators();
+
         if (this.options.foldUnchanged) {
             this.foldUnchanged();
         }
     }
+
+   /* updateScrollBarDecorators() {
+        if (this.editorA) {
+            this.editorA.renderer.$scrollDecorator.zones = [];
+        }
+        if (this.editorB) {
+            this.editorB.renderer.$scrollDecorator.zones = [];
+        }
+        const updateDecorators = (editor, editorChange, operation) => {
+            if (editor) {
+                let startRow = editorChange.start.row;
+                let endRow = editorChange.end.row;
+                let range = new Range(startRow, 0, endRow - 1, 1 << 30);
+                editor.renderer.$scrollDecorator.addZone(range.start.row, range.end.row, operation);
+            }
+        };
+
+        this.chunks.forEach((lineChange) => {
+            updateDecorators(this.editorA, lineChange["old"], "delete");
+            updateDecorators(this.editorB, lineChange["new"], "insert");
+        });
+
+        //TODO: hack for decorators to be forcely updated until we got new change type in VirtualRenderer
+        //editor.renderer.$scrollDecorator.$updateDecorators(config);
+    }*/
 
     /**
      *

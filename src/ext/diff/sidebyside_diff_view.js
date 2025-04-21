@@ -3,9 +3,6 @@
 var Range = require("../../range").Range;
 var LineWidgets = require("../../line_widgets").LineWidgets;
 
-const {
-    AceDiff,
-} = require("./ace_diff");
 const { BaseDiffView } = require("./base_diff_view");
 const config = require("../../config");
 
@@ -39,8 +36,8 @@ class SideBySideDiffView extends BaseDiffView {
 
         this.syncSelectionMarkerA = new SyncSelectionMarker();
         this.syncSelectionMarkerB = new SyncSelectionMarker();
-        this.editorA.session.addDynamicMarker(this.syncSelectionMarkerA);
-        this.editorB.session.addDynamicMarker(this.syncSelectionMarkerB);
+        this.editorA.session.addDynamicMarker(this.syncSelectionMarkerA, true);
+        this.editorB.session.addDynamicMarker(this.syncSelectionMarkerB, true);
 
         this.addGutterDecorators();
 
@@ -142,7 +139,7 @@ class SideBySideDiffView extends BaseDiffView {
 
     updateSelectionMarker(marker, session, range) {
         marker.setRange(range);
-        session._signal("changeBackMarker");
+        session._signal("changeFrontMarker");
     }
 
     onScroll(e, session) {
@@ -150,7 +147,7 @@ class SideBySideDiffView extends BaseDiffView {
     }
 
     /**
-     * @param {import("ace/virtual_renderer").VirtualRenderer} renderer
+     * @param {import("../../virtual_renderer").VirtualRenderer} renderer
      */
     syncScroll(renderer) {
         if (this.$syncScroll == false) return;
@@ -185,7 +182,7 @@ class SideBySideDiffView extends BaseDiffView {
             var i = this.findChunkIndex(chunks, mid, isOrig);
             /**
              *
-             * @type {Partial<AceDiff>}
+             * @type {Partial<import("./ace_diff").AceDiff>}
              */
             var ch = chunks[i];
 
@@ -268,12 +265,13 @@ class SideBySideDiffView extends BaseDiffView {
     }
 
     /**
-     * @param {import("ace/editor").Editor} editor
+     * @param {import("../../editor").Editor} editor
      * @param {import("./ace_diff").DiffHighlight} marker
      */
     $attachSessionEventHandlers(editor, marker) {
         editor.session.on("changeScrollTop", this.onScroll);
         editor.session.on("changeFold", this.onChangeFold);
+        // @ts-expect-error
         editor.session.addDynamicMarker(marker);
         editor.selection.on("changeCursor", this.onSelect);
         editor.selection.on("changeSelection", this.onSelect);
@@ -285,7 +283,7 @@ class SideBySideDiffView extends BaseDiffView {
     }
 
     /**
-     * @param {import("ace/editor").Editor} editor
+     * @param {import("../../editor").Editor} editor
      * @param {import("./ace_diff").DiffHighlight} marker
      */
     $detachSessionHandlers(editor, marker) {
@@ -326,6 +324,7 @@ class SideBySideDiffView extends BaseDiffView {
 
 class SyncSelectionMarker {
     constructor() {
+        /**@type{number}*/this.id;
         this.type = "fullLine";
         this.clazz = "ace_diff selection";
     }
@@ -334,7 +333,7 @@ class SyncSelectionMarker {
     }
 
     /**
-     * @param {import("ace-code").Ace.Range} range
+     * @param {Range} range
      */
     setRange(range) {//TODO
         var newRange = range.clone();

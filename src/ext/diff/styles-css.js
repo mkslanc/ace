@@ -14,7 +14,7 @@ exports.cssText = `
     background-color: rgb(74 251 74 / 12%);/* #eaffea*/
 }
 .ace_diff.delete.inline {
-    background-color: rgb(251 74 74 / 12%); #ffecec; ;
+    background-color: rgb(251 74 74 / 12%);
 }
 .ace_diff.aligned_diff.inline {
     background: rgba(206, 194, 191, 0.26);
@@ -99,5 +99,4 @@ exports.cssText = `
     display: none;
 }
 
-
-`
+`;

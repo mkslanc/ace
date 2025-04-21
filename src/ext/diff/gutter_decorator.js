@@ -1,6 +1,10 @@
 var dom = require("../../lib/dom");
 
 class MinimalGutterDiffDecorator {
+    /**
+     * @param {import("../../editor").Editor} editor
+     * @param {number} type
+     */
     constructor(editor, type) {
         this.gutterClass ="ace_mini-diff_gutter-enabled";
         this.gutterCellsClasses = {
