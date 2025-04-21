@@ -4,7 +4,7 @@
  */
 
 var computeDiff = require("./vscode-diff/index").computeDiff;
-var {AceDiff} = require("./ace_diff");
+var {AceDiff} = require("ace/ext/diff/ace_diff");
 var Range = require("ace/range").Range;
 
 const {

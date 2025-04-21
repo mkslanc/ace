@@ -72,6 +72,7 @@
     var debugInline = false
     var ignoreTrimWhitespace = localStorage["ignoreTrimWhitespace"] == "true";
     var shouldFoldUnchanged = localStorage["foldunchanged"] == "true";
+    var provider = localStorage["provider"] || "vscode";
 
     document.getElementById("btn-whitespace").checked = ignoreTrimWhitespace;
     document.getElementById("btn-foldunchanged").checked = shouldFoldUnchanged;
@@ -143,7 +144,7 @@
         switch (mode) {
             case "inlineA":
                 
-                var {InlineDiffView} = require("diff/inline_diff_view");
+                var {InlineDiffView} = require("ace/ext/diff/inline_diff_view");
                 diffView = new InlineDiffView({
                     editorA, editorB,
                     showSideA: true
@@ -152,7 +153,7 @@
                 editorA.container.style.display = "";
                 break;
             case "inlineB":
-                var {InlineDiffView} = require("diff/inline_diff_view");
+                var {InlineDiffView} = require("ace/ext/diff/inline_diff_view");
                 diffView = new InlineDiffView({
                     editorA, editorB,
                     showSideA: false
@@ -161,7 +162,7 @@
                 if (!debugInline) editorA.container.style.display = "none";
                 break;
             case "split":
-                var {SideBySideDiffView} = require("diff/sidebyside_diff_view");
+                var {SideBySideDiffView} = require("ace/ext/diff/sidebyside_diff_view");
                 diffView = new SideBySideDiffView({editorA, editorB});
                 editorA.container.style.display = "";
                 editorB.container.style.display = "";
@@ -176,6 +177,8 @@
         if (diffView) {
             diffView.options.ignoreTrimWhitespace = ignoreTrimWhitespace
             diffView.options.foldUnchanged = shouldFoldUnchanged
+
+            changeProvider(provider);
         }
         diffView?.onInput();
     }
@@ -196,8 +199,8 @@
 
 
 
-    require(["diff/sidebyside_diff_view", "diff/inline_diff_view", "demo/kitchen-sink/util",
-        "demo/kitchen-sink/layout"], function () {
+    require(["ace/ext/diff/sidebyside_diff_view", "ace/ext/diff/inline_diff_view", "demo/kitchen-sink/util",
+        "demo/kitchen-sink/layout", "diff/diff_providers"], function () {
         var {DiffMatchPatchProvider, DefaultDiffProvider} = require("diff/diff_providers");
 
         changeProvider = (value) => {
@@ -236,6 +239,7 @@
         window.onbeforeunload = function () {
             localStorage.valueA = editorA.getValue();
             localStorage.valueB = editorB.getValue();
+            localStorage.provider = provider;
         };
 
         editorA.on("changeSelection", updateButtonsState);

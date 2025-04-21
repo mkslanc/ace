@@ -1,4 +1,4 @@
-_exports.cssText = `.ace_diff-container {
+exports.cssText = `.ace_diff-container {
     display: flex !important;
     flex-direction: row;
     position: relative;
@@ -167,6 +167,7 @@ _exports.cssText = `.ace_diff-container {
     right: 2px;
     content: "+";
     color: darkgray;
+    background-color: inherit;
 }
 
 .ace_mini-diff_gutter-enabled > .mini-diff-deleted:after {
@@ -174,12 +175,13 @@ _exports.cssText = `.ace_diff-container {
     right: 2px;
     content: "-";
     color: darkgray;
+    background-color: inherit;
 }
 .ace_fade-fold-widgets:hover .mini-diff-added:after {
-    display: none; ;
+    display: none;
 }
 .ace_fade-fold-widgets:hover .mini-diff-deleted:after {
-    display: none; ;
+    display: none;
 }
 
 .ace_layer.ace_marker-layer {

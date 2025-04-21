@@ -19,8 +19,8 @@ var {
     AceDiff,
     DiffHighlight,
 } = require("./ace_diff");
-const {EditSession} = require("ace/edit_session");
-const { DefaultDiffProvider } = require("../../../diff0/diff_providers");
+var {EditSession} = require("../../edit_session");
+// var { DefaultDiffProvider } = require("../../../diff0/diff_providers");
 
 var MinimalGutterDiffDecorator = require("./gutter_decorator").MinimalGutterDiffDecorator;
 
@@ -35,7 +35,12 @@ class BaseDiffView {
         /**@type AceDiff[]*/this.chunks;
         this.inlineDiffEditor = inlineDiffEditor || false;
         this.currentDiffIndex = 0;
-        this.diffProvider = new DefaultDiffProvider();
+        // this.diffProvider = new DefaultDiffProvider();
+        this.diffProvider = {
+            compute: function(val1, val2, options) {
+                return [];
+            }
+        }
         if (container) {
             this.container = container;
         }
