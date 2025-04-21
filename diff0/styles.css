@@ -103,7 +103,8 @@
 }
 
 .ace_diff.selection {
-    border-color: black;
+    border-bottom: 1px solid black;
+    border-top: 1px solid black;
     background: transparent;
 }
 
@@ -139,10 +140,10 @@
 }
 
 .ace_dark .ace_diff.selection {
-    border-color: white;
+    border-bottom: 1px solid white;
+    border-top: 1px solid white;
     background: transparent;
 }
-
 
 /* gutter changes */
 .ace_mini-diff_gutter-enabled > .mini-diff-added {

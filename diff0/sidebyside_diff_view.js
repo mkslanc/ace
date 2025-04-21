@@ -363,6 +363,7 @@ class SideBySideDiffView extends BaseDiffView {
         editor.off("mousewheel", this.onMouseWheel);
         editor.off("input", this.onInput);
         editor.session.removeMarker(this.syncSelectionMarkerA.id);
+        editor.session.removeMarker(this.syncSelectionMarkerB.id);
         editor.renderer["$scrollDecorator"].zones = [];
         editor.renderer["$scrollDecorator"].$updateDecorators(editor.renderer.layerConfig);
     }
