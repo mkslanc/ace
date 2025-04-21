@@ -44,7 +44,7 @@ class DiffMatchPatchProvider {
      */
     compute(originalLines, modifiedLines, opts) {
         const dmp = new diff_match_patch();
-        var a = this.$convertLinesToCharacterMap(originalLines, modifiedLines);
+        var a = this.$convertLinesToCharacterMap(originalLines, modifiedLines, opts.ignoreTrimWhitespace);
         var diff = dmp.diff_main(a.chars1, a.chars2, false);
         var chunks = [];
         var offset = {
@@ -159,14 +159,14 @@ class DiffMatchPatchProvider {
             ));
     }
 
-    $convertLinesToCharacterMap(text1, text2) {
+    $convertLinesToCharacterMap(text1, text2, trimWhitespace) {
         var lineHash = Object.create(null);
         var lineCount = 1;
 
         function diff_linesToCharsMunge_(lines) {
             var chars = "";
             for (var i = 0; i < lines.length; i++) {
-                var line = lines[i].trim();
+                var line = trimWhitespace ? lines[i].trim() : lines[i];
                 if (typeof lineHash[line] === "number") {
                     chars += String.fromCharCode(lineHash[line]);
                 } else {
