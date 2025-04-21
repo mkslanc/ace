@@ -1,4 +1,4 @@
-.ace_diff-container {
+_exports.cssText = `.ace_diff-container {
     display: flex !important;
     flex-direction: row;
     position: relative;
@@ -185,3 +185,4 @@
 .ace_layer.ace_marker-layer {
     overflow: visible!important; 
 }
+`

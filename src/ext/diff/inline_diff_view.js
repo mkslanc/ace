@@ -1,14 +1,14 @@
 "use strict";
 
-var LineWidgets = require("ace/line_widgets").LineWidgets;
-var TextLayer = require("ace/layer/text").Text;
-var MarkerLayer = require("ace/layer/marker").Marker;
-var Editor = require("ace/editor").Editor;
-var Renderer = require("ace/virtual_renderer").VirtualRenderer;
-var EditSession = require("ace/edit_session").EditSession;
+var LineWidgets = require("../../line_widgets").LineWidgets;
+var TextLayer = require("../../layer/text").Text;
+var MarkerLayer = require("../../layer/marker").Marker;
+var Editor = require("../../editor").Editor;
+var Renderer = require("../../virtual_renderer").VirtualRenderer;
+var EditSession = require("../../edit_session").EditSession;
 
 const {BaseDiffView} = require("./base_diff_view");
-const config = require("ace/config");
+const config = require("../../config");
 
 class InlineDiffView extends BaseDiffView {
     /**

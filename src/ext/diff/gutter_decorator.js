@@ -1,4 +1,4 @@
-var dom = require("ace/lib/dom");
+var dom = require("../../lib/dom");
 
 class MinimalGutterDiffDecorator {
     constructor(editor, type) {

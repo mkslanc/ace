@@ -1,26 +1,26 @@
 "use strict";
 
-var oop = require("ace/lib/oop");
-var Range = require("ace/range").Range;
-var dom = require("ace/lib/dom");
-var config = require("ace/config");
+var oop = require("../../lib/oop");
+var Range = require("../../range").Range;
+var dom = require("../../lib/dom");
+var config = require("../../config");
 
 // @ts-ignore
-var css = require("text!./styles.css");
+var css = require("./styles-css.js").cssText;
 
-var Editor = require("ace/editor").Editor;
-var Renderer = require("ace/virtual_renderer").VirtualRenderer;
-var UndoManager = require("ace/undomanager").UndoManager;
-require("ace/theme/textmate");
+var Editor = require("../../editor").Editor;
+var Renderer = require("../../virtual_renderer").VirtualRenderer;
+var UndoManager = require("../../undomanager").UndoManager;
+require("../../theme/textmate");
 // enable multiselect
-require("ace/multi_select");
+require("../../multi_select");
 
 var {
     AceDiff,
     DiffHighlight,
 } = require("./ace_diff");
 const {EditSession} = require("ace/edit_session");
-const { DefaultDiffProvider } = require("./diff_providers");
+const { DefaultDiffProvider } = require("../../../diff0/diff_providers");
 
 var MinimalGutterDiffDecorator = require("./gutter_decorator").MinimalGutterDiffDecorator;
 
@@ -265,7 +265,7 @@ class BaseDiffView {
     }
 
     /**
-     * @param {import("./diff_providers").DiffProvider} provider
+     * @param {import("../../../diff0/diff_providers").DiffProvider} provider
      */
     setProvider(provider) {
         this.diffProvider = provider;

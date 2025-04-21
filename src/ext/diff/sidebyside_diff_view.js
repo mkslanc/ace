@@ -1,13 +1,13 @@
 "use strict";
 
-var Range = require("ace/range").Range;
-var LineWidgets = require("ace/line_widgets").LineWidgets;
+var Range = require("../../range").Range;
+var LineWidgets = require("../../line_widgets").LineWidgets;
 
 const {
     AceDiff,
 } = require("./ace_diff");
 const { BaseDiffView } = require("./base_diff_view");
-const config = require("ace/config");
+const config = require("../../config");
 
 class SideBySideDiffView extends BaseDiffView {
     /**
