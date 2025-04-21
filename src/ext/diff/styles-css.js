@@ -1,80 +1,15 @@
-exports.cssText = `.ace_diff-container {
-    display: flex !important;
-    flex-direction: row;
-    position: relative;
-    overflow: hidden;
-}
-.ace_diff-container > .ace_editor {
-    flex-grow: 1;
-}
-
-/*
- * Gutter / Connector
- */
-.ace_diff-gutter {
-    width: 4em;
-    border-left: 1px solid #999999;
-    border-right: 1px solid #999999;
-    background-color: #efefef;
-    position: relative;
-}
-.ace_diff-connector {
-    stroke: rgba(0, 0, 0, 0.5);
-    fill: rgba(0, 0, 0, 0.15);
-}
-
+exports.cssText = `
 /*
  * Line Markers
  */
 .ace_diff {
     position: absolute;
     z-index: 20;
- 
 }
-
-/*
- * Text Markers
- */
-.ace_diff.insertStart {
-    height: 0px !important;
-    border-bottom: 0px;
-}
-.ace_diff.insertEnd {
-    border-top: 0px;
-    background-color: transparent !important;
-}
-
-.ace_diff.inline {
-    border-color: transparent;
-    background: none;
-}
- 
-
+  
 /*
  * Light Colors 
  */
-.ace_diff,
-.ace_diff.insert,
-.ace_diff.delete {
-    border-color: #87baf7;
-    background-color: rgba(211, 231, 255, 0.6);
-}
-.ace_diff-connector {
-    stroke: #87baf7;
-    fill: rgba(211, 231, 255, 0.6);
-}
-
-.ace_diff-gutter {
-    border-left: 1px solid rgba(0, 0, 0, 0.05);
-    border-right: 1px solid rgba(0, 0, 0, 0.05);
-    /*background-color: rgba(0, 0, 0, 0.03) !important;*/
-    background-color: #f1f1f1;
-}
-
-.ace_diff.inline {
-  /  border-color: transparent;
-   / background: none;
-}
 .ace_diff.insert.inline {
     background-color: rgb(74 251 74 / 12%);/* #eaffea*/
 }
@@ -83,13 +18,13 @@ exports.cssText = `.ace_diff-container {
 }
 .ace_diff.aligned_diff.inline {
     background: rgba(206, 194, 191, 0.26);
-    /*background: repeating-linear-gradient(*/
-    /*        45deg,          !* Angle of the stripes *!*/
-    /*        rgba(122, 111, 108, 0.26),        !* First color *!*/
-    /*        rgba(122, 111, 108, 0.26) 5px,   !* Stripe width *!*/
-    /*        #FFFFFF 5px,   !* Second color starts *!*/
-    /*        #FFFFFF 10px    !* Second stripe width *!*/
-    /*);*/
+    background: repeating-linear-gradient(
+                45deg,
+              rgba(122, 111, 108, 0.26),
+              rgba(122, 111, 108, 0.26) 5px,
+              #FFFFFF 5px,
+              #FFFFFF 10px 
+    );
 }
 
 .ace_diff.delete.inline.empty {
@@ -111,31 +46,11 @@ exports.cssText = `.ace_diff-container {
 /*
  * Dark Colors 
  */
-.ace_dark .ace_diff,
-.ace_dark .ace_diff.insert,
-.ace_dark .ace_diff.delete {
-    border-color: #458bdf;
-    background-color: rgba(7, 81, 169, 0.4);
-}
-.ace_dark .ace_diff-connector {
-    stroke: #458bdf;
-    fill: rgba(7, 81, 169, 0.4);
-}
 
-.ace_dark.ace_diff-gutter {
-    border-left: 1px solid rgba(255, 255, 255, 0.15);
-    border-right: 1px solid rgba(255, 255, 255, 0.15);
-    /*background-color: rgba(255, 255, 255, 0.10) !important;*/
-}
-
-.ace_dark .ace_diff.inline {
-    border-color: transparent;
-    background: none;
-}
-.ace_dark .ace_diff.insert.inline:after {
+.ace_dark .ace_diff.insert.inline {
     background-color: rgba(0, 130, 58, 0.45);
 }
-.ace_dark .ace_diff.delete.inline:after {
+.ace_dark .ace_diff.delete.inline {
     background-color: rgba(169, 46, 33, 0.55);
 }
 
@@ -144,13 +59,13 @@ exports.cssText = `.ace_diff-container {
     border-top: 1px solid white;
     background: transparent;
 }
+ 
 
-
+/* gutter changes */
 .ace_mini-diff_gutter-enabled > .ace_gutter-cell {
     background-color: #f0f0f0;
 }
 
-/* gutter changes */
 .ace_mini-diff_gutter-enabled > .mini-diff-added {
     background-color: #eaffea;
     border-left: 3px solid #00FF00;
@@ -184,7 +99,5 @@ exports.cssText = `.ace_diff-container {
     display: none;
 }
 
-.ace_layer.ace_marker-layer {
-    overflow: visible!important; 
-}
+
 `

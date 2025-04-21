@@ -243,37 +243,28 @@ class InlineDiffView extends BaseDiffView {
         filterLines(this.otherSession.bgTokenizer.lines, this.chunks);
 
         var session = this.otherSession;
+        var cloneRenderer = this.otherEditor.renderer;
 
         session.$scrollTop = renderer.scrollTop;
         session.$scrollLeft = renderer.scrollLeft;
 
-        var cloneRenderer = {
-            scrollTop: renderer.scrollTop,
-            scrollLeft: renderer.scrollLeft,
-            $size: renderer.$size,
-            session: session,
-            $horizScroll: renderer.$horizScroll,
-            $vScroll: renderer.$vScroll,
-            $padding: renderer.$padding,
-            scrollMargin: renderer.scrollMargin,
-            characterWidth: renderer.characterWidth,
-            lineHeight: renderer.lineHeight,
-            $computeLayerConfig: renderer.$computeLayerConfig,
-            $getLongestLine: renderer.$getLongestLine,
-            scrollBarV: {
-                setVisible: function () {}
-            },
-            scrollBarH: {
-                setVisible: function () {}
-            },
-            layerConfig: renderer.layerConfig,
-            $updateCachedSize: function () {},
-            _signal: function () {},
-        };
+        [
+            "characterWidth",
+            "lineHeight",
+            "scrollTop",
+            "scrollLeft",
+            "scrollMargin",
+            "$padding",
+            "$size",
+            "layerConfig",
+            "$horizScroll",
+            "$vScroll",
+        ]. forEach(function(prop) {
+            cloneRenderer[prop] = renderer[prop];
+        });
 
         cloneRenderer.$computeLayerConfig();
 
-        console.log(config, cloneRenderer.layerConfig);
         var newConfig = cloneRenderer.layerConfig;
         
         this.gutterLayer.update(newConfig);
