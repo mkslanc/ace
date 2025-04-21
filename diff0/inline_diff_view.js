@@ -197,7 +197,11 @@ class InlineDiffView extends BaseDiffView {
         this.activeEditor.renderer["$scrollDecorator"].$updateDecorators(this.activeEditor.renderer.layerConfig);
 
         this.textLayer.element.textContent = "";
+        this.textLayer.element.remove();
+        this.gutterLayer.element.textContent = "";
+        this.gutterLayer.element.remove();
         this.markerLayer.element.textContent = "";
+        this.markerLayer.element.remove();
 
         this.otherEditor.setSession(null)
         this.otherEditor.destroy();
