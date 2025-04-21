@@ -79,7 +79,7 @@ class DiffHighlight {
     static MAX_RANGES = 500;
 
     update(html, markerLayer, session, config) {
-        let side, dir, operation, opOperation;
+        let dir, operation, opOperation;
         var diffView = this.diffView;
         if (this.type === -1) {// original editor
             dir = "old";
@@ -123,13 +123,10 @@ class DiffHighlight {
             })
         }
 
-        //editor.renderer.$scrollDecorator.zones = [];
         lineChanges.forEach((lineChange) => {
             let startRow = lineChange[dir].start.row;
             let endRow = lineChange[dir].end.row;
             let range = new Range(startRow, 0, endRow - 1, 1 << 30);
-            // TODO: why does this throw an error?
-            // editor.renderer.$scrollDecorator.addZone(range.start.row, range.end.row, operation);
             if (startRow !== endRow) {
                 range = range.toScreenRange(session);
                 markerLayer.drawFullLineMarker(html, range, "ace_diff " + operation + " inline", config);
@@ -198,8 +195,6 @@ class DiffHighlight {
                 }
             }
         });
-        //TODO: hack for decorators to be forcely updated until we got new change type in VirtualRenderer
-        //editor.renderer.$scrollDecorator.$updateDecorators(config);
     }
 }
 
