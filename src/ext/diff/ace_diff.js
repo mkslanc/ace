@@ -1,6 +1,13 @@
-var Range = require("ace/range").Range;
+var Range = require("../../range").Range;
 
 class AceDiff {
+    /**
+     * @param {Range} originalRange
+     * @param {Range} modifiedRange
+     * @param {{originalStartLineNumber: number, originalStartColumn: number,
+     * originalEndLineNumber: number, originalEndColumn: number, modifiedStartLineNumber: number,
+     * modifiedStartColumn: number, modifiedEndLineNumber: number, modifiedEndColumn: number}[]} [charChanges]
+     */
     constructor(originalRange, modifiedRange, charChanges) {
         this.old = originalRange;
         this.new = modifiedRange;
@@ -64,6 +71,7 @@ class DiffHighlight {
      * @param type
      */
     constructor(diffView, type) {
+        /**@type{number}*/this.id;
         this.diffView = diffView;
         this.type = type;
     }

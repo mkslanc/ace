@@ -150,7 +150,7 @@ class SideBySideDiffView extends BaseDiffView {
     }
 
     /**
-     * @param {import("ace/virtual_renderer").VirtualRenderer} renderer
+     * @param {import("../../virtual_renderer").VirtualRenderer} renderer
      */
     syncScroll(renderer) {
         if (this.$syncScroll == false) return;
@@ -268,12 +268,13 @@ class SideBySideDiffView extends BaseDiffView {
     }
 
     /**
-     * @param {import("ace/editor").Editor} editor
+     * @param {import("../../editor").Editor} editor
      * @param {import("./ace_diff").DiffHighlight} marker
      */
     $attachSessionEventHandlers(editor, marker) {
         editor.session.on("changeScrollTop", this.onScroll);
         editor.session.on("changeFold", this.onChangeFold);
+        // @ts-expect-error
         editor.session.addDynamicMarker(marker);
         editor.selection.on("changeCursor", this.onSelect);
         editor.selection.on("changeSelection", this.onSelect);
@@ -285,7 +286,7 @@ class SideBySideDiffView extends BaseDiffView {
     }
 
     /**
-     * @param {import("ace/editor").Editor} editor
+     * @param {import("../../editor").Editor} editor
      * @param {import("./ace_diff").DiffHighlight} marker
      */
     $detachSessionHandlers(editor, marker) {
@@ -326,6 +327,7 @@ class SideBySideDiffView extends BaseDiffView {
 
 class SyncSelectionMarker {
     constructor() {
+        /**@type{number}*/this.id;
         this.type = "fullLine";
         this.clazz = "ace_diff selection";
     }
@@ -334,7 +336,7 @@ class SyncSelectionMarker {
     }
 
     /**
-     * @param {import("ace-code").Ace.Range} range
+     * @param {Range} range
      */
     setRange(range) {//TODO
         var newRange = range.clone();
