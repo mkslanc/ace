@@ -3,9 +3,6 @@
 var Range = require("../../range").Range;
 var LineWidgets = require("../../line_widgets").LineWidgets;
 
-const {
-    AceDiff,
-} = require("./ace_diff");
 const { BaseDiffView } = require("./base_diff_view");
 const config = require("../../config");
 
@@ -39,8 +36,8 @@ class SideBySideDiffView extends BaseDiffView {
 
         this.syncSelectionMarkerA = new SyncSelectionMarker();
         this.syncSelectionMarkerB = new SyncSelectionMarker();
-        this.editorA.session.addDynamicMarker(this.syncSelectionMarkerA);
-        this.editorB.session.addDynamicMarker(this.syncSelectionMarkerB);
+        this.editorA.session.addDynamicMarker(this.syncSelectionMarkerA, true);
+        this.editorB.session.addDynamicMarker(this.syncSelectionMarkerB, true);
 
         this.addGutterDecorators();
 
@@ -142,7 +139,7 @@ class SideBySideDiffView extends BaseDiffView {
 
     updateSelectionMarker(marker, session, range) {
         marker.setRange(range);
-        session._signal("changeBackMarker");
+        session._signal("changeFrontMarker");
     }
 
     onScroll(e, session) {
@@ -185,7 +182,7 @@ class SideBySideDiffView extends BaseDiffView {
             var i = this.findChunkIndex(chunks, mid, isOrig);
             /**
              *
-             * @type {Partial<AceDiff>}
+             * @type {Partial<import("./ace_diff").AceDiff>}
              */
             var ch = chunks[i];
 
