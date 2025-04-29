@@ -45,6 +45,8 @@ class InlineDiffView extends BaseDiffView {
         } else {
             this.editorA = this.otherEditor;
         }
+
+        this.initSyncSelectionMarkers();
         this.addGutterDecorators();
 
         this.otherEditor.renderer.setPadding(padding);
@@ -191,6 +193,7 @@ class InlineDiffView extends BaseDiffView {
         var selectionRange = selection.getRange();
         this.findChunkIndex(this.chunks, selectionRange.start.row, false);
         this.searchHighlight(selection);
+        this.syncSelect(selection);
     }
 
     $attachSessionsEventHandlers() {

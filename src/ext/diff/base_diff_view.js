@@ -62,8 +62,8 @@ class BaseDiffView {
             maxDiffs: 5000
         });
 
-        this.markerB = new DiffHighlight(this, 1);
         this.markerA = new DiffHighlight(this, -1);
+        this.markerB = new DiffHighlight(this, 1);
     }
 
     /**
@@ -131,7 +131,19 @@ class BaseDiffView {
         });
     }
 
-    addGutterDecorators() { 
+    initSyncSelectionMarkers() {
+        this.syncSelectionMarkerA = new SyncSelectionMarker();
+        this.syncSelectionMarkerB = new SyncSelectionMarker();
+        this.editorA.session.addDynamicMarker(this.syncSelectionMarkerA, true);
+        this.editorB.session.addDynamicMarker(this.syncSelectionMarkerB, true);
+    }
+
+    removeSyncSelectionMarkers() {
+        this.syncSelectionMarkerA && this.editorA.session.removeMarker(this.syncSelectionMarkerA.id);
+        this.syncSelectionMarkerB && this.editorB.session.removeMarker(this.syncSelectionMarkerB.id);
+    }
+
+    addGutterDecorators() {
         if (!this.gutterDecoratorA)
             this.gutterDecoratorA = new MinimalGutterDiffDecorator(this.editorA, -1);
         if (!this.gutterDecoratorB)
@@ -381,6 +393,7 @@ class BaseDiffView {
     }
 
     detach() {
+        this.removeSyncSelectionMarkers();
         this.$detachEventHandlers();
         this.$removeLineWidgets(this.sessionA);
         this.$removeLineWidgets(this.sessionB);
@@ -390,7 +403,7 @@ class BaseDiffView {
         this.sessionB.selection.clearSelection();
         this.editorA.renderer.off("beforeRender", this.realign);
         this.editorB.renderer.off("beforeRender", this.realign);
-        
+
     }
 
     $removeLineWidgets(session) {
@@ -580,6 +593,33 @@ class BaseDiffView {
         return i - 1;
     }
 
+    updateSelectionMarker(marker, session, range) {
+        marker.setRange(range);
+        session._signal("changeFrontMarker");
+    }
+
+    syncSelect(selection) {
+        var isSessionA = selection.session === this.diffSession.sessionA;
+        var selectionRange = selection.getRange();
+
+        var currSelectionRange = isSessionA ? this.selectionRangeA : this.selectionRangeB;
+        if (currSelectionRange && selectionRange.isEqual(currSelectionRange)) {
+            return;
+        }
+
+        var newRange = this.transformRange(selectionRange, isSessionA);
+        [this.selectionRangeA, this.selectionRangeB] = isSessionA
+            ? [selectionRange, newRange]
+            : [newRange, selectionRange];
+
+        if (this.options.syncSelections) {
+            (isSessionA ? this.editorB : this.editorA).session.selection.setSelectionRange(newRange);
+        }
+
+        this.updateSelectionMarker(this.syncSelectionMarkerA, this.diffSession.sessionA, this.selectionRangeA);
+        this.updateSelectionMarker(this.syncSelectionMarkerB, this.diffSession.sessionB, this.selectionRangeB);
+    }
+
     searchHighlight(selection) {
         if (this.options.syncSelections) {
             return;
@@ -589,6 +629,28 @@ class BaseDiffView {
             ? this.sessionB : this.sessionA;
         otherSession.highlight(currSession.$searchHighlight.regExp);
         otherSession._signal("changeBackMarker");
+    }
+}
+
+
+class SyncSelectionMarker {
+    constructor() {
+        /**@type{number}*/this.id;
+        this.type = "fullLine";
+        this.clazz = "ace_diff selection";
+    }
+
+    update(html, markerLayer, session, config) {
+    }
+
+    /**
+     * @param {Range} range
+     */
+    setRange(range) {//TODO
+        var newRange = range.clone();
+        newRange.end.column++;
+
+        this.range = newRange;
     }
 }
 
