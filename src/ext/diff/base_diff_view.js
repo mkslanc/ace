@@ -534,15 +534,24 @@ class BaseDiffView {
 
     gotoNext(dir) {
         var ace = this.$getFocusedEditor();
-        var sideA = ace == this.editorA;
+        var isOriginal = ace == this.editorA;
 
         var row = ace.selection.lead.row;
-        var i = this.findClosestChunkIndex(this.chunks, row, sideA);
-        var chunk = this.chunks[i + dir] || this.chunks[i];
+        var i = this.findClosestChunkIndex(this.chunks, row, isOriginal);
+
+        let side = isOriginal ? "old" : "new";
+
+        if (!this.isWithinDiff(row) && dir === -1) {
+            var chunk = this.chunks[i];
+            if (chunk[side].isEmpty()) {
+                chunk = this.chunks[i + dir];
+            }
+        } else {
+            var chunk = this.chunks[i + dir] || this.chunks[i];
+        }
 
         var scrollTop = ace.session.getScrollTop();
         if (chunk) {
-            let side = sideA ? "old" : "new";
             var range = chunk[side];
             var line = range.start.row;
             let column = 0;
@@ -570,7 +579,11 @@ class BaseDiffView {
     }
 
     firstDiffSelected() {
-        return this.currentDiffIndex <= 0;
+        var row = this.$getFocusedEditor().selection.lead.row;
+        if (this.isWithinDiff(row)) {
+            return this.currentDiffIndex == 0;
+        }
+        return this.currentDiffIndex < 0;
     }
 
     lastDiffSelected() {
@@ -582,7 +595,7 @@ class BaseDiffView {
         const idx = this.currentDiffIndex;
         if (idx >= 0 && idx < this.chunks.length) {
             const c = this.isSideA() ? this.chunks[idx].old : this.chunks[idx].new;
-            if (row >= c.start.row && row <= c.end.row) {
+            if (row >= c.start.row && row < c.end.row) {
                 exact = true;
             }
         }
