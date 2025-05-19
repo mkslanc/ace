@@ -366,7 +366,7 @@ class BaseDiffView {
         return row;
     }
 
-    /** 
+    /**
      * scroll locking
      * @abstract
      **/
@@ -375,6 +375,7 @@ class BaseDiffView {
     onChangeWrapLimit(e, session) {}
 
     onSelect(e, selection) {
+        this.focusedEditor = selection.session.$editor;
         this.searchHighlight(selection);
         this.syncSelect(selection);
     }
@@ -414,6 +415,12 @@ class BaseDiffView {
         this.updateSelectionMarker(this.syncSelectionMarkerB, this.sessionB, this.selectionRangeB);
     }
 
+    /**
+     *
+     * @param {SyncSelectionMarker} marker
+     * @param {EditSession} session
+     * @param {Range} range
+     */
     updateSelectionMarker(marker, session, range) {
         marker.setRange(range);
         session._signal("changeFrontMarker");
@@ -526,33 +533,60 @@ class BaseDiffView {
     }
 
     gotoNext(dir) {
-        var ace = this.activeEditor || this.editorA;
-        if (this.inlineDiffEditor) {
-            ace = this.editorA;
-        }
+        var ace = this.$getFocusedEditor();
         var sideA = ace == this.editorA;
 
         var row = ace.selection.lead.row;
-        var i = this.findChunkIndex(this.chunks, row, sideA);
+        var i = this.findClosestChunkIndex(this.chunks, row, sideA);
         var chunk = this.chunks[i + dir] || this.chunks[i];
 
         var scrollTop = ace.session.getScrollTop();
         if (chunk) {
-            var range = chunk[sideA ? "old" : "new"];
-            var line = Math.max(range.start.row, range.end.row - 1);
-            ace.selection.setRange(new Range(line, 0, line, 0));
+            let side = sideA ? "old" : "new";
+            var range = chunk[side];
+            var line = range.start.row;
+            let column = 0;
+            if (chunk.charChanges) {
+                column = chunk.charChanges[0][side].start.column;
+                line = chunk.charChanges[0][side].start.row;
+            }
+            ace.selection.setRange(new Range(line, column, line, column));
         }
         ace.renderer.scrollSelectionIntoView(ace.selection.lead, ace.selection.anchor, 0.5);
         ace.renderer.animateScrolling(scrollTop);
     }
 
+    $getFocusedEditor() {
+        if (this.inlineDiffEditor) {
+            return this.activeEditor;
+        }
+        else {
+            return this.focusedEditor || this.editorA;
+        }
+    }
+
+    isSideA() {
+        return this.$getFocusedEditor() == this.editorA;
+    }
 
     firstDiffSelected() {
-        return this.currentDiffIndex <= 1;
+        return this.currentDiffIndex <= 0;
     }
 
     lastDiffSelected() {
         return this.currentDiffIndex > this.chunks.length - 1;
+    }
+
+    isWithinDiff(row) {
+        let exact = false;
+        const idx = this.currentDiffIndex;
+        if (idx >= 0 && idx < this.chunks.length) {
+            const c = this.isSideA() ? this.chunks[idx].old : this.chunks[idx].new;
+            if (row >= c.start.row && row <= c.end.row) {
+                exact = true;
+            }
+        }
+        return exact;
     }
 
     /**
@@ -569,7 +603,7 @@ class BaseDiffView {
      * @return {import("ace-code").Ace.Point}
      */
     transformPosition(pos, isOriginal) {
-        var chunkIndex = this.findChunkIndex(this.chunks, pos.row, isOriginal);
+        var chunkIndex = this.findClosestChunkIndex(this.chunks, pos.row, isOriginal);
 
         var chunk = this.chunks[chunkIndex];
 
@@ -678,17 +712,24 @@ class BaseDiffView {
      * @param {boolean} isOriginal
      * @return {number}
      */
-    findChunkIndex(chunks, row, isOriginal) {
-        for (var i = 0; i < chunks.length; i++) {
-            var ch = chunks[i];
-            var chunk = isOriginal ? ch.old : ch.new;
-            if (chunk.end.row < row) continue;
-            if (chunk.start.row > row) break;
+    findClosestChunkIndex(chunks, row, isOriginal) {
+        let low = 0, high = chunks.length;
+
+        while (low < high) {
+            const mid = (low + high) >>> 1;
+            const chunk = isOriginal ? chunks[mid].old : chunks[mid].new;
+
+            if (chunk.start.row > row) {
+                high = mid;
+            }
+            else {
+                low = mid + 1;
+            }
         }
+        this.currentDiffIndex = low - 1;
+        this.rowWithinDiff = this.isWithinDiff(row);
 
-        this.currentDiffIndex = i;
-
-        return i - 1;
+        return low - 1;
     }
 
     searchHighlight(selection) {
@@ -771,7 +812,7 @@ config.defineOptions(BaseDiffView.prototype, "DiffView", {
             return this.editorA.getTheme();
         }
     },
-}); 
+});
 
 var emptyGutterRenderer =  {
     getText: function name(params) {
@@ -937,6 +978,12 @@ class SyncSelectionMarker {
         this.clazz = "ace_diff-active-line";
     }
 
+    /**
+     * @param {any} html
+     * @param {any} markerLayer
+     * @param {EditSession} session
+     * @param {any} config
+     */
     update(html, markerLayer, session, config) {
     }
 
