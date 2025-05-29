@@ -4,6 +4,7 @@ var LineWidgets = require("../../line_widgets").LineWidgets;
 
 var BaseDiffView = require("./base_diff_view").BaseDiffView;
 var config = require("../../config");
+const {Range} = require("../../range");
 
 class DiffView extends BaseDiffView {
     /**
@@ -27,6 +28,10 @@ class DiffView extends BaseDiffView {
         this.onChangeTheme = this.onChangeTheme.bind(this);
         this.onMouseWheel = this.onMouseWheel.bind(this);
         this.onScroll = this.onScroll.bind(this);
+        this.$focusEditor = this.$focusEditor.bind(this);
+        this.$syncMarkerUpdate = this.$syncMarkerUpdate.bind(this);
+        this.$attachSyncMarkerUpdate = this.$attachSyncMarkerUpdate.bind(this);
+        this.$detachSyncMarkerUpdate = this.$detachSyncMarkerUpdate.bind(this);
 
         this.$setupModels(diffModel);
 
@@ -151,6 +156,31 @@ class DiffView extends BaseDiffView {
         }
     }
 
+    $syncMarkerUpdate(ev) {
+        if (!ev.domEvent) return;
+        var pos = ev.editor.renderer.pixelToScreenCoordinates(ev.clientX, ev.clientY);
+
+        if (ev.type === "mousedown") {
+            this.$updatingSyncMarker = true;
+            this.$downPos = pos;
+            this.$attachSyncMarkerUpdate("mousemove");
+        }
+
+        let newRange = this.$downPos.row < pos.row ? Range.fromPoints(this.$downPos, pos) : Range.fromPoints(pos, this.$downPos);
+
+        if (ev.type === "mouseup") {
+            this.$downPos = null;
+            this.$detachSyncMarkerUpdate("mousemove");
+        }
+
+        this.updateSelectionMarker(this.syncSelectionMarkerA, this.sessionA, newRange, true);
+        this.updateSelectionMarker(this.syncSelectionMarkerB, this.sessionB, newRange, true);
+    }
+
+    $focusEditor(ev) {
+        this.focusedEditor = ev.editor;
+    }
+
     $attachSessionsEventHandlers() {
         this.$attachSessionEventHandlers(this.editorA, this.markerA);
         this.$attachSessionEventHandlers(this.editorB, this.markerB);
@@ -165,8 +195,7 @@ class DiffView extends BaseDiffView {
         editor.session.on("changeFold", this.onChangeFold);
         // @ts-expect-error
         editor.session.addDynamicMarker(marker);
-        editor.selection.on("changeCursor", this.onSelect);
-        editor.selection.on("changeSelection", this.onSelect);
+        editor.selection.on("changeCursor", this.onChangeCursor);
 
         editor.session.on("changeWrapLimit", this.onChangeWrapLimit);
         editor.session.on("changeWrapMode", this.onChangeWrapLimit);
@@ -185,8 +214,7 @@ class DiffView extends BaseDiffView {
         editor.session.off("changeScrollTop", this.onScroll);
         editor.session.off("changeFold", this.onChangeFold);
         editor.session.removeMarker(marker.id);
-        editor.selection.off("changeCursor", this.onSelect);
-        editor.selection.off("changeSelection", this.onSelect);
+        editor.selection.off("changeCursor", this.onChangeCursor);
 
         editor.session.off("changeWrapLimit", this.onChangeWrapLimit);
         editor.session.off("changeWrapMode", this.onChangeWrapLimit);
@@ -202,6 +230,25 @@ class DiffView extends BaseDiffView {
         this.editorA.on("input", this.onInput);
         this.editorB.on("input", this.onInput);
 
+        this.editorA.on("mousedown", this.$focusEditor);
+        this.editorB.on("mousedown", this.$focusEditor);
+
+        var mouseEvents = [
+            "mousedown",
+            "mouseup",
+        ];
+
+        mouseEvents.forEach(this.$attachSyncMarkerUpdate);
+    }
+
+    $attachSyncMarkerUpdate(event) {
+        this.editorA.on(event, this.$syncMarkerUpdate, true);
+        this.editorB.on(event, this.$syncMarkerUpdate, true);
+    }
+
+    $detachSyncMarkerUpdate(event) {
+        this.editorA.off(event, this.$syncMarkerUpdate);
+        this.editorB.off(event, this.$syncMarkerUpdate);
     }
 
     $detachEventHandlers() {
@@ -211,6 +258,13 @@ class DiffView extends BaseDiffView {
         this.editorB.renderer.off("themeChange", this.onChangeTheme);
         this.$detachEditorEventHandlers(this.editorA);
         this.$detachEditorEventHandlers(this.editorB);
+
+        var mouseEvents = [
+            "mousedown",
+            "mouseup",
+        ];
+
+        mouseEvents.forEach(this.$detachSyncMarkerUpdate);
     }
 
     $detachEditorEventHandlers(editor) {

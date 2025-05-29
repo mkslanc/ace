@@ -25,9 +25,7 @@ class InlineDiffView extends BaseDiffView {
     }
 
     init(diffModel) {
-        this.onSelect = this.onSelect.bind(this);
         this.onAfterRender = this.onAfterRender.bind(this);
-        
 
         this.$setupModels(diffModel);
         this.onChangeTheme();
@@ -157,7 +155,7 @@ class InlineDiffView extends BaseDiffView {
             }
             this.markerLayer.element.classList.add("ace_hidden_marker-layer");
             this.activeEditor.renderer.$markerBack.element.classList.remove("ace_hidden_marker-layer");
-            this.removeBracketHighlight(this.otherEditor); 
+            this.removeBracketHighlight(this.otherEditor);
         } else {
             this.activeEditor.selection.clearSelection();
             this.activeEditor.textInput.setHost(this.otherEditor);
@@ -174,7 +172,7 @@ class InlineDiffView extends BaseDiffView {
             }
             this.markerLayer.element.classList.remove("ace_hidden_marker-layer");
             this.activeEditor.renderer.$markerBack.element.classList.add("ace_hidden_marker-layer");
-            this.removeBracketHighlight(this.activeEditor); 
+            this.removeBracketHighlight(this.activeEditor);
         }
     }
 
@@ -299,8 +297,7 @@ class InlineDiffView extends BaseDiffView {
     $attachSessionEventHandlers(editor, marker) {
         editor.session.on("changeFold", this.onChangeFold);
         editor.session.addDynamicMarker(marker);
-        editor.selection.on("changeCursor", this.onSelect);
-        editor.selection.on("changeSelection", this.onSelect);
+        editor.selection.on("changeCursor", this.onChangeCursor);
     }
 
     $detachSessionsEventHandlers() {
@@ -313,8 +310,7 @@ class InlineDiffView extends BaseDiffView {
 
     $detachSessionHandlers(editor, marker) {
         editor.session.removeMarker(marker.id);
-        editor.selection.off("changeCursor", this.onSelect);
-        editor.selection.off("changeSelection", this.onSelect);
+        editor.selection.off("changeCursor", this.onChangeCursor);
         editor.session.off("changeFold", this.onChangeFold);
     }
 

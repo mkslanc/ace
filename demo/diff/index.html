@@ -40,6 +40,20 @@
             align-items: center;
         }
 
+        #diff-count {
+            display: flex;
+            align-self: center;
+            user-select: none;
+        }
+
+        .counter-active {
+            color: #000;
+        }
+
+        .counter-faded {
+            color: rgba(0, 0, 0, 0.29);
+        }
+
     </style>
 </head>
 <body>
@@ -87,7 +101,18 @@
             if (!diffView) return;
             tollbarButtons.prev.disabled = diffView.firstDiffSelected();
             tollbarButtons.next.disabled = diffView.lastDiffSelected();
+            updateDiffCounter();
         };
+
+        var updateDiffCounter = () => {
+            var counter = document.getElementById("diff-count");
+            if (diffView && diffView.cursorWithinDiff) {
+                counter.className = "counter-active";
+            } else {
+                counter.className = "counter-faded";
+            }
+            counter.innerText = `${diffView.currentDiffIndex + 1} of ${diffView.chunks.length}`;
+        }
 
         var goToNext = () => {
             diffView.gotoNext(1);
@@ -186,6 +211,7 @@
             var data = [
                 ["button", {ref: "prev", onclick: goToPrevious}, "<"],
                 ["button", {ref: "next", onclick: goToNext}, ">"],
+                ["span", {id: "diff-count"}, "0 of 0"],
 
                 optionBar.renderOptionControl("", {
                     path: "diffViewMode",
@@ -264,8 +290,13 @@
         editorA.on("changeSelection", updateButtonsState);
         editorB.on("changeSelection", updateButtonsState);
 
+        editorA.on("input", updateDiffCounter);
+        editorB.on("input", updateDiffCounter);
+
+
         drawToolbar();
         setMode(optionValues.diffViewMode);
+        splitEditor.resize();
     });
 
 </script>
