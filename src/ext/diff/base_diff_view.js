@@ -44,6 +44,7 @@ class BaseDiffView {
         /**@type{{sessionA: EditSession, sessionB: EditSession, chunks: DiffChunk[]}}*/this.diffSession;
         /**@type DiffChunk[]*/this.chunks;
         this.inlineDiffEditor = inlineDiffEditor || false;
+        this.cursorWithinDiff = false;
         this.currentDiffIndex = 0;
         this.diffProvider = dummyDiffProvider;
 
@@ -374,18 +375,17 @@ class BaseDiffView {
 
     onChangeCursor(e, selection) {
         this.searchHighlight(selection);
-        this.syncSelect(e, selection);
+        this.syncSelect(selection);
     }
 
-    syncSelect(e, selection) {
-        if (this.$updatingSelection) return;
-
+    syncSelect(selection) {
         var isOld = selection.session === this.sessionA;
         var selectionRange = selection.getRange();
 
         var currSelectionRange = isOld ? this.selectionRangeA : this.selectionRangeB;
-        if (currSelectionRange && selectionRange.isEqual(currSelectionRange))
+        if (this.$updatingSelection || (currSelectionRange && selectionRange.isEqual(currSelectionRange))) {
             return;
+        }
 
         if (isOld) {
             this.selectionRangeA = selectionRange;
@@ -393,37 +393,63 @@ class BaseDiffView {
             this.selectionRangeB = selectionRange;
         }
 
-        var newRange = this.transformRange(selectionRange, isOld);
-
         if (this.$syncSelections) {
+            var newRange = this.transformRange(selectionRange, isOld);
             this.$updatingSelection = true;
             (isOld ? this.editorB : this.editorA).session.selection.setSelectionRange(newRange);
             this.$updatingSelection = false;
         }
 
-        if (isOld) {
-            this.selectionRangeB = newRange;
-        } else {
-            this.selectionRangeA = newRange;
-        }
+        this.updateSyncMarker(selection);
+    }
 
+    updateSyncMarker(selection) {
         if (this.$updatingSyncMarker) {
             this.$updatingSyncMarker = false;
-        } else {
-            this.updateSelectionMarker(this.syncSelectionMarkerA, this.sessionA, this.selectionRangeA);
-            this.updateSelectionMarker(this.syncSelectionMarkerB, this.sessionB, this.selectionRangeB);
+            return;
         }
+
+        let editor = selection.session.$editor;
+        var selectionRange = selection.getRange();
+
+        let startCoords = editor.renderer.textToScreenCoordinates(selectionRange.start.row, selectionRange.start.column);
+        let endCoords = editor.renderer.textToScreenCoordinates(selectionRange.end.row, selectionRange.end.column);
+
+        var startPos = editor.renderer.pixelToScreenCoordinates(startCoords.pageX, startCoords.pageY);
+        var endPos = editor.renderer.pixelToScreenCoordinates(endCoords.pageX, endCoords.pageY);
+
+        this.updateSelectionMarkers(Range.fromPoints(startPos, endPos));
+
+        let pos = selection.anchor.row > selection.cursor.row ? startPos : endPos;
+
+        this.updateDiffPositionData(pos);
+    }
+
+    updateSelectionMarkers(range, isOld) {
+        this.updateSelectionMarker(this.syncSelectionMarkerA, this.sessionA, range);
+        this.updateSelectionMarker(this.syncSelectionMarkerB, this.sessionB, range);
     }
 
     /**
      *
      * @param {SyncSelectionMarker} marker
      * @param {EditSession} session
+     * @param {boolean} absolutePosition
      * @param {Range} range
      */
     updateSelectionMarker(marker, session, range, absolutePosition = false) {
         marker.setRange(range, absolutePosition);
         session._signal("changeFrontMarker");
+    }
+
+    updateDiffPositionData(pos) {
+        let aRow = this.sessionA.screenToDocumentRow(pos.row);
+        let bRow = this.sessionB.screenToDocumentRow(pos.row);
+        let closestA = this.findClosestChunkIndex(this.chunks, aRow, true);
+        let closestB = this.findClosestChunkIndex(this.chunks, bRow, false);
+        this.currentDiffIndex = Math.max(closestA, closestB);
+        let chunk = this.chunks[this.currentDiffIndex];
+        this.cursorWithinDiff = chunk && (chunk.includesRow(aRow, "old") || chunk.includesRow(bRow, "new"));
     }
 
     /**
@@ -533,32 +559,23 @@ class BaseDiffView {
     }
 
     gotoNext(dir) {
-        this.cursorWithinDiff = true;
-        var ace = this.$getFocusedEditor();
-        var isOriginal = ace == this.editorA;
-
-        var row = ace.selection.lead.row;
-        var i = this.findClosestChunkIndex(this.chunks, row, isOriginal);
-
+        let ace = this.$getFocusedEditor();
+        let isOriginal = ace === this.editorA;
         let side = isOriginal ? "old" : "new";
-
-        if (!this.isWithinDiff(row) && dir === -1) {
-            var chunk = this.chunks[i];
-            if (chunk[side].isEmpty()) {
-                chunk = this.chunks[i + dir];
-            }
-        } else {
-            var chunk = this.chunks[i + dir] || this.chunks[i];
+        if (this.cursorWithinDiff || dir === 1) {
+            this.currentDiffIndex += dir;
         }
 
-        var scrollTop = ace.session.getScrollTop();
+        let chunk = this.chunks[this.currentDiffIndex];
+
+        let scrollTop = ace.session.getScrollTop();
         if (chunk) {
             var range = chunk[side];
             var line = range.start.row;
             let column = 0;
             if (chunk.charChanges) {
-                column = chunk.charChanges[0][side].start.column;
                 line = chunk.charChanges[0][side].start.row;
+                column = chunk.charChanges[0][side].start.column;
             }
             this.$updatingSyncMarker = true;
             ace.selection.setRange(new Range(line, column, line, column));
@@ -576,8 +593,8 @@ class BaseDiffView {
                 newRange.end.row--;
             }
 
-            this.updateSelectionMarker(this.syncSelectionMarkerA, this.sessionA, newRange, true);
-            this.updateSelectionMarker(this.syncSelectionMarkerB, this.sessionB, newRange, true);
+            this.updateSelectionMarkers(newRange);
+            this.cursorWithinDiff = true;
         }
         ace.renderer.scrollSelectionIntoView(ace.selection.lead, ace.selection.anchor, 0.5);
         ace.renderer.animateScrolling(scrollTop);
@@ -603,18 +620,6 @@ class BaseDiffView {
     lastDiffSelected() {
         return this.currentDiffIndex >= this.chunks.length - 1;
     }
-
-    isWithinDiff(row) {
-        const idx = this.currentDiffIndex;
-        if (idx >= 0 && idx < this.chunks.length) {
-            const c = this.isSideA() ? this.chunks[idx].old : this.chunks[idx].new;
-            if (row >= c.start.row && row < c.end.row) {
-                return true;
-            }
-        }
-        return false;
-    }
-
 
     /**
      * @param {Range} range
@@ -753,9 +758,6 @@ class BaseDiffView {
                 low = mid + 1;
             }
         }
-        this.currentDiffIndex = low - 1;
-        // this.rowWithinDiff = this.isWithinDiff(row);
-
         return low - 1;
     }
 
@@ -774,9 +776,6 @@ class BaseDiffView {
         this.syncSelectionMarkerA = new SyncSelectionMarker();
         this.syncSelectionMarkerB = new SyncSelectionMarker();
 
-
-        this.syncSelectionMarkerA.currRenderer = this.editorA.renderer;
-        this.syncSelectionMarkerB.currRenderer = this.editorB.renderer;
         this.syncSelectionMarkerA.otherRenderer = this.editorB.renderer;
         this.syncSelectionMarkerB.otherRenderer = this.editorA.renderer;
 
@@ -877,6 +876,10 @@ class DiffChunk {
             ), new Range(m.modifiedStartLineNumber, m.modifiedStartColumn,
                 m.modifiedEndLineNumber, m.modifiedEndColumn
             )));
+    }
+
+    includesRow(row, side) {
+        return row >= this[side].start.row && row < this[side].end.row;
     }
 }
 
@@ -1014,6 +1017,7 @@ class SyncSelectionMarker {
         this.otherRenderer;
         this.type = "fullLine";
         this.clazz = "ace_diff-active-line";
+        this.range = null;
     }
 
     /**
@@ -1028,7 +1032,7 @@ class SyncSelectionMarker {
         const newRange = this._range;
         var newTop = this.otherRenderer.$markerFront.$getTop(newRange.start.row, config);
         var height = config.lineHeight;
-        if (newRange.start.row != newRange.end.row)
+        if (newRange.start.row !== newRange.end.row)
             height += this.otherRenderer.$markerFront.$getTop(newRange.end.row, config) - newTop;
 
         markerLayer.elt(this.clazz, "height:" + height + "px;" + "top:" + newTop + "px;" + "left:0;right:0;");
@@ -1037,17 +1041,12 @@ class SyncSelectionMarker {
     /**
      * @param {Range} range
      */
-    setRange(range, absolutePosition = false) {//TODO
+    setRange(range) {//TODO
         var newRange = range.clone();
-        newRange.end.column++;
+        if (newRange.isEmpty())
+            newRange.end.column++;
 
-        if (absolutePosition) {
-            this.range = null;
-            this._range = newRange;
-        } else {
-            this.range = newRange;
-            this._range = null;
-        }
+        this._range = newRange;
     }
 }
 

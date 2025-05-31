@@ -287,8 +287,8 @@
             localStorage.valueB = editorB.getValue();
         };
 
-        editorA.on("changeSelection", updateButtonsState);
-        editorB.on("changeSelection", updateButtonsState);
+        editorA.on("changeSelection", () => setTimeout(updateButtonsState, 0));
+        editorB.on("changeSelection", () => setTimeout(updateButtonsState, 0));
 
         editorA.on("input", updateDiffCounter);
         editorB.on("input", updateDiffCounter);
