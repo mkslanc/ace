@@ -2616,6 +2616,21 @@ class Editor {
             this.$search.set({start: range});
 
         var newRange = this.$search.find(this.session);
+
+        let textSelectionMarkerId = this.session.$textSelectionMarkerId;
+        if (newRange) {
+            const textMarkers = this.session.getTextMarkers();
+
+            if (!this.session.$textSelectionMarkerId) {
+                this.session.$textSelectionMarkerId = this.session.addTextMarker(newRange, "ace_inline_selection");
+            } else {
+                textMarkers[textSelectionMarkerId].range = newRange;
+            }
+        } else {
+            this.session.removeTextMarker(textSelectionMarkerId);
+            this.session.$textSelectionMarkerId = null;
+        }
+
         if (options.preventScroll)
             return newRange;
         if (newRange) {

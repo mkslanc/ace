@@ -22,6 +22,7 @@ require("./multi_select");
 require("./mode/folding/fold_mode");
 require("./theme/textmate");
 require("./ext/error_marker");
+require("./layer/text_markers");
 
 exports.config = require("./config");
 
