@@ -417,39 +417,114 @@ class Text {
         return screenColumn + value.length;
     }
 
-    textWidth(row, column) {
+    textWidth(row, column, targetChildIndex) {
         if (column === 0) return 0;
 
         var lineElement = this.element.children[row - this.config.firstRow];
         if (!lineElement) {
-            // Fallback for lines not currently rendered
             return column * this.config.characterWidth;
         }
 
-        return this.$measureLineToColumn(lineElement, column);
+        var isRtl = this.session.$bidiHandler && this.session.$bidiHandler.isRtlLine(row);
+
+        // Handle wrapped lines
+        /*if (this.config.lineHeight && lineElement.children.length > 1) {
+            return this.$measureWrappedLine(lineElement, row, column, targetChildIndex);
+        }*/
+
+        return this.$measureLineToColumn(lineElement, column, isRtl);
     }
 
-    $measureLineToColumn(lineElement, column) {
+    $findLastTextNode(element) {
+        var walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT, function (node) {
+            return node.nodeValue && node.nodeValue.length > 0 ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+        });
+        
+        var lastNode = null;
+        var currentNode;
+        while (currentNode = walker.nextNode()) {
+            lastNode = currentNode;
+        }
+        return lastNode;
+    }
+
+
+    $measureWrappedLine(lineElement, row, column, targetChildIndex) {
         if (!this.$scratchRange) {
             this.$scratchRange = document.createRange();
         }
 
         try {
-            var firstTextNode = this.$findFirstTextNode(lineElement);
-            if (!firstTextNode) {
-                return column * this.config.characterWidth;
+            var segmentStartCol = 0;
+            if (!targetChildIndex) {
+                var wrapData = this.session.getRowSplitData(row);
+                if (!wrapData || !wrapData.length) {
+                    return this.$measureLineToColumn(lineElement, column);
+                }
+
+                var segmentIndex = 0;
+
+                for (var i = 0; i < wrapData.length; i++) {
+                    if (column <= wrapData[i]) {
+                        segmentIndex = i;
+                        break;
+                    }
+                    segmentStartCol = wrapData[i];
+                }
+
+                var segmentElement = lineElement.children[segmentIndex] || lineElement;
+            } else {
+                var segmentElement = lineElement.children[targetChildIndex] || lineElement;
             }
 
+            var columnInSegment = column - segmentStartCol;
+            /*if (segmentIndex > 0) {
+                columnInSegment = columnInSegment + wrapData.indent;
+            }*/
+
+            return this.$measureLineToColumn(segmentElement, columnInSegment);
+        } catch (e) {
+            return column * this.config.characterWidth;
+        }
+    }
+
+    $measureLineToColumn(lineElement, column, isRtl) {
+        if (!this.$scratchRange) {
+            this.$scratchRange = document.createRange();
+        }
+
+        try {
             var position = this.$findColumnPosition(lineElement, column);
             if (!position) {
                 return column * this.config.characterWidth;
             }
 
-            this.$scratchRange.setStart(firstTextNode, 0);
-            this.$scratchRange.setEnd(position.node, position.offset);
+            if (isRtl) { //TODO: this is wrong
+                // For RTL, measure from column position to end of line
+                var lastTextNode = this.$findLastTextNode(lineElement);
+                if (!lastTextNode) {
+                    return column * this.config.characterWidth;
+                }
 
-            var rect = this.$scratchRange.getBoundingClientRect();
-            return rect.width;
+                this.$scratchRange.setStart(position.node, position.offset);
+                this.$scratchRange.setEnd(lastTextNode, lastTextNode.nodeValue.length);
+
+                var rect = this.$scratchRange.getBoundingClientRect();
+                var lineRect = lineElement.getBoundingClientRect();
+                return lineRect.width - rect.width;
+            } else {
+                // For LTR, measure from start of line to column position
+                var firstTextNode = this.$findFirstTextNode(lineElement);
+                if (!firstTextNode) {
+                    return column * this.config.characterWidth;
+                }
+
+                this.$scratchRange.setStart(firstTextNode, 0);
+                this.$scratchRange.setEnd(position.node, position.offset);
+
+                var rect = this.$scratchRange.getBoundingClientRect();
+                return rect.width;
+            }
         } catch (e) {
             return column * this.config.characterWidth;
         }

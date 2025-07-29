@@ -162,24 +162,24 @@ class Marker {
         var width = config.width - textWidth;
         extraStyle = extraStyle || "";
 
-        if (this.session.$bidiHandler.isBidiRow(range.start.row)) {
-           var range1 = range.clone();
-           range1.end.row = range1.start.row;
-           range1.end.column = this.session.getLine(range1.start.row).length;
-           this.drawBidiSingleLineMarker(stringBuilder, range1, clazz + " ace_br1 ace_start", config, null, extraStyle);
-        } else {
+        // if (this.session.$bidiHandler.isBidiRow(range.start.row)) {
+        //    var range1 = range.clone();
+        //    range1.end.row = range1.start.row;
+        //    range1.end.column = this.session.getLine(range1.start.row).length;
+        //    this.drawBidiSingleLineMarker(stringBuilder, range1, clazz + " ace_br1 ace_start", config, null, extraStyle);
+        // } else {
             this.elt(
                 clazz + " ace_br1 ace_start",
                 "height:"+ height+ "px;"+ "right:" + padding + "px;"+ "top:"+top+ "px;left:"+ left+ "px;" + (extraStyle || "")
             );
-        }
+        // }
         // from start of the last line to the selection end
-        if (this.session.$bidiHandler.isBidiRow(range.end.row)) {
-           var range1 = range.clone();
-           range1.start.row = range1.end.row;
-           range1.start.column = 0;
-           this.drawBidiSingleLineMarker(stringBuilder, range1, clazz + " ace_br12", config, null, extraStyle);
-        } else {
+        // if (this.session.$bidiHandler.isBidiRow(range.end.row)) {
+        //    var range1 = range.clone();
+        //    range1.start.row = range1.end.row;
+        //    range1.start.column = 0;
+        //    this.drawBidiSingleLineMarker(stringBuilder, range1, clazz + " ace_br12", config, null, extraStyle);
+        // } else {
             top = this.$getTop(range.end.row, config);
             var width = config.textWidth(range.end.row, range.end.column);
 
@@ -190,7 +190,7 @@ class Marker {
                 "top:"+ top+ "px;"+
                 "left:"+ padding+ "px;"+ (extraStyle || "")
             );
-        }
+        // }
         // all the complete lines
         height = (range.end.row - range.start.row - 1) * config.lineHeight;
         if (height <= 0)
@@ -218,8 +218,8 @@ class Marker {
      * @param {string} [extraStyle]
      */
     drawSingleLineMarker(stringBuilder, range, clazz, config, extraLength, extraStyle) {
-        if (this.session.$bidiHandler.isBidiRow(range.start.row))
-            return this.drawBidiSingleLineMarker(stringBuilder, range, clazz, config, extraLength, extraStyle);
+        // if (this.session.$bidiHandler.isBidiRow(range.start.row))
+        //     return this.drawBidiSingleLineMarker(stringBuilder, range, clazz, config, extraLength, extraStyle);
         var height = config.lineHeight;
         var textWidth = config.textWidth(range.start.row, range.start.column);
         var width = config.textWidth(range.start.row, range.end.column + (extraLength || 0)) - textWidth;

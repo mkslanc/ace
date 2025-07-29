@@ -2308,8 +2308,8 @@ class EditSession {
             }
         }
 
-        if (offsetX !== undefined && this.$bidiHandler.isBidiRow(row + splitIndex, docRow, splitIndex))
-            screenColumn = this.$bidiHandler.offsetToCol(offsetX);
+        /*if (offsetX !== undefined && this.$bidiHandler.isBidiRow(row + splitIndex, docRow, splitIndex))
+            screenColumn = this.$bidiHandler.offsetToCol(offsetX);*/ //TODO: bidi?
 
         docColumn += this.$getStringScreenWidth(line, screenColumn - wrapIndent)[1];
 

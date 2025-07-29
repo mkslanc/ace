@@ -1629,7 +1629,7 @@ class VirtualRenderer {
     /**
      * Convert pixel to column using binary search with actual measurements
      */
-    $pixelToColumn(row, offsetX) {
+    $pixelToColumn(row, offsetX, y) {
         if (row == undefined || offsetX <= 0) return 0;
 
         var lineText = this.session.getLine(row) || "";
@@ -1640,7 +1640,7 @@ class VirtualRenderer {
 
         while (left <= right) {
             var mid = Math.floor((left + right) / 2);
-            var width = this.$textLayer.textWidth(row, mid);
+            var width = this.$textLayer.textWidth(row, mid, null); //targetChildIndex
 
             if (width <= offsetX) {
                 bestCol = mid;
@@ -1707,24 +1707,12 @@ class VirtualRenderer {
         } else {
             canvasPos = this.scroller.getBoundingClientRect();
         }
-        var row = (y + this.scrollTop - canvasPos.top) / this.lineHeight;
+        var row = Math.floor((y + this.scrollTop - canvasPos.top) / this.lineHeight);
         var offsetX = x + this.scrollLeft - canvasPos.left - this.$padding;
 
         var docRow = this.session.screenToDocumentRow(row, 0);
 
-        var col = this.$pixelToColumn(docRow, offsetX);
-
-        var side = 0;
-/*        if (col > 0 && col < lineText.length) {
-            var actualPos = this.$columnToPixel(lineText, col);
-            var nextPos = this.$columnToPixel(lineText, col + 1);
-            var charWidth = nextPos - actualPos;
-            side = (offsetX - actualPos) > charWidth / 2 ? 1 : -1;
-        }*/
-        /*var offset = offsetX / this.characterWidth;
-        var col = this.$blockCursor ? Math.floor(offset) : Math.round(offset);
-
-        var row = Math.floor((y + this.scrollTop - canvasPos.top) / this.lineHeight);*/
+        var col = this.$pixelToColumn(docRow, offsetX, y);
 
         return this.session.screenToDocumentPosition(row, Math.max(col, 0), offsetX);
     }
@@ -1740,9 +1728,8 @@ class VirtualRenderer {
         var canvasPos = this.scroller.getBoundingClientRect();
         var pos = this.session.documentToScreenPosition(row, column);
 
-        var x = this.$padding + (this.session.$bidiHandler.isBidiRow(pos.row, row)
-             ? this.session.$bidiHandler.getPosLeft(pos.column)
-             : Math.round(pos.column * this.characterWidth));
+        var textWidth = this.$textLayer.textWidth(row, column);
+        var x = this.$padding + textWidth;
 
         var y = pos.row * this.lineHeight;
 

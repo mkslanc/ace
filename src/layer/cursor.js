@@ -183,15 +183,18 @@ class Cursor {
         if (!position)
             position = this.session.selection.getCursor();
         var pos = this.session.documentToScreenPosition(position);
-        /*var cursorLeft = this.$padding + (this.session.$bidiHandler.isBidiRow(pos.row, position.row)
-            ? this.session.$bidiHandler.getPosLeft(pos.column)
-            : pos.column * this.config.characterWidth);*/
-        var textWidth = this.config.textWidth(pos.row, position.column);
+
+        var textWidth = this.config.textWidth(position.row, position.column);
         var cursorLeft = this.$padding + textWidth;
 
-        var cursorTop = (pos.row - (onScreen ? this.config.firstRowScreen : 0)) *
-            this.config.lineHeight;
-        var cursorWidth = (this.config.textWidth(pos.row, pos.column + 1) - textWidth) || this.config.characterWidth;
+        var cursorTop = (pos.row - (onScreen ? this.config.firstRowScreen : 0)) * this.config.lineHeight;
+
+        var cursorWidth = this.config.characterWidth;
+        var line = this.session.getLine(position.row);
+        if (position.column < line.length) {
+            var nextWidth = this.config.textWidth(position.row, position.column + 1);
+            cursorWidth = nextWidth - textWidth;
+        }
 
         return {left : cursorLeft, top : cursorTop, width : cursorWidth};
     }
