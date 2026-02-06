@@ -520,8 +520,10 @@ env.editor.on("changeSession", function() {
     }
 });
 
-optionsPanel.setOption("doc", util.getOption("doc") || "JavaScript");
+var docName=  localStorage && localStorage.last_session ? "Draft" : util.getOption("doc") || "JavaScript";
+optionsPanel.setOption("doc", docName);
 for (var i in optionsPanel.options) {
+    if (i === "doc") continue;
     var value = util.getOption(i);
     if (value != undefined) {
         if ((i == "mode" || i == "theme") && !/[/]/.test(value))
@@ -726,3 +728,9 @@ function moveFocus() {
     else
         env.editor.focus();
 }
+
+window.onbeforeunload = function () {
+    if (env.editor && localStorage) {
+        localStorage.last_session = JSON.stringify(env.editor.session.toJSON());
+    }
+};

@@ -116,6 +116,15 @@ function prepareDocList(docs) {
 }
 
 function loadDoc(name, callback) {
+    if (name === "Draft" && localStorage.last_session) {
+        try {
+            var session = EditSession.fromJSON(localStorage.last_session);
+            session.name = "Draft";
+            return callback(session);
+        } catch (e) {
+            console.error(e);
+        }
+    }
     var doc = fileCache[name.toLowerCase()];
     if (!doc)
         return callback(null);
@@ -170,6 +179,10 @@ function upload(url, data, callback) {
         }
     };
     xhr.send(data);
+}
+
+if (localStorage && localStorage.last_session) {
+    docs["Draft"] = {name: "Draft", order: 1};
 }
 
 module.exports = {
