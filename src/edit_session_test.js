@@ -40,6 +40,15 @@ function assertArray(a, b) {
     }
 }
 
+function insert(row, column, text, session) {
+    session.insert({row: row, column: column}, text);
+
+    // Force the session to store all changes made to the document NOW
+    // on the undoManager's queue. Otherwise we can't undo in separate
+    // steps later.
+    session.$syncInformUndoManager();
+}
+
 module.exports = {
 
    "test: find matching opening bracket in Text mode" : function() {
@@ -722,55 +731,46 @@ module.exports = {
         var undoManager = session.getUndoManager();
         var foldLines = session.$foldData;
 
-        function insert(row, column, text) {
-            session.insert({row: row, column: column}, text);
-
-            // Force the session to store all changes made to the document NOW
-            // on the undoManager's queue. Otherwise we can't undo in separate
-            // steps later.
-            session.$syncInformUndoManager();
-        }
-
         var foldLine, fold, folds;
         // First line.
         foldLine = session.$foldData[0];
         fold = foldLine.folds[0];
 
-        insert(0, 0, "0");
-        assert.range(foldLine.range, 0, 14, 0, 19);
-        assert.range(fold.range,     0, 14, 0, 19);
-        insert(0, 14, "1");
-        assert.range(foldLine.range, 0, 15, 0, 20);
-        assert.range(fold.range,     0, 15, 0, 20);
-        insert(0, 20, "2");
-        assert.range(foldLine.range, 0, 15, 0, 20);
-        assert.range(fold.range,     0, 15, 0, 20);
+        insert(0, 0, "0", session);
+        assert.range(foldLine.range, 0, 14, 0, 19, session);
+        assert.range(fold.range,     0, 14, 0, 19, session);
+        insert(0, 14, "1", session);
+        assert.range(foldLine.range, 0, 15, 0, 20, session);
+        assert.range(fold.range,     0, 15, 0, 20, session);
+        insert(0, 20, "2", session);
+        assert.range(foldLine.range, 0, 15, 0, 20, session);
+        assert.range(fold.range,     0, 15, 0, 20, session);
 
         // Second line.
         foldLine = session.$foldData[1];
         folds = foldLine.folds;
 
-        insert(1, 0, "3");
+        insert(1, 0, "3", session);
         assert.range(foldLine.range, 1, 11, 2, 25);
         assert.range(folds[0].range, 1, 11, 2, 10);
         assert.range(folds[1].range, 2, 20, 2, 25);
 
-        insert(1, 11, "4");
+        insert(1, 11, "4", session);
         assert.range(foldLine.range, 1, 12, 2, 25);
         assert.range(folds[0].range, 1, 12, 2, 10);
         assert.range(folds[1].range, 2, 20, 2, 25);
 
-        insert(2, 10, "5");
+        insert(2, 10, "5", session);
         assert.range(foldLine.range, 1, 12, 2, 26);
         assert.range(folds[0].range, 1, 12, 2, 10);
         assert.range(folds[1].range, 2, 21, 2, 26);
 
-        insert(2, 21, "6");
+        insert(2, 21, "6", session);
         assert.range(foldLine.range, 1, 12, 2, 27);
         assert.range(folds[0].range, 1, 12, 2, 10);
         assert.range(folds[1].range, 2, 22, 2, 27);
 
-        insert(2, 27, "7");
+        insert(2, 27, "7", session);
         assert.range(foldLine.range, 1, 12, 2, 27);
         assert.range(folds[0].range, 1, 12, 2, 10);
         assert.range(folds[1].range, 2, 22, 2, 27);
@@ -821,38 +821,30 @@ module.exports = {
         var session = createFoldTestSession(),
             undoManager = session.getUndoManager(),
             foldLines = session.$foldData;
-        function insert(row, column, text) {
-            session.insert({row: row, column: column}, text);
-            // Force the session to store all changes made to the document NOW
-            // on the undoManager's queue. Otherwise we can't undo in separate
-            // steps later.
-            session.$syncInformUndoManager();
-        }
-
         var foldLines = session.$foldData;
 
-        insert(0, 0, "\nfo0");
+        insert(0, 0, "\nfo0", session);
         assert.equal(foldLines.length, 2);
         assert.range(foldLines[0].range, 1, 16, 1, 21);
         assert.range(foldLines[1].range, 2, 10, 3, 25);
 
-        insert(2, 0, "\nba1");
+        insert(2, 0, "\nba1", session);
         assert.equal(foldLines.length, 2);
         assert.range(foldLines[0].range, 1, 16, 1, 21);
         assert.range(foldLines[1].range, 3, 13, 4, 25);
 
-        insert(3, 10, "\nfo2");
+        insert(3, 10, "\nfo2", session);
         assert.equal(foldLines.length, 2);
         assert.range(foldLines[0].range, 1, 16, 1, 21);
         assert.range(foldLines[1].range, 4,  6, 5, 25);
 
-        insert(5, 10, "\nba3");
+        insert(5, 10, "\nba3", session);
         assert.equal(foldLines.length, 3);
         assert.range(foldLines[0].range, 1, 16, 1, 21);
         assert.range(foldLines[1].range, 4,  6, 5, 10);
         assert.range(foldLines[2].range, 6, 13, 6, 18);
 
-        insert(6, 18, "\nfo4");
+        insert(6, 18, "\nfo4", session);
         assert.equal(foldLines.length, 3);
         assert.range(foldLines[0].range, 1, 16, 1, 21);
         assert.range(foldLines[1].range, 4,  6, 5, 10);
@@ -1208,12 +1200,46 @@ module.exports = {
         session.setAnnotations([{row: 0, column: 0, text: "error test", type: "error"}]);
         session.setMode("ace/mode/javascript");
         session = EditSession.fromJSON(JSON.stringify(session));
-        
+
         assert.equal(session.getAnnotations().length, 1);
         assert.equal(session.getMode().$id, "ace/mode/javascript");
         assert.equal(session.getScrollLeft(), 0);
         assert.equal(session.getScrollTop(), 0);
         assert.equal(session.getValue(), "Hello world!");
+    },
+
+    "test: JSON serialization preserves undo/redo history": function() {
+        var session = new EditSession(["Hello world!"]);
+        session.setUndoManager(new UndoManager());
+        var document = session.getDocument();
+
+        insert(0, 12, " test1", session);
+        insert(0, 18, " test2", session);
+        insert(0, 24, " test3", session);
+
+        assert.equal(session.getValue(), "Hello world! test1 test2 test3");
+
+        session.getUndoManager().undo(session);
+        assert.equal(session.getValue(), "Hello world! test1 test2");
+
+        var serialized = JSON.stringify(session);
+        session = EditSession.fromJSON(serialized);
+
+        assert.equal(session.getValue(), "Hello world! test1 test2");
+
+        // Test undo stack works
+        session.getUndoManager().undo(session);
+        assert.equal(session.getValue(), "Hello world! test1");
+
+        session.getUndoManager().undo(session);
+        assert.equal(session.getValue(), "Hello world!");
+
+        // Test redo stack works
+        session.getUndoManager().redo(session);
+        assert.equal(session.getValue(), "Hello world! test1");
+
+        session.getUndoManager().redo(session);
+        assert.equal(session.getValue(), "Hello world! test1 test2");
     },
 
     "test: operation handling : when session it not attached to an editor": function(done) {

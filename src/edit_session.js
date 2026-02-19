@@ -337,8 +337,8 @@ class EditSession {
         if (typeof session == "string")
             session = JSON.parse(session);
         const undoManager = new UndoManager();
-        undoManager.$undoStack = session.history.undo;
-        undoManager.$redoStack = session.history.redo;
+        undoManager.$undoStack = session.history.$undoStack;
+        undoManager.$redoStack = session.history.$redoStack;
         undoManager.mark = session.history.mark;
         undoManager.$rev = session.history.rev;
 

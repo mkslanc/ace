@@ -352,24 +352,27 @@ doclist.addToHistory = function(name) {
         h.index = h.push(name);
     }
 };
+
+var initDoc = (session) => {
+    if (!session)
+        return;
+    doclist.addToHistory(session.name);
+    session = env.split.setSession(session);
+    whitespace.detectIndentation(session);
+    optionsPanel.render();
+    env.editor.focus();
+    if (diffView) {
+        diffView.detach()
+        diffView = createDiffView({
+            inline: "b",
+            editorB: editor,
+            valueA: editor.getValue()
+        });
+    }
+}
+
 doclist.pickDocument = function(name) {
-    doclist.loadDoc(name, function(session) {
-        if (!session)
-            return;
-        doclist.addToHistory(session.name);
-        session = env.split.setSession(session);
-        whitespace.detectIndentation(session);
-        optionsPanel.render();
-        env.editor.focus();
-        if (diffView) {
-            diffView.detach()
-            diffView = createDiffView({
-                inline: "b",
-                editorB: editor,
-                valueA: editor.getValue()
-            });
-        }
-    });
+    doclist.loadDoc(name, initDoc);
 };
 
 
@@ -423,7 +426,7 @@ optionsPanel.add({
             }
         },
         "Show diffs": {
-            position: 0,
+            position: -102,
             type: "buttonBar",
             path: "diffView",
             values: ["None", "Inline"],
@@ -520,8 +523,23 @@ env.editor.on("changeSession", function() {
     }
 });
 
-optionsPanel.setOption("doc", util.getOption("doc") || "JavaScript");
+if (localStorage.last_session) {
+    try {
+        var sessionObj = JSON.parse(localStorage.last_session);
+        var session = EditSession.fromJSON(localStorage.last_session);
+        session.name = sessionObj.name;
+        var cachedDoc = doclist.fileCache[session.name.toLowerCase()];
+        if (cachedDoc) {
+            cachedDoc.session = session;
+        }
+        initDoc(session);
+    } catch (e) {
+        console.error(e);
+        optionsPanel.setOption("doc", util.getOption("doc") || "JavaScript");
+    }
+}
 for (var i in optionsPanel.options) {
+    if (i === "doc") continue;
     var value = util.getOption(i);
     if (value != undefined) {
         if ((i == "mode" || i == "theme") && !/[/]/.test(value))
@@ -598,6 +616,32 @@ optionsPanelContainer.insertBefore(
         ]
     ]),
     optionsPanelContainer.children[1]
+);
+
+
+var resetSession = () => {
+    if (localStorage) {
+        localStorage.last_session = undefined;
+    }
+    try {
+        var session = env.editor.session;
+        if (session.name)
+            var cachedDoc = doclist.fileCache[session.name.toLowerCase()];
+        if (cachedDoc) {
+            cachedDoc.session = undefined;
+        }
+        optionsPanel.setOption("doc", util.getOption("doc") || "JavaScript");
+    } catch (e) {
+        console.error(e);
+    }
+};
+
+optionsPanelContainer.insertBefore(
+    dom.buildDom(["div", {style: "text-align:center;width: 100%"},
+        ["div", {},
+            ["button", {onclick: resetSession}, "Reset session"]],
+    ]),
+    optionsPanelContainer.children[0]
 );
 
 function openTestDialog(animateHeight) {
@@ -726,3 +770,11 @@ function moveFocus() {
     else
         env.editor.focus();
 }
+
+window.onbeforeunload = function () {
+    if (env.editor && localStorage) {
+        var sessionObj = env.editor.session.toJSON();
+        sessionObj.name = util.getOption("doc") || "JavaScript";
+        localStorage.last_session = JSON.stringify(sessionObj);
+    }
+};
