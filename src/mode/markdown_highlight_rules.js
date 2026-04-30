@@ -79,20 +79,13 @@ var MarkdownHighlightRules = function () {
         regex: /(^[ \t]*$)|(^(?=[ ]*[*+-](?:[ \t]+|$)|[ ]*\d+[.)](?:[ \t]+|$)))|(^(?=[ ]{4,}|\t))|(^(?= {1,3}\S))|(^(?=[^\s>]))/,
         ruleScope: "start listBlock lineStart"
     };
-    function getListMarkerToken(value, line) {
-        var indent = value.length;
-        if (/^\s{0,3}(?:[*+-]|\d{1,9}[.)])\s{5,}\S/.test(line)) {
-            indent = value.match(/^\s{0,3}(?:[*+-]|\d{1,9}[.)])\s/)[0].length;
-        }
-        return "markup.list." + indent;
-    }
     var codeFirstListBlockStartRule = {
         token: "markup.list",
         regex: /(^)([ ]{0,3})((?:[*+-]|\d{1,9}[.)])\s)(?=(\s{4,}\S))/,
         ruleScope: "start listBlock",
         onMatch: function(value, state, stack, line) {
             normalizeListStackForMarker(stack, (/^([ ]{0,3})/.exec(value) || ["", ""])[1].length);
-            return getListMarkerToken(value, line);
+            return this.token;
         },
         scope: listBlockScope
     };
@@ -102,7 +95,7 @@ var MarkdownHighlightRules = function () {
         ruleScope: "start listBlock",
         onMatch: function(value, state, stack, line) {
             normalizeListStackForMarker(stack, (/^([ ]{0,3})/.exec(value) || ["", ""])[1].length);
-            return getListMarkerToken(value, line);
+            return this.token;
         },
         scope: listBlockScope
     };
@@ -125,7 +118,7 @@ var MarkdownHighlightRules = function () {
         regex: /(^)([ ]{4,})((?:[*+-]|\d{1,9}[.)])(?:\s{1,4}|$))/,
         ruleScope: "start listBlock",
         onMatch: listBlockStartRule.onMatch,
-        scope: listBlockStartRule.scope
+        scope: listBlockScope
     };
 
     var blockquoteStartRule = { // block quote
@@ -432,19 +425,7 @@ var MarkdownHighlightRules = function () {
                 token: "constant.thematic_break",
                 regex: /^\s{0,2}(?:(?:\s?\*\s*){3,}|(?:\s?-\s*){3,}|(?:\s?_\s*){3,})\s*$/,
                 next: "start"
-            }, {
-                token: "markup.list",
-                regex: paragraphListBlockStartRule.regex,
-                ruleScope: paragraphListBlockStartRule.ruleScope,
-                onMatch: paragraphListBlockStartRule.onMatch,
-                scope: paragraphListBlockStartRule.scope
-            }, {
-                token: "markup.list",
-                regex: paragraphCodeFirstListBlockStartRule.regex,
-                ruleScope: paragraphCodeFirstListBlockStartRule.ruleScope,
-                onMatch: paragraphCodeFirstListBlockStartRule.onMatch,
-                scope: paragraphCodeFirstListBlockStartRule.scope
-            }, codeBlockStartRule, {
+            }, paragraphListBlockStartRule, paragraphCodeFirstListBlockStartRule, codeBlockStartRule, {
                 token: "support.function",
                 regex: /\s*(```[^`]*```)/
             }, {
@@ -689,9 +670,6 @@ var MarkdownHighlightRules = function () {
             }, createScopedRegionRule("punctuation", /</, "linkDestinationAngle", />/, "markup.underline"), {
                 token: "markup.underline",
                 regex: /(\S+)/,
-                onMatch: function(value) {
-                    return this.token;
-                }
             }, {
                 token: "text",
                 regex: /(?=[^<\s])/,
@@ -730,10 +708,7 @@ var MarkdownHighlightRules = function () {
                 next: "linkTitleInner"
             }, createScopedRegionRule("punctuation", /</, "linkDestinationInnerAngle", />/, "markup.underline"), {
                 token: "markup.underline",
-                regex: /([^\s\)]+)/,
-                onMatch: function(value) {
-                    return this.token;
-                }
+                regex: /([^\s\)]+)/
             }, {
                 token: "text",
                 regex: /(?=[^<\s\)])/,
@@ -859,16 +834,6 @@ var MarkdownHighlightRules = function () {
             }, { // list
                 token: "markup.list",
                 regex: /^\s{0,3}(?:[*+-]|\d{1,9}[.)])(?:\s{1,4}|$)/,
-                onMatch: function (value, state, stack, line) {
-                    var indent = value.length;
-                    if (/^\s{0,3}(?:[*+-]|\d{1,9}[.)])\s{5,}\S/.test(line)) {
-                        indent = value.match(/^\s{0,3}(?:[*+-]|\d{1,9}[.)])\s/)[0].length;
-                    }
-                    if (/^\s{0,3}(?:[*+-]|\d{1,9}[.)])\s*$/.test(line)) {
-                        indent = value.match(/^\s{0,3}(?:[*+-]|\d{1,9}[.)])/)[0].length + 1;
-                    }
-                    return this.token + "." + indent;
-                },
                 next: "listBlock"
             }, blockquoteStartRule, { // block quote
                 token: "string.blockquote",

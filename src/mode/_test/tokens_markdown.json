@@ -44,7 +44,7 @@
    "start"
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","  ","- "]},"start"],
-  ["markup.list.4","  - "],
+  ["markup.list","  - "],
   ["list","foo"]
 ],[
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","  ","- "]},"start"]
@@ -62,7 +62,7 @@
    "start"
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"start"],
-  ["markup.list.2","- "],
+  ["markup.list","- "],
   ["list","foo"]
 ],[
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"start"]
@@ -92,7 +92,7 @@
    "start"
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"start"],
-  ["markup.list.2","- "],
+  ["markup.list","- "],
   ["support.function","       foo"]
 ],[
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"start"]
@@ -118,15 +118,15 @@
    "start"
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":[""," ","- "]},"start"],
-  ["markup.list.3"," - "],
+  ["markup.list"," - "],
   ["list","foo"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","   ","- "]},"listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":[""," ","- "]},"start"],
-  ["markup.list.5","   - "],
+  ["markup.list","   - "],
   ["list","bar"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":[]},"listBlock","listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":[""," ","- "]},"start"],
-  ["markup.list.7","     - "],
+  ["markup.list","     - "],
   ["list","baz"]
 ],[
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":[]},"listBlock","listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":[""," ","- "]},"start"]
@@ -161,7 +161,7 @@
    "start"
 ],[
    ["codeSpan",{"kind":"scope","type":"begin","state":"codeSpan","outerScope":"support.function","innerScope":"support.function","contentToken":"support.function","token":"support.function","source":"(?<!`)\\1(?!`)","flags":"","captures":["`"]},"listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"start"],
-  ["markup.list.2","- "],
+  ["markup.list","- "],
   ["support.function","`one"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"start"],
@@ -363,14 +363,14 @@
    "start"
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"start"],
-  ["markup.list.2","- "],
+  ["markup.list","- "],
   ["list","foo"]
 ],[
    "start",
   ["constant.thematic_break","***"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"start"],
-  ["markup.list.2","- "],
+  ["markup.list","- "],
   ["list","bar"]
 ],[
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"start"]
@@ -416,14 +416,14 @@
    "start"
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","* "]},"start"],
-  ["markup.list.2","* "],
+  ["markup.list","* "],
   ["list","Foo"]
 ],[
    "start",
   ["constant.thematic_break","* * *"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","* "]},"start"],
-  ["markup.list.2","* "],
+  ["markup.list","* "],
   ["list","Bar"]
 ],[
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","* "]},"start"]
@@ -435,11 +435,11 @@
    "start"
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"start"],
-  ["markup.list.2","- "],
+  ["markup.list","- "],
   ["list","Foo"]
 ],[
    ["start"],
-  ["markup.list.2","- "],
+  ["markup.list","- "],
   ["constant.thematic_break","* * *"]
 ],[
    ["start"]
@@ -1022,7 +1022,7 @@
    "start"
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"start"],
-  ["markup.list.2","- "],
+  ["markup.list","- "],
   ["list","Foo"]
 ],[
    "start",
@@ -1107,7 +1107,7 @@
    "start"
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"start"],
-  ["markup.list.2","- "],
+  ["markup.list","- "],
   ["list","foo"]
 ],[
    "start",
@@ -1266,7 +1266,7 @@
    "start"
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","  ","- "]},"start"],
-  ["markup.list.4","  - "],
+  ["markup.list","  - "],
   ["list","foo"]
 ],[
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","  ","- "]},"start"]
@@ -1284,13 +1284,13 @@
    "start"
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","1.  "]},"start"],
-  ["markup.list.4","1.  "],
+  ["markup.list","1.  "],
   ["list","foo"]
 ],[
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","1.  "]},"start"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":[]},"listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","1.  "]},"start"],
-  ["markup.list.6","    - "],
+  ["markup.list","    - "],
   ["list","bar"]
 ],[
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":[]},"listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","1.  "]},"start"]
@@ -2722,7 +2722,7 @@
    "start"
 ],[
    ["#tmp","html","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"start"],
-  ["markup.list.2","- "],
+  ["markup.list","- "],
   ["meta.tag.punctuation.tag-open.xml","<"],
   ["meta.tag.tag-name.xml","div"],
   ["meta.tag.punctuation.tag-close.xml",">"]
@@ -4101,7 +4101,7 @@
   ["list","foo"]
 ],[
    "listBlock",
-  ["markup.list.2","- "],
+  ["markup.list","- "],
   ["list","bar"]
 ],[
    ["#tmp","listBlock",{}]
@@ -4402,7 +4402,7 @@
    "start"
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","1.  "]},"start"],
-  ["markup.list.4","1.  "],
+  ["markup.list","1.  "],
   ["list","A paragraph"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","1.  "]},"start"],
@@ -4429,7 +4429,7 @@
    "start"
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"start"],
-  ["markup.list.2","- "],
+  ["markup.list","- "],
   ["list","one"]
 ],[
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"start"]
@@ -4446,7 +4446,7 @@
    "start"
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"start"],
-  ["markup.list.2","- "],
+  ["markup.list","- "],
   ["list","one"]
 ],[
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"start"]
@@ -4463,7 +4463,7 @@
    "start"
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":[""," ","-    "]},"start"],
-  ["markup.list.6"," -    "],
+  ["markup.list"," -    "],
   ["list","one"]
 ],[
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":[""," ","-    "]},"start"]
@@ -4481,7 +4481,7 @@
    "start"
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":[""," ","-    "]},"start"],
-  ["markup.list.6"," -    "],
+  ["markup.list"," -    "],
   ["list","one"]
 ],[
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":[""," ","-    "]},"start"]
@@ -4554,7 +4554,7 @@
    "start"
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"start"],
-  ["markup.list.2","- "],
+  ["markup.list","- "],
   ["list","foo"]
 ],[
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"start"]
@@ -4573,7 +4573,7 @@
    "start"
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","1.  "]},"start"],
-  ["markup.list.4","1.  "],
+  ["markup.list","1.  "],
   ["list","foo"]
 ],[
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","1.  "]},"start"]
@@ -4607,7 +4607,7 @@
    "start"
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"start"],
-  ["markup.list.2","- "],
+  ["markup.list","- "],
   ["list","Foo"]
 ],[
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"start"]
@@ -4633,7 +4633,7 @@
    "start"
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","123456789. "]},"start"],
-  ["markup.list.11","123456789. "],
+  ["markup.list","123456789. "],
   ["list","ok"]
 ],[
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","123456789. "]},"start"]
@@ -4656,7 +4656,7 @@
    "start"
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","0. "]},"start"],
-  ["markup.list.3","0. "],
+  ["markup.list","0. "],
   ["list","ok"]
 ],[
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","0. "]},"start"]
@@ -4668,7 +4668,7 @@
    "start"
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","003. "]},"start"],
-  ["markup.list.5","003. "],
+  ["markup.list","003. "],
   ["list","ok"]
 ],[
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","003. "]},"start"]
@@ -4691,7 +4691,7 @@
    "start"
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"start"],
-  ["markup.list.2","- "],
+  ["markup.list","- "],
   ["list","foo"]
 ],[
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"start"]
@@ -4709,7 +4709,7 @@
    "start"
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","  ","10.  "]},"start"],
-  ["markup.list.7","  10.  "],
+  ["markup.list","  10.  "],
   ["list","foo"]
 ],[
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","  ","10.  "]},"start"]
@@ -4748,7 +4748,7 @@
    "start"
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","1. "]},"start"],
-  ["markup.list.3","1. "],
+  ["markup.list","1. "],
   ["support.function","    indented code"]
 ],[
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","1. "]},"start"]
@@ -4771,7 +4771,7 @@
    "start"
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","1. "]},"start"],
-  ["markup.list.3","1. "],
+  ["markup.list","1. "],
   ["support.function","     indented code"]
 ],[
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","1. "]},"start"]
@@ -4810,7 +4810,7 @@
    "start"
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","-    "]},"start"],
-  ["markup.list.5","-    "],
+  ["markup.list","-    "],
   ["list","foo"]
 ],[
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","-    "]},"start"]
@@ -4827,7 +4827,7 @@
    "start"
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","-  "]},"start"],
-  ["markup.list.3","-  "],
+  ["markup.list","-  "],
   ["list","foo"]
 ],[
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","-  "]},"start"]
@@ -4844,13 +4844,13 @@
    "start"
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","-"]},"start"],
-  ["markup.list.1","-"]
+  ["markup.list","-"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","-"]},"start"],
   ["list","  foo"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","-"]},"listBlock","start"],
-  ["markup.list.1","-"]
+  ["markup.list","-"]
 ],[
    ["githubblock",{},{},"listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","-"]},"listBlock","start"],
   ["support.function","  ```"]
@@ -4862,7 +4862,7 @@
   ["support.function","  ```"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","-"]},"listBlock","listBlock","start"],
-  ["markup.list.1","-"]
+  ["markup.list","-"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","-"]},"listBlock","listBlock","start"],
   ["indent","      "],
@@ -4877,7 +4877,7 @@
    "start"
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","-"]},"start"],
-  ["markup.list.1","-"]
+  ["markup.list","-"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","-"]},"start"],
   ["list","  foo"]
@@ -4891,7 +4891,7 @@
    "start"
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","-"]},"start"],
-  ["markup.list.1","-"]
+  ["markup.list","-"]
 ],[
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","-"]},"start"]
 ],[
@@ -4907,14 +4907,14 @@
    "start"
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"start"],
-  ["markup.list.2","- "],
+  ["markup.list","- "],
   ["list","foo"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","-"]},"listBlock","start"],
-  ["markup.list.1","-"]
+  ["markup.list","-"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"listBlock","listBlock","start"],
-  ["markup.list.2","- "],
+  ["markup.list","- "],
   ["list","bar"]
 ],[
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"listBlock","listBlock","start"]
@@ -4926,14 +4926,14 @@
    "start"
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"start"],
-  ["markup.list.2","- "],
+  ["markup.list","- "],
   ["list","foo"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","-"]},"listBlock","start"],
-  ["markup.list.1","-"]
+  ["markup.list","-"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"listBlock","listBlock","start"],
-  ["markup.list.2","- "],
+  ["markup.list","- "],
   ["list","bar"]
 ],[
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"listBlock","listBlock","start"]
@@ -4945,14 +4945,14 @@
    "start"
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","1. "]},"start"],
-  ["markup.list.3","1. "],
+  ["markup.list","1. "],
   ["list","foo"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","2."]},"listBlock","start"],
-  ["markup.list.2","2."]
+  ["markup.list","2."]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","3. "]},"listBlock","listBlock","start"],
-  ["markup.list.3","3. "],
+  ["markup.list","3. "],
   ["list","bar"]
 ],[
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","3. "]},"listBlock","listBlock","start"]
@@ -4964,7 +4964,7 @@
    "start"
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","*"]},"start"],
-  ["markup.list.1","*"]
+  ["markup.list","*"]
 ],[
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","*"]},"start"]
 ],[
@@ -4997,7 +4997,7 @@
    "start"
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":[""," ","1.  "]},"start"],
-  ["markup.list.5"," 1.  "],
+  ["markup.list"," 1.  "],
   ["list","A paragraph"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":[""," ","1.  "]},"start"],
@@ -5024,7 +5024,7 @@
    "start"
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","  ","1.  "]},"start"],
-  ["markup.list.6","  1.  "],
+  ["markup.list","  1.  "],
   ["list","A paragraph"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","  ","1.  "]},"start"],
@@ -5051,7 +5051,7 @@
    "start"
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","   ","1.  "]},"start"],
-  ["markup.list.7","   1.  "],
+  ["markup.list","   1.  "],
   ["list","A paragraph"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","   ","1.  "]},"start"],
@@ -5102,7 +5102,7 @@
    "start"
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","  ","1.  "]},"start"],
-  ["markup.list.6","  1.  "],
+  ["markup.list","  1.  "],
   ["list","A paragraph"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","  ","1.  "]},"start"],
@@ -5128,7 +5128,7 @@
    "start"
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","  ","1.  "]},"start"],
-  ["markup.list.6","  1.  "],
+  ["markup.list","  1.  "],
   ["list","A paragraph"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","  ","1.  "]},"start"],
@@ -5176,19 +5176,19 @@
    "start"
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"start"],
-  ["markup.list.2","- "],
+  ["markup.list","- "],
   ["list","foo"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","  ","- "]},"listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"start"],
-  ["markup.list.4","  - "],
+  ["markup.list","  - "],
   ["list","bar"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":[]},"listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","  ","- "]},"listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"start"],
-  ["markup.list.6","    - "],
+  ["markup.list","    - "],
   ["list","baz"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":[]},"listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":[]},"listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","  ","- "]},"listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"start"],
-  ["markup.list.8","      - "],
+  ["markup.list","      - "],
   ["list","boo"]
 ],[
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":[]},"listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":[]},"listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","  ","- "]},"listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"start"]
@@ -5200,19 +5200,19 @@
    "start"
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"start"],
-  ["markup.list.2","- "],
+  ["markup.list","- "],
   ["list","foo"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":[""," ","- "]},"listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"start"],
-  ["markup.list.3"," - "],
+  ["markup.list"," - "],
   ["list","bar"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","  ","- "]},"listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":[""," ","- "]},"listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"start"],
-  ["markup.list.4","  - "],
+  ["markup.list","  - "],
   ["list","baz"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","   ","- "]},"listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","  ","- "]},"listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":[""," ","- "]},"listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"start"],
-  ["markup.list.5","   - "],
+  ["markup.list","   - "],
   ["list","boo"]
 ],[
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","   ","- "]},"listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","  ","- "]},"listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":[""," ","- "]},"listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"start"]
@@ -5224,11 +5224,11 @@
    "start"
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","10) "]},"start"],
-  ["markup.list.4","10) "],
+  ["markup.list","10) "],
   ["list","foo"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":[]},"listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","10) "]},"start"],
-  ["markup.list.6","    - "],
+  ["markup.list","    - "],
   ["list","bar"]
 ],[
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":[]},"listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","10) "]},"start"]
@@ -5240,11 +5240,11 @@
    "start"
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","10) "]},"start"],
-  ["markup.list.4","10) "],
+  ["markup.list","10) "],
   ["list","foo"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","   ","- "]},"listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","10) "]},"start"],
-  ["markup.list.5","   - "],
+  ["markup.list","   - "],
   ["list","bar"]
 ],[
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","   ","- "]},"listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","10) "]},"start"]
@@ -5256,7 +5256,7 @@
    "start"
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"start"],
-  ["markup.list.2","- "],
+  ["markup.list","- "],
   ["list","- foo"]
 ],[
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"start"]
@@ -5268,7 +5268,7 @@
    "start"
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","1. "]},"start"],
-  ["markup.list.3","1. "],
+  ["markup.list","1. "],
   ["list","- 2. foo"]
 ],[
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","1. "]},"start"]
@@ -5280,12 +5280,12 @@
    "start"
 ],[
    ["#tmp","start","header","listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"start"],
-  ["markup.list.2","- "],
+  ["markup.list","- "],
   ["markup.heading.1","#"],
   ["heading"," Foo"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"start","header","listBlock","start"],
-  ["markup.list.2","- "],
+  ["markup.list","- "],
   ["list","Bar"]
 ],[
    ["#tmp","start","header","listBlock","start"],
@@ -5303,15 +5303,15 @@
    "start"
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"start"],
-  ["markup.list.2","- "],
+  ["markup.list","- "],
   ["list","foo"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"listBlock","start"],
-  ["markup.list.2","- "],
+  ["markup.list","- "],
   ["list","bar"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","+ "]},"listBlock","listBlock","start"],
-  ["markup.list.2","+ "],
+  ["markup.list","+ "],
   ["list","baz"]
 ],[
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","+ "]},"listBlock","listBlock","start"]
@@ -5323,15 +5323,15 @@
    "start"
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","1. "]},"start"],
-  ["markup.list.3","1. "],
+  ["markup.list","1. "],
   ["list","foo"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","2. "]},"listBlock","start"],
-  ["markup.list.3","2. "],
+  ["markup.list","2. "],
   ["list","bar"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","3) "]},"listBlock","listBlock","start"],
-  ["markup.list.3","3) "],
+  ["markup.list","3) "],
   ["list","baz"]
 ],[
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","3) "]},"listBlock","listBlock","start"]
@@ -5346,11 +5346,11 @@
   ["text","Foo"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"paragraph"],
-  ["markup.list.2","- "],
+  ["markup.list","- "],
   ["list","bar"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"listBlock","paragraph"],
-  ["markup.list.2","- "],
+  ["markup.list","- "],
   ["list","baz"]
 ],[
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"listBlock","paragraph"]
@@ -5379,7 +5379,7 @@
   ["text","The number of windows in my house is"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","1.  "]},"paragraph"],
-  ["markup.list.4","1.  "],
+  ["markup.list","1.  "],
   ["list","The number of doors is 6."]
 ],[
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","1.  "]},"paragraph"]
@@ -5391,13 +5391,13 @@
    "start"
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"start"],
-  ["markup.list.2","- "],
+  ["markup.list","- "],
   ["list","foo"]
 ],[
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"start"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"listBlock","start"],
-  ["markup.list.2","- "],
+  ["markup.list","- "],
   ["list","bar"]
 ],[
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"listBlock","start"]
@@ -5405,7 +5405,7 @@
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"listBlock","start"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"listBlock","listBlock","start"],
-  ["markup.list.2","- "],
+  ["markup.list","- "],
   ["list","baz"]
 ],[
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"listBlock","listBlock","start"]
@@ -5417,15 +5417,15 @@
    "start"
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"start"],
-  ["markup.list.2","- "],
+  ["markup.list","- "],
   ["list","foo"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","  ","- "]},"listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"start"],
-  ["markup.list.4","  - "],
+  ["markup.list","  - "],
   ["list","bar"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":[]},"listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","  ","- "]},"listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"start"],
-  ["markup.list.6","    - "],
+  ["markup.list","    - "],
   ["list","baz"]
 ],[
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":[]},"listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","  ","- "]},"listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"start"]
@@ -5445,11 +5445,11 @@
    "start"
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"start"],
-  ["markup.list.2","- "],
+  ["markup.list","- "],
   ["list","foo"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"listBlock","start"],
-  ["markup.list.2","- "],
+  ["markup.list","- "],
   ["list","bar"]
 ],[
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"listBlock","start"]
@@ -5460,11 +5460,11 @@
    ["start"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"start","start"],
-  ["markup.list.2","- "],
+  ["markup.list","- "],
   ["list","baz"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"listBlock","start","start"],
-  ["markup.list.2","- "],
+  ["markup.list","- "],
   ["list","bim"]
 ],[
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"listBlock","start","start"]
@@ -5476,7 +5476,7 @@
    "start"
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","-   "]},"start"],
-  ["markup.list.4","-   "],
+  ["markup.list","-   "],
   ["list","foo"]
 ],[
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","-   "]},"start"]
@@ -5488,7 +5488,7 @@
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","-   "]},"start"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","-   "]},"listBlock","start"],
-  ["markup.list.4","-   "],
+  ["markup.list","-   "],
   ["list","foo"]
 ],[
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","-   "]},"listBlock","start"]
@@ -5510,31 +5510,31 @@
    "start"
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"start"],
-  ["markup.list.2","- "],
+  ["markup.list","- "],
   ["list","a"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":[""," ","- "]},"listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"start"],
-  ["markup.list.3"," - "],
+  ["markup.list"," - "],
   ["list","b"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","  ","- "]},"listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":[""," ","- "]},"listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"start"],
-  ["markup.list.4","  - "],
+  ["markup.list","  - "],
   ["list","c"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","   ","- "]},"listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","  ","- "]},"listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":[""," ","- "]},"listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"start"],
-  ["markup.list.5","   - "],
+  ["markup.list","   - "],
   ["list","d"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","  ","- "]},"listBlock","listBlock","listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":[""," ","- "]},"listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"start"],
-  ["markup.list.4","  - "],
+  ["markup.list","  - "],
   ["list","e"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":[""," ","- "]},"listBlock","listBlock","listBlock","listBlock","listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"start"],
-  ["markup.list.3"," - "],
+  ["markup.list"," - "],
   ["list","f"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"listBlock","listBlock","listBlock","listBlock","listBlock","listBlock","start"],
-  ["markup.list.2","- "],
+  ["markup.list","- "],
   ["list","g"]
 ],[
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"listBlock","listBlock","listBlock","listBlock","listBlock","listBlock","start"]
@@ -5546,19 +5546,19 @@
    "start"
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","1. "]},"start"],
-  ["markup.list.3","1. "],
+  ["markup.list","1. "],
   ["list","a"]
 ],[
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","1. "]},"start"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","  ","2. "]},"listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","1. "]},"start"],
-  ["markup.list.5","  2. "],
+  ["markup.list","  2. "],
   ["list","b"]
 ],[
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","  ","2. "]},"listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","1. "]},"start"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","   ","3. "]},"listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","  ","2. "]},"listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","1. "]},"start"],
-  ["markup.list.6","   3. "],
+  ["markup.list","   3. "],
   ["list","c"]
 ],[
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","   ","3. "]},"listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","  ","2. "]},"listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","1. "]},"start"]
@@ -5570,23 +5570,23 @@
    "start"
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"start"],
-  ["markup.list.2","- "],
+  ["markup.list","- "],
   ["list","a"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":[""," ","- "]},"listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"start"],
-  ["markup.list.3"," - "],
+  ["markup.list"," - "],
   ["list","b"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","  ","- "]},"listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":[""," ","- "]},"listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"start"],
-  ["markup.list.4","  - "],
+  ["markup.list","  - "],
   ["list","c"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","   ","- "]},"listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","  ","- "]},"listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":[""," ","- "]},"listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"start"],
-  ["markup.list.5","   - "],
+  ["markup.list","   - "],
   ["list","d"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":[]},"listBlock","listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","  ","- "]},"listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":[""," ","- "]},"listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"start"],
-  ["markup.list.6","    - "],
+  ["markup.list","    - "],
   ["list","e"]
 ],[
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":[]},"listBlock","listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","  ","- "]},"listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":[""," ","- "]},"listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"start"]
@@ -5598,19 +5598,19 @@
    "start"
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","1. "]},"start"],
-  ["markup.list.3","1. "],
+  ["markup.list","1. "],
   ["list","a"]
 ],[
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","1. "]},"start"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","  ","2. "]},"listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","1. "]},"start"],
-  ["markup.list.5","  2. "],
+  ["markup.list","  2. "],
   ["list","b"]
 ],[
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","  ","2. "]},"listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","1. "]},"start"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":[]},"listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","  ","2. "]},"listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","1. "]},"start"],
-  ["markup.list.7","    3. "],
+  ["markup.list","    3. "],
   ["list","c"]
 ],[
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":[]},"listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","  ","2. "]},"listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","1. "]},"start"]
@@ -5622,17 +5622,17 @@
    "start"
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"start"],
-  ["markup.list.2","- "],
+  ["markup.list","- "],
   ["list","a"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"listBlock","start"],
-  ["markup.list.2","- "],
+  ["markup.list","- "],
   ["list","b"]
 ],[
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"listBlock","start"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"listBlock","listBlock","start"],
-  ["markup.list.2","- "],
+  ["markup.list","- "],
   ["list","c"]
 ],[
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"listBlock","listBlock","start"]
@@ -5644,16 +5644,16 @@
    "start"
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","* "]},"start"],
-  ["markup.list.2","* "],
+  ["markup.list","* "],
   ["list","a"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","*"]},"listBlock","start"],
-  ["markup.list.1","*"]
+  ["markup.list","*"]
 ],[
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","*"]},"listBlock","start"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","* "]},"listBlock","listBlock","start"],
-  ["markup.list.2","* "],
+  ["markup.list","* "],
   ["list","c"]
 ],[
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","* "]},"listBlock","listBlock","start"]
@@ -5665,11 +5665,11 @@
    "start"
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"start"],
-  ["markup.list.2","- "],
+  ["markup.list","- "],
   ["list","a"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"listBlock","start"],
-  ["markup.list.2","- "],
+  ["markup.list","- "],
   ["list","b"]
 ],[
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"listBlock","start"]
@@ -5678,7 +5678,7 @@
   ["list","  c"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"listBlock","listBlock","start"],
-  ["markup.list.2","- "],
+  ["markup.list","- "],
   ["list","d"]
 ],[
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"listBlock","listBlock","start"]
@@ -5690,11 +5690,11 @@
    "start"
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"start"],
-  ["markup.list.2","- "],
+  ["markup.list","- "],
   ["list","a"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"listBlock","start"],
-  ["markup.list.2","- "],
+  ["markup.list","- "],
   ["list","b"]
 ],[
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"listBlock","start"]
@@ -5703,7 +5703,7 @@
   ["list","  [ref]: /url"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"listBlock","listBlock","start"],
-  ["markup.list.2","- "],
+  ["markup.list","- "],
   ["list","d"]
 ],[
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"listBlock","listBlock","start"]
@@ -5715,11 +5715,11 @@
    "start"
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"start"],
-  ["markup.list.2","- "],
+  ["markup.list","- "],
   ["list","a"]
 ],[
    ["githubblock",{},{},"listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"listBlock","start"],
-  ["markup.list.2","- "],
+  ["markup.list","- "],
   ["support.function","```"]
 ],[
    ["githubblock",{},{},"listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"listBlock","start"],
@@ -5733,7 +5733,7 @@
   ["support.function","  ```"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"listBlock","listBlock","start"],
-  ["markup.list.2","- "],
+  ["markup.list","- "],
   ["list","c"]
 ],[
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"listBlock","listBlock","start"]
@@ -5745,11 +5745,11 @@
    "start"
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"start"],
-  ["markup.list.2","- "],
+  ["markup.list","- "],
   ["list","a"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","  ","- "]},"listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"start"],
-  ["markup.list.4","  - "],
+  ["markup.list","  - "],
   ["list","b"]
 ],[
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","  ","- "]},"listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"start"]
@@ -5759,7 +5759,7 @@
   ["list","c"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"listBlock","listBlock","start"],
-  ["markup.list.2","- "],
+  ["markup.list","- "],
   ["list","d"]
 ],[
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"listBlock","listBlock","start"]
@@ -5771,7 +5771,7 @@
    "start"
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","* "]},"start"],
-  ["markup.list.2","* "],
+  ["markup.list","* "],
   ["list","a"]
 ],[
    "blockquote",
@@ -5781,7 +5781,7 @@
   ["string.blockquote","  >"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","* "]},"start"],
-  ["markup.list.2","* "],
+  ["markup.list","* "],
   ["list","c"]
 ],[
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","* "]},"start"]
@@ -5793,7 +5793,7 @@
    "start"
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"start"],
-  ["markup.list.2","- "],
+  ["markup.list","- "],
   ["list","a"]
 ],[
    "blockquote",
@@ -5809,7 +5809,7 @@
   ["support.function","  ```"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"blockquote"],
-  ["markup.list.2","- "],
+  ["markup.list","- "],
   ["list","d"]
 ],[
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"blockquote"]
@@ -5821,7 +5821,7 @@
    "start"
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"start"],
-  ["markup.list.2","- "],
+  ["markup.list","- "],
   ["list","a"]
 ],[
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"start"]
@@ -5833,11 +5833,11 @@
    "start"
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"start"],
-  ["markup.list.2","- "],
+  ["markup.list","- "],
   ["list","a"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","  ","- "]},"listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"start"],
-  ["markup.list.4","  - "],
+  ["markup.list","  - "],
   ["list","b"]
 ],[
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","  ","- "]},"listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"start"]
@@ -5849,7 +5849,7 @@
    "start"
 ],[
    ["githubblock",{},{},"listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","1. "]},"start"],
-  ["markup.list.3","1. "],
+  ["markup.list","1. "],
   ["support.function","```"]
 ],[
    ["githubblock",{},{},"listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","1. "]},"start"],
@@ -5872,11 +5872,11 @@
    "start"
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","* "]},"start"],
-  ["markup.list.2","* "],
+  ["markup.list","* "],
   ["list","foo"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","  ","* "]},"listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","* "]},"start"],
-  ["markup.list.4","  * "],
+  ["markup.list","  * "],
   ["list","bar"]
 ],[
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","  ","* "]},"listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","* "]},"start"]
@@ -5893,29 +5893,29 @@
    "start"
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"start"],
-  ["markup.list.2","- "],
+  ["markup.list","- "],
   ["list","a"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","  ","- "]},"listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"start"],
-  ["markup.list.4","  - "],
+  ["markup.list","  - "],
   ["list","b"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","  ","- "]},"listBlock","listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"start"],
-  ["markup.list.4","  - "],
+  ["markup.list","  - "],
   ["list","c"]
 ],[
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","  ","- "]},"listBlock","listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"start"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"listBlock","listBlock","listBlock","start"],
-  ["markup.list.2","- "],
+  ["markup.list","- "],
   ["list","d"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","  ","- "]},"listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"listBlock","listBlock","listBlock","start"],
-  ["markup.list.4","  - "],
+  ["markup.list","  - "],
   ["list","e"]
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","  ","- "]},"listBlock","listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"listBlock","listBlock","listBlock","start"],
-  ["markup.list.4","  - "],
+  ["markup.list","  - "],
   ["list","f"]
 ],[
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","  ","- "]},"listBlock","listBlock","listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","- "]},"listBlock","listBlock","listBlock","start"]
@@ -6363,7 +6363,7 @@
    "start"
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","* "]},"start"],
-  ["markup.list.2","* "],
+  ["markup.list","* "],
   ["list","foo"]
 ],[
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","* "]},"start"]
@@ -6733,7 +6733,7 @@
    "start"
 ],[
    ["listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","* "]},"start"],
-  ["markup.list.2","* "],
+  ["markup.list","* "],
   ["list","a *"]
 ],[
    ["#tmp","listBlock",{},"listBlock",{"kind":"scope","type":"while","state":"listBlock","outerScope":"start listBlock","innerScope":"start listBlock lineStart","contentToken":"list","token":"indent","ruleScope":"start listBlock lineStart","source":"(^[ \\t]*$)|(^(?=[ ]*[*+-](?:[ \\t]+|$)|[ ]*\\d+[.)](?:[ \\t]+|$)))|(^(?=[ ]{4,}|\\t))|(^(?= {1,3}\\S))|(^(?=[^\\s>]))","flags":"","captures":["","","* "]},"start"]
