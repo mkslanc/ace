@@ -673,12 +673,14 @@ class Editor {
             session.$highlightLineMarker = null;
         } else if (!session.$highlightLineMarker && highlight) {
             var range = new Range(highlight.row, highlight.column, highlight.row, Infinity);
+            range.start.$side = highlight.$side;
             range.id = session.addMarker(range, "ace_active-line", "screenLine");
             session.$highlightLineMarker = range;
         } else if (highlight) {
             session.$highlightLineMarker.start.row = highlight.row;
             session.$highlightLineMarker.end.row = highlight.row;
             session.$highlightLineMarker.start.column = highlight.column;
+            session.$highlightLineMarker.start.$side = highlight.$side;
             session._signal("changeBackMarker");
         }
     }

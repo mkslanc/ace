@@ -26,6 +26,16 @@ module.exports = {
         assert.equal(range.end.column, 4);
     },
 
+    "test: create from points preserves point properties": function() {
+        var start = {row: 1, column: 2, $side: -1};
+        var end = {row: 3, column: 4, $side: 1};
+        var range = Range.fromPoints(start, end);
+
+        assert.range(range, 1, 2, 3, 4);
+        assert.equal(range.start.$side, -1);
+        assert.equal(range.end.$side, 1);
+    },
+
     "test: clip to rows": function() {
         assert.range(new Range(0, 20, 100, 30).clipRows(10, 30), 10, 0, 31, 0);
         assert.range(new Range(0, 20, 30, 10).clipRows(10, 30), 10, 0, 30, 10);
@@ -35,6 +45,17 @@ module.exports = {
 
         assert.ok(range.isEmpty());
         assert.range(range, 10, 0, 10, 0);
+    },
+
+    "test: clip to rows preserves unchanged endpoint properties": function() {
+        var range = new Range(0, 20, 30, 10);
+        range.end.$side = -1;
+
+        var clipped = range.clipRows(10, 30);
+
+        assert.range(clipped, 10, 0, 30, 10);
+        assert.equal(clipped.start.$side, undefined);
+        assert.equal(clipped.end.$side, -1);
     },
 
     "test: isEmpty": function() {
@@ -111,6 +132,17 @@ module.exports = {
 
         var range = range.extend(6, 10);
         assert.range(range, 1, 4, 6, 10);
+    },
+
+    "test: extend preserves unchanged endpoint properties": function() {
+        var range = new Range(2, 10, 2, 30);
+        range.start.$side = -1;
+
+        var extended = range.extend(2, 35);
+
+        assert.range(extended, 2, 10, 2, 35);
+        assert.equal(extended.start.$side, -1);
+        assert.equal(extended.end.$side, undefined);
     },
 
     "test: collapse rows" : function() {

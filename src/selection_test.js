@@ -550,6 +550,111 @@ module.exports = {
         
         selection.selectLineStart();
         assert.range(selection.getRange(), 1, 0, 1, 6);
+    },
+
+    "test: move cursor right and left across soft wrap boundary": function() {
+        var session = new EditSession(["foo bar foo bar"]);
+        var selection = session.getSelection();
+        session.setUseWrapMode(true);
+        session.setWrapLimitRange(12, 12);
+        session.adjustWrapLimit(80);
+        session.setOption("wrapMethod", "text");
+
+        selection.moveCursorTo(0, 11);
+        selection.moveCursorRight();
+        var cursor = selection.getCursor();
+        assert.position(cursor, 0, 12);
+        assert.position(session.documentToScreenPosition(cursor), 0, 12);
+
+        selection.moveCursorRight();
+        cursor = selection.getCursor();
+        assert.position(cursor, 0, 12);
+        assert.position(session.documentToScreenPosition(cursor), 1, 0);
+
+        selection.moveCursorRight();
+        cursor = selection.getCursor();
+        assert.position(cursor, 0, 13);
+        assert.position(session.documentToScreenPosition(cursor), 1, 1);
+
+        selection.moveCursorLeft();
+        cursor = selection.getCursor();
+        assert.position(cursor, 0, 12);
+        assert.position(session.documentToScreenPosition(cursor), 1, 0);
+
+        selection.moveCursorLeft();
+        cursor = selection.getCursor();
+        assert.position(cursor, 0, 12);
+        assert.position(session.documentToScreenPosition(cursor), 0, 12);
+
+        selection.moveCursorLeft();
+        cursor = selection.getCursor();
+        assert.position(cursor, 0, 11);
+        assert.position(session.documentToScreenPosition(cursor), 0, 11);
+    },
+
+    "test: select right preserves soft wrap boundary endpoint": function() {
+        var session = new EditSession(["foo bar foo bar"]);
+        var selection = session.getSelection();
+        session.setUseWrapMode(true);
+        session.setWrapLimitRange(12, 12);
+        session.adjustWrapLimit(80);
+        session.setOption("wrapMethod", "text");
+
+        selection.moveCursorTo(0, 11);
+        selection.selectRight();
+
+        assert.range(selection.getRange(), 0, 11, 0, 12);
+    },
+
+    "test: select line end includes last character before soft wrap": function() {
+        var session = new EditSession(["foo bar foo bar"]);
+        var selection = session.getSelection();
+        session.setUseWrapMode(true);
+        session.setWrapLimitRange(12, 12);
+        session.adjustWrapLimit(80);
+        session.setOption("wrapMethod", "text");
+
+        selection.moveCursorTo(0, 0);
+        selection.selectLineEnd();
+
+        assert.range(selection.getRange(), 0, 0, 0, 12);
+        assert.range(selection.getRange().toScreenRange(session), 0, 0, 0, 12);
+        assert.equal(session.getTextRange(selection.getRange()), "foo bar foo ");
+        assert.position(session.documentToScreenPosition(selection.getCursor()), 0, 12);
+    },
+
+    "test: move cursor up and down preserves visual column at soft wrap boundary": function() {
+        var session = new EditSession(["foo bar foo bar baz qux"]);
+        var selection = session.getSelection();
+        session.setUseWrapMode(true);
+        session.setWrapLimitRange(12, 12);
+        session.adjustWrapLimit(80);
+        session.setOption("wrapMethod", "text");
+
+        selection.moveCursorTo(0, 11);
+        selection.moveCursorRight();
+        var cursor = selection.getCursor();
+        assert.position(cursor, 0, 12);
+        assert.position(session.documentToScreenPosition(cursor), 0, 12);
+
+        selection.moveCursorDown();
+        cursor = selection.getCursor();
+        assert.position(session.documentToScreenPosition(cursor), 1, 11);
+
+        selection.moveCursorUp();
+        cursor = selection.getCursor();
+        assert.position(cursor, 0, 12);
+        assert.position(session.documentToScreenPosition(cursor), 0, 12);
+
+        selection.moveCursorRight();
+        cursor = selection.getCursor();
+        assert.position(cursor, 0, 12);
+        assert.position(session.documentToScreenPosition(cursor), 1, 0);
+
+        selection.moveCursorUp();
+        cursor = selection.getCursor();
+        assert.position(cursor, 0, 0);
+        assert.position(session.documentToScreenPosition(cursor), 0, 0);
     }
 };
 

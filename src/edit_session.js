@@ -2186,7 +2186,7 @@ class EditSession {
      **/
     getDocumentLastRowColumnPosition(docRow, docColumn) {
         var screenRow = this.documentToScreenRow(docRow, docColumn);
-        return this.screenToDocumentPosition(screenRow, Number.MAX_VALUE / 10);
+        return this.screenToDocumentPosition(screenRow, Number.MAX_VALUE / 10, Number.MAX_VALUE);
     }
 
     /**
@@ -2314,15 +2314,50 @@ class EditSession {
 
         docColumn += this.$getStringScreenWidth(line, screenColumn - wrapIndent)[1];
 
-        // We remove one character at the end so that the docColumn
-        // position returned is not associated to the next row on the screen.
         if (this.$useWrapMode && docColumn >= column)
-            docColumn = column - 1;
+            docColumn = offsetX == null ? column - 1 : column;
 
         if (foldLine)
             return foldLine.idxToPosition(docColumn);
 
-        return {row: docRow, column: docColumn};
+        var pos = {row: docRow, column: docColumn};
+        if (offsetX != null) {
+            var side = this.$getWrapBoundarySide(docRow, docColumn, Math.floor(screenRow));
+            if (side)
+                pos.$side = side;
+        }
+        return pos;
+    }
+
+    $getWrapBoundaryScreenPosition(docRow, docColumn, side) {
+        if (!this.$useWrapMode)
+            return null;
+        if (side == null || side >= 0)
+            return null;
+
+        var wrapRow = this.$wrapData[docRow];
+        if (!wrapRow)
+            return null;
+
+        var splitIndex = wrapRow.indexOf(docColumn);
+        if (splitIndex == -1)
+            return null;
+
+        var rowStart = this.documentToScreenPosition(docRow, 0).row;
+        var row = rowStart + splitIndex;
+        var startColumn = splitIndex ? wrapRow[splitIndex - 1] : 0;
+        var line = this.getLine(docRow).substring(startColumn, docColumn);
+        var wrapIndent = splitIndex ? wrapRow.indent : 0;
+
+        return {
+            row: row,
+            column: wrapIndent + this.$getStringScreenWidth(line)[0]
+        };
+    }
+
+    $getWrapBoundarySide(docRow, docColumn, screenRow) {
+        var screenPos = this.$getWrapBoundaryScreenPosition(docRow, docColumn, -1);
+        return screenPos && screenPos.row == screenRow ? -1 : 0;
     }
 
     /**
@@ -2334,14 +2369,21 @@ class EditSession {
      * @related EditSession.screenToDocumentPosition
      **/
     documentToScreenPosition(docRow, docColumn) {
+        var side;
         // Normalize the passed in arguments.
-        if (typeof docColumn === "undefined")
+        if (typeof docColumn === "undefined") {
+            side = /**@type{Point}*/(docRow).$side;
             var pos = this.$clipPositionToDocument(/**@type{Point}*/(docRow).row, /**@type{Point}*/(docRow).column);
-        else
+        } else {
             pos = this.$clipPositionToDocument(/**@type{number}*/(docRow), docColumn);
+        }
 
         docRow = pos.row;
         docColumn = pos.column;
+
+        var affinityPos = side && this.$getWrapBoundaryScreenPosition(docRow, docColumn, side);
+        if (affinityPos)
+            return affinityPos;
 
         var screenRow = 0;
         var foldStartRow = null;
