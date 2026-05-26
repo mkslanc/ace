@@ -177,13 +177,12 @@ class VirtualRenderer {
     //     if (changes & this.CHANGE_MARKER_FRONT) a += " marker_front";
     //     if (changes & this.CHANGE_FULL) a += " full";
     //     if (changes & this.CHANGE_H_SCROLL) a += " h_scroll";
+    //     if (changes & this.CHANGE_TEXT_MARKERS) a += " text_markers";
     //     console.log(a.trim())
     // };
 
     updateCharacterSize() {
-        // @ts-expect-error TODO: missing property initialization anywhere in codebase
         if (this.$textLayer.allowBoldFonts != this.$allowBoldFonts) {
-            // @ts-expect-error TODO: missing property initialization anywhere in codebase
             this.$allowBoldFonts = this.$textLayer.allowBoldFonts;
             this.setStyle("ace_nobold", !this.$allowBoldFonts);
         }
@@ -288,6 +287,10 @@ class VirtualRenderer {
      **/
     updateText() {
         this.$loop.schedule(this.CHANGE_TEXT);
+    }
+
+    updateTextMarkers() {
+        this.$loop.schedule(this.CHANGE_TEXT_MARKERS);
     }
 
     /**
@@ -963,6 +966,7 @@ class VirtualRenderer {
         if (changes & this.CHANGE_FULL) {
             this.$changedLines = null;
             this.$textLayer.update(config);
+            this.$updateTextMarkers();
             if (this.$showGutter)
                 this.$gutterLayer.update(config);
             if (this.$customScrollbar) {
@@ -983,6 +987,7 @@ class VirtualRenderer {
                 this.$textLayer.update(config);
             else
                 this.$textLayer.scrollLines(config);
+            this.$updateTextMarkers();
 
             if (this.$showGutter) {
                 if (changes & this.CHANGE_GUTTER || changes & this.CHANGE_LINES)
@@ -1004,6 +1009,7 @@ class VirtualRenderer {
         if (changes & this.CHANGE_TEXT) {
             this.$changedLines = null;
             this.$textLayer.update(config);
+            this.$updateTextMarkers();
             if (this.$showGutter)
                 this.$gutterLayer.update(config);
             if (this.$customScrollbar) {
@@ -1013,6 +1019,7 @@ class VirtualRenderer {
         else if (changes & this.CHANGE_LINES) {
             if (this.$updateLines() || (changes & this.CHANGE_GUTTER) && this.$showGutter)
                 this.$gutterLayer.update(config);
+            this.$updateTextMarkers();
             if (this.$customScrollbar) {
                 this.$scrollDecorator.$updateDecorators(config);
             }
@@ -1046,7 +1053,19 @@ class VirtualRenderer {
             this.$markerBack.update(config);
         }
 
+        if (changes & this.CHANGE_TEXT_MARKERS) {
+            this.$updateTextMarkers();
+        }
+
         this._signal("afterRender", changes);
+    }
+
+    $updateTextMarkers() {
+        var textLayer = this.$textLayer;
+        if (!this.$textMarkersEnabled || !textLayer || !textLayer.$applyTextMarkers)
+            return;
+
+        textLayer.$applyTextMarkers();
     }
 
     /**
@@ -2182,6 +2201,7 @@ VirtualRenderer.prototype.CHANGE_MARKER_BACK = 128;
 VirtualRenderer.prototype.CHANGE_MARKER_FRONT = 256;
 VirtualRenderer.prototype.CHANGE_FULL = 512;
 VirtualRenderer.prototype.CHANGE_H_SCROLL = 1024;
+VirtualRenderer.prototype.CHANGE_TEXT_MARKERS = 2048;
 VirtualRenderer.prototype.$changes = 0;
 VirtualRenderer.prototype.$padding = null;
 VirtualRenderer.prototype.$frozen = false;

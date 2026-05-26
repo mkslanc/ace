@@ -1555,6 +1555,7 @@ declare module "./src/virtual_renderer" {
         destroyed?: boolean,
         session: Ace.EditSession,
         keyboardFocusClassName?: string,
+        $textMarkersEnabled?: boolean
     }
 }
 
@@ -1620,7 +1621,8 @@ declare module "./src/layer/gutter" {
 declare module "./src/layer/text" {
     type TextMarkersMixin = typeof import("./src/layer/text_markers").textMarkerMixin;
     export interface Text extends Ace.EventEmitter<Ace.TextEvents>, TextMarkersMixin {
-        config: Ace.LayerConfig
+        config: Ace.LayerConfig,
+        allowBoldFonts?: boolean
     }
 }
 
