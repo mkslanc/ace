@@ -323,6 +323,7 @@ var editSessionTextMarkerMixin = {
             this.$textMarkers = [];
         }
         this.$textMarkers[marker.id] = marker;
+        this.$scheduleTextMarkerUpdate();
         return marker.id;
     },
     /**
@@ -346,6 +347,7 @@ var editSessionTextMarkerMixin = {
         }
         this.$scheduleForRemove.add(marker.className);
         delete this.$textMarkers[markerId];
+        this.$scheduleTextMarkerUpdate();
     },
     /**
      * Retrieves the text markers associated with the current edit session.
@@ -356,14 +358,19 @@ var editSessionTextMarkerMixin = {
      */
     getTextMarkers() {
         return this.$textMarkers || [];
+    },
+    /**
+     * Schedules visible text marker DOM updates for the attached editor.
+     *
+     * @this {EditSession}
+     */
+    $scheduleTextMarkerUpdate() {
+        var editor = this.$editor;
+        if (editor && editor.renderer && editor.renderer.updateTextMarkers)
+            editor.renderer.updateTextMarkers();
     }
 };
 Object.assign(EditSession.prototype, editSessionTextMarkerMixin);
-
-
-var onAfterRender = (e, renderer) => {
-    renderer.$textLayer.$applyTextMarkers();
-};
 
 var Editor = require("../editor").Editor;
 require("../config").defineOptions(Editor.prototype, "editor", {
@@ -373,12 +380,9 @@ require("../config").defineOptions(Editor.prototype, "editor", {
          * @this {Editor}
          */
         set: function (val) {
-            if (val) {
-                this.renderer.on("afterRender", onAfterRender);
-            }
-            else {
-                this.renderer.off("afterRender", onAfterRender);
-            }
+            this.renderer.$textMarkersEnabled = !!val;
+            if (val)
+                this.renderer.updateTextMarkers();
         },
         value: true
     }

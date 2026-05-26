@@ -45,6 +45,24 @@ module.exports = {
         };
     },
 
+    "test: add and remove text marker schedule renderer update": function () {
+        var scheduled = 0;
+        this.session.$editor = {
+            renderer: {
+                updateTextMarkers: function() {
+                    scheduled++;
+                }
+            }
+        };
+
+        var markerId = this.session.addTextMarker(new Range(0, 0, 0, 1), "scheduled-marker");
+        assert.equal(scheduled, 1);
+
+        this.session.removeTextMarker(markerId);
+        assert.equal(scheduled, 2);
+    },
+
+
     "test: marker splits single token into multiple DOM nodes": function () {
         this.session.setValue('var functionName = "test";');
 

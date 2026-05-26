@@ -590,6 +590,7 @@ declare module "ace-code/src/layer/text" {
         MAX_LINE_LENGTH: number;
         destroy: {};
         onChangeTabSize: () => void;
+        allowBoldFonts?: boolean;
     }
     export type LayerConfig = import("ace-code").Ace.LayerConfig;
     export type EditSession = import("ace-code/src/edit_session").EditSession;
@@ -606,6 +607,7 @@ declare module "ace-code/src/layer/text" {
     }
     export interface Text extends Ace.EventEmitter<Ace.TextEvents>, TextMarkersMixin {
         config: Ace.LayerConfig;
+        allowBoldFonts?: boolean;
     }
 }
 declare module "ace-code/src/layer/cursor" {
@@ -632,10 +634,6 @@ declare module "ace-code/src/layer/cursor" {
         intervalId: ReturnType<typeof setInterval>;
         getPixelPosition(position?: import("ace-code").Ace.Point, onScreen?: boolean): {
             left: number;
-            top: number;
-            width?: undefined;
-        } | {
-            left: any;
             top: number;
             width: number;
         };
@@ -1008,6 +1006,7 @@ declare module "ace-code/src/virtual_renderer" {
          * Triggers a full update of the text, for all the rows.
          **/
         updateText(): void;
+        updateTextMarkers(): void;
         /**
          * Triggers a full update of all the layers, for all the rows.
          * @param {Boolean} [force] If `true`, forces the changes through
@@ -1341,6 +1340,7 @@ declare module "ace-code/src/virtual_renderer" {
         CHANGE_MARKER_FRONT: number;
         CHANGE_FULL: number;
         CHANGE_H_SCROLL: number;
+        CHANGE_TEXT_MARKERS: number;
         STEPS: number;
         textarea: HTMLTextAreaElement;
         enableKeyboardAccessibility?: boolean;
@@ -3873,6 +3873,11 @@ declare module "ace-code/src/layer/text_markers" {
          *
          */
         function getTextMarkers(this: EditSession): TextMarker[];
+        /**
+         * Schedules visible text marker DOM updates for the attached editor.
+         *
+         */
+        function $scheduleTextMarkerUpdate(this: EditSession): void;
     }
     import { Text } from "ace-code/src/layer/text";
     import { EditSession } from "ace-code/src/edit_session";
@@ -3971,11 +3976,9 @@ declare module "ace-code/src/bidihandler" {
          * @param {Number} [docRow] the document row to be checked [optional]
          * @param {Number} [splitIndex] the wrapped screen line index [ optional]
         **/
-        isBidiRow(screenRow: number, docRow?: number, splitIndex?: number): any;
+        isBidiRow(screenRow: number, docRow?: number, splitIndex?: number): boolean;
         getDocumentRow(): number;
         getSplitIndex(): number;
-        updateRowLine(docRow: any, splitIndex: any): void;
-        updateBidiMap(): void;
         /**
          * Resets stored info related to current screen row
         **/
@@ -3985,13 +3988,6 @@ declare module "ace-code/src/bidihandler" {
         setContentWidth(width: any): void;
         isRtlLine(row: any): boolean;
         setRtlDirection(editor: any, isRtlDir: any): void;
-        /**
-         * Returns offset of character at position defined by column.
-         * @param {Number} col the screen column position
-         *
-         * @return {Number} horizontal pixel offset of given screen column
-         **/
-        getPosLeft(col: number): number;
     }
     import bidiUtil = require("ace-code/src/lib/bidiutil");
 }

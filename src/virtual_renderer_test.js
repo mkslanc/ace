@@ -50,6 +50,27 @@ module.exports = {
         editor && editor.destroy();
         editor = null;
     },
+    "test: text marker update is no-op when disabled": function () {
+        var renderer = editor.renderer;
+        renderer.setSession(new EditSession(""));
+
+        var applied = 0;
+        renderer.$textLayer.$applyTextMarkers = function() {
+            applied++;
+        };
+
+        renderer.$textMarkersEnabled = false;
+        renderer.$updateTextMarkers();
+        assert.equal(applied, 0);
+
+        renderer.$textMarkersEnabled = true;
+        renderer.$updateTextMarkers();
+        assert.equal(applied, 1);
+
+        renderer.setSession(new EditSession(""));
+        renderer.$updateTextMarkers();
+        assert.equal(applied, 2);
+    },
     "test: screen2text the column should be rounded to the next character edge" : function() {
         var renderer = editor.renderer;
 
