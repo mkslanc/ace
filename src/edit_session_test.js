@@ -319,6 +319,10 @@ module.exports = {
         // Check if the position is clamped the right way.
         assert.position(session.screenToDocumentPosition(0, 12), 0, 11);
         assert.position(session.screenToDocumentPosition(0, 20), 0, 11);
+        var boundary = session.screenToDocumentPosition(0, 12, 12);
+        assert.position(boundary, 0, 12);
+        assert.equal(boundary.$side, -1);
+        assert.position(session.documentToScreenPosition(boundary), 0, 12);
     },
 
     "test: screenToDocument with soft wrap and multi byte characters": function() {

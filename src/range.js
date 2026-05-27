@@ -449,8 +449,22 @@ class Range {
  * @returns {Range}
 **/
 Range.fromPoints = function(start, end) {
-    return new Range(start.row, start.column, end.row, end.column);
+    var range = new Range(start.row, start.column, end.row, end.column);
+    copyPointProperties(start, range.start);
+    copyPointProperties(end, range.end);
+    return range;
 };
+
+/**
+ * Copies specific point-related properties from a source object to a target object.
+ *
+ * @param {Point} source - The object containing the properties to copy.
+ * @param {Point} target - The object to which the properties will be copied.
+ */
+function copyPointProperties(source, target) {
+    if (source.$side)
+        target.$side = source.$side;
+}
 
 /**
  * Compares `p1` and `p2` [[Point]]'s, useful for sorting

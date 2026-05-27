@@ -51,11 +51,8 @@ class Selection {
      * Returns `true` if the selection is empty.
      * @returns {Boolean}
      **/
-   isEmpty() {
-        return this.$isEmpty || (
-            this.anchor.row == this.lead.row &&
-            this.anchor.column == this.lead.column
-        );
+    isEmpty() {
+        return this.$isEmpty || (this.anchor.row == this.lead.row && this.anchor.column == this.lead.column);
     }
 
     /**
@@ -71,7 +68,7 @@ class Selection {
      * @returns {Point}
      **/
     getCursor() {
-        return this.lead.getPosition();
+        return this.$addLeadSide(this.lead.getPosition());
     }
 
     /**
@@ -82,6 +79,10 @@ class Selection {
      **/
     setAnchor(row, column) {
         this.$isEmpty = false;
+        if (this.lead.row == row && this.lead.column == column)
+            this.$anchorSide = this.$leadSide;
+        else
+            this.$anchorSide = null;
         this.anchor.setPosition(row, column);
     }
 
@@ -96,7 +97,7 @@ class Selection {
         if (this.$isEmpty)
             return this.getSelectionLead();
 
-        return this.anchor.getPosition();
+        return this.$addAnchorSide(this.anchor.getPosition());
     }
 
 
@@ -105,7 +106,7 @@ class Selection {
      * @returns {Object}
      **/
     getSelectionLead() {
-        return this.lead.getPosition();
+        return this.$addLeadSide(this.lead.getPosition());
     }
 
     /**
@@ -123,8 +124,8 @@ class Selection {
      * @returns {Range}
      **/
     getRange() {
-        var anchor = this.anchor;
-        var lead = this.lead;
+        var anchor = this.getAnchor();
+        var lead = this.getSelectionLead();
 
         if (this.$isEmpty)
             return Range.fromPoints(lead, lead);
@@ -138,10 +139,25 @@ class Selection {
      * [Empties the selection (by de-selecting it). This function also emits the `'changeSelection'` event.]{: #Selection.clearSelection}
      **/
     clearSelection() {
+        this.$anchorSide = null;
         if (!this.$isEmpty) {
             this.$isEmpty = true;
             this._emit("changeSelection");
         }
+    }
+
+    $addLeadSide(pos) {
+        return this.$addPositionSide(pos, this.$leadSide);
+    }
+
+    $addAnchorSide(pos) {
+        return this.$addPositionSide(pos, this.$anchorSide);
+    }
+
+    $addPositionSide(pos, side) {
+        if (side && this.session.$getWrapBoundaryScreenPosition(pos.row, pos.column, side))
+            pos.$side = side;
+        return pos;
     }
 
     /**
@@ -482,7 +498,7 @@ class Selection {
             }
         }
 
-        this.moveCursorTo(lineEnd.row, lineEnd.column);
+        this.moveCursorToPosition(lineEnd);
     }
 
     /**
@@ -703,12 +719,14 @@ class Selection {
      * @param {Number} chars The number of characters to move by
      *
      * @related EditSession.documentToScreenPosition
-     **/
+    **/
     moveCursorBy(rows, chars) {
         var screenPos = this.session.documentToScreenPosition(
-            this.lead.row,
-            this.lead.column
+            this.getSelectionLead()
         );
+
+        if (this.$moveCursorAcrossSoftWrapBoundary(chars, screenPos))
+            return;
 
         var offsetX;
 
@@ -733,12 +751,40 @@ class Selection {
 
         var docPos = this.session.screenToDocumentPosition(screenPos.row + rows, screenPos.column, offsetX);
 
-        if (rows !== 0 && chars === 0 && docPos.row === this.lead.row && docPos.column === this.lead.column) {
+        // move the cursor and update the desired column
+        var targetSide, column, screenRow;
+        if (chars > 0) {
+            column = docPos.column + chars;
+            screenRow = screenPos.row;
+        } else if (chars === 0 && rows !== 0) {
+            column = docPos.column;
+            screenRow = screenPos.row + rows;
+        }
+        if (screenRow != null)
+            targetSide = this.session.$getWrapBoundarySide(docPos.row, column, screenRow);
+        this.moveCursorTo(docPos.row, docPos.column + chars, chars === 0, targetSide);
+    }
 
+    $moveCursorAcrossSoftWrapBoundary(chars, screenPos) {
+        if (chars === 0)
+            return false;
+
+        var cursor = this.lead;
+        var side = this.$leadSide;
+        if (!side) {
+            if (chars > 0)
+                return false;
+            side = this.session.$getWrapBoundarySide(cursor.row, cursor.column, screenPos.row - 1);
         }
 
-        // move the cursor and update the desired column
-        this.moveCursorTo(docPos.row, docPos.column + chars, chars === 0);
+        if (!side || !this.session.$getWrapBoundaryScreenPosition(cursor.row, cursor.column, side))
+            return false;
+
+        if (!this.$leadSide)
+            this.moveCursorTo(cursor.row, cursor.column, false, side);
+        else
+            this.moveCursorTo(cursor.row, cursor.column + Math.min(chars, 0));
+        return true;
     }
 
     /**
@@ -746,7 +792,7 @@ class Selection {
      * @param {Point} position The position to move to
      **/
     moveCursorToPosition(position) {
-        this.moveCursorTo(position.row, position.column);
+        this.moveCursorTo(position.row, position.column, false, position.$side);
     }
 
     /**
@@ -754,13 +800,16 @@ class Selection {
      * @param {Number} row The row to move to
      * @param {Number} column The column to move to
      * @param {Boolean} [keepDesiredColumn] [If `true`, the cursor move does not respect the previous column]{: #preventUpdateBool}
+     * @param {Number} [$side]
      **/
-    moveCursorTo(row, column, keepDesiredColumn) {
+    moveCursorTo(row, column, keepDesiredColumn, $side) {
+        var side = $side;
         // Ensure the row/column is not inside of a fold.
         var fold = this.session.getFoldAt(row, column, 1);
         if (fold) {
             row = fold.start.row;
             column = fold.start.column;
+            side = null;
         }
 
         this.$keepDesiredColumnOnChange = true;
@@ -771,8 +820,15 @@ class Selection {
                 column = column - 1;
             else
                 column = column + 1;
+            side = null;
         }
+        var oldSide = this.$leadSide;
+        var oldRow = this.lead.row;
+        var oldColumn = this.lead.column;
+        this.$leadSide = side || null;
         this.lead.setPosition(row, column);
+        if (oldRow == row && oldColumn == column && oldSide !== this.$leadSide && !this.$silent)
+            this._emit("changeCursor");
         this.$keepDesiredColumnOnChange = false;
 
         if (!keepDesiredColumn)

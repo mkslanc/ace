@@ -707,6 +707,7 @@ export namespace Ace {
     interface Point {
         row: number;
         column: number;
+        $side?: number;
     }
 
     type Position = Point;
