@@ -4,8 +4,30 @@ var oop = require("../lib/oop");
 var TextHighlightRules = require("./text_highlight_rules").TextHighlightRules;
 
 var GDScriptHighlightRules = function() {
+    var eolStates = {
+        signal_declaration: true,
+        lambda_declaration: true,
+        function_declaration: true,
+        variable_declaration: true
+    };
+
+    var popState = function(stack) {
+        stack.shift();
+        return stack.shift() || "start";
+    };
+
+    var popAtEol = function(currentState, stack) {
+        var parent = popState(stack);
+        while (eolStates[parent])
+            parent = popState(stack);
+        return parent;
+    };
 
     var nodePathPush = [{
+        token: "paren.rparen",
+        regex: /\)(?=$)/,
+        next: popAtEol
+    }, {
         token: "paren.rparen",
         regex: /\)/,
         next: "pop"
@@ -38,6 +60,8 @@ var GDScriptHighlightRules = function() {
     }, {
         defaultToken: "meta.literal.nodepath.gdscript"
     }];
+
+    var nodePathFuncPush = [...nodePathPush, { "include": "#expression" }];
 
     this.$rules = {
         start: [{
@@ -166,6 +190,10 @@ var GDScriptHighlightRules = function() {
             regex: /((?:r)?)(""")/,
             push: [{
                 token: "string",
+                regex: /"""(?=$)/,
+                next: popAtEol
+            }, {
+                token: "string",
                 regex: /"""/,
                 next: "pop"
             }, {
@@ -185,6 +213,10 @@ var GDScriptHighlightRules = function() {
             ],
             regex: /((?:r)?)(''')/,
             push: [{
+                token: "string",
+                regex: /'''(?=$)/,
+                next: popAtEol
+            }, {
                 token: "string",
                 regex: /'''/,
                 next: "pop"
@@ -206,6 +238,10 @@ var GDScriptHighlightRules = function() {
             regex: /((?:r)?)(")/,
             push: [{
                 token: "string",
+                regex: /"(?=$)/,
+                next: popAtEol
+            }, {
+                token: "string",
                 regex: /"/,
                 next: "pop"
             }, {
@@ -226,6 +262,10 @@ var GDScriptHighlightRules = function() {
             regex: /((?:r)?)(')/,
             push: [{
                 token: "string",
+                regex: /'(?=$)/,
+                next: popAtEol
+            }, {
+                token: "string",
                 regex: /'/,
                 next: "pop"
             }, {
@@ -240,30 +280,30 @@ var GDScriptHighlightRules = function() {
             }]
         }],
         "#string_percent_placeholders": [{
-            token: "constant.character.format.placeholder.other.gdscript",
+            token: "constant.character.format.other.gdscript",
             regex: /%(?:\([\w\s]*\))?[-+#0 ]*(?:\d+|\*)?(?:\.(?:\d+|\*))?(?:[hlL])?[diouxXeEfFgGcrsab%]/
         }],
         "#string_bracket_placeholders": [{
             token: [
-                "constant.character.format.placeholder.other.gdscript",
-                "constant.character.format.placeholder.other.gdscript",
-                "constant.character.format.placeholder.other.gdscript",
-                "constant.character.format.placeholder.other.gdscript",
+                "constant.character.format.other.gdscript",
+                "constant.character.format.other.gdscript",
+                "constant.character.format.other.gdscript",
+                "constant.character.format.other.gdscript",
                 "storage.type.format.gdscript",
                 "storage.type.format.gdscript",
-                "constant.character.format.placeholder.other.gdscript"
+                "constant.character.format.other.gdscript"
             ],
-            regex: /({{)|(}})|({\w*)((?:\.[[:alpha:]_]\w*|\[[^\]'"]+\])*)((?:![rsa])?)((?::\w?[<>=^]?[-+ ]?\#?\d*,?(?:\.\d+)?[bcdeEfFgGnosxX%]?)?)(})/
+            regex: /({{)|(}})|({\w*)((?:\.[A-Za-z_]\w*|\[[^\]'"]+\])*)((?:![rsa])?)((?::\w?[<>=^]?[-+ ]?\#?\d*,?(?:\.\d+)?[bcdeEfFgGnosxX%]?)?)(})/
         }, {
             token: [
-                "constant.character.format.placeholder.other.gdscript",
-                "constant.character.format.placeholder.other.gdscript",
+                "constant.character.format.other.gdscript",
+                "constant.character.format.other.gdscript",
                 "storage.type.format.gdscript",
                 "storage.type.format.gdscript",
-                "constant.character.format.placeholder.other.gdscript",
-                "constant.character.format.placeholder.other.gdscript"
+                "constant.character.format.other.gdscript",
+                "constant.character.format.other.gdscript"
             ],
-            regex: /({\w*)((?:\.[[:alpha:]_]\w*|\[[^\]'"]+\])*)((?:![rsa])?)(:)([^'"{}$]*)(?:\{[^'"}$]*?\}[^'"{}$]*)*(})/
+            regex: /({\w*)((?:\.[A-Za-z_]\w*|\[[^\]'"]+\])*)((?:![rsa])?)(:)((?:[^'"{}])*(?:\{(?:[^'"}])*\}(?:[^'"{}])*)*)(})/
         }],
         "#nodepath_object": [{
             token: ["support.class.library.gdscript", "text", "paren.lparen"],
@@ -272,7 +312,7 @@ var GDScriptHighlightRules = function() {
         }, {
             token: ["entity.name.function.gdscript", "text", "paren.lparen"],
             regex: /(get_node_or_null|has_node|has_node_and_resource|find_node|get_node)(\s*)(\()/,
-            push: nodePathPush
+            push: nodePathFuncPush
         }],
         "#func": [{
             token: "keyword.language.gdscript storage.type.function.gdscript",
@@ -378,6 +418,7 @@ var GDScriptHighlightRules = function() {
                 "keyword.language.gdscript storage.type.const.gdscript"
             ],
             regex: /\b(?:(var)|(const))\b/,
+            stateName: "variable_declaration",
             push: [{
                 token: "meta.variable.declaration.gdscript",
                 regex: /$|;/,
@@ -505,6 +546,10 @@ var GDScriptHighlightRules = function() {
             regex: /(?:(\$|%)|(&|\^|@))(")/,
             push: [{
                 token: "string",
+                regex: /"(?=$)/,
+                next: popAtEol
+            }, {
+                token: "string",
                 regex: /"/,
                 next: "pop"
             }, {
@@ -521,6 +566,10 @@ var GDScriptHighlightRules = function() {
             ],
             regex: /(?:(\$|%)|(&|\^|@))(')/,
             push: [{
+                token: "string",
+                regex: /'(?=$)/,
+                next: popAtEol
+            }, {
                 token: "string",
                 regex: /'/,
                 next: "pop"
@@ -547,6 +596,10 @@ var GDScriptHighlightRules = function() {
             ],
             regex: /(\$\s*|%|\$%\s*)((?:\/\s*)?)([a-zA-Z_]\w*)/,
             push: [{
+                token: "meta.literal.nodepath.bare.gdscript",
+                regex: /(?=$)/,
+                next: popAtEol
+            }, {
                 token: "meta.literal.nodepath.bare.gdscript",
                 regex: /(?!\s*\/\s*%?\s*[a-zA-Z_]\w*)/,
                 next: "pop"
@@ -620,7 +673,12 @@ var GDScriptHighlightRules = function() {
                 "text"
             ],
             regex: /(func)(\s?)(?=\()/,
+            stateName: "lambda_declaration",
             push: [{
+                token: "meta.function.gdscript",
+                regex: /:(?=$)/,
+                next: popAtEol
+            }, {
                 token: "meta.function.gdscript",
                 regex: /:|(?=#|'|"|$)/,
                 next: "pop"
@@ -647,6 +705,7 @@ var GDScriptHighlightRules = function() {
                 "text"
             ],
             regex: /(\s*)(func)(\s+)([a-zA-Z_]\w*)(\s*)(?=\()/,
+            stateName: "function_declaration",
             push: [{
                 token: [
                     "punctuation.section.function.begin.gdscript",
@@ -669,18 +728,8 @@ var GDScriptHighlightRules = function() {
             regex: /\(/,
             push: [{
                 token: "paren.rparen",
-                regex: /\)(?=\s*$)/,
-                next: function(currentState, stack) {
-                    stack.shift();
-                    var parent = stack.shift() || "start";
-
-                    if (parent === "signal_declaration") {
-                        stack.shift();
-                        return stack.shift() || "start";
-                    }
-
-                    return parent;
-                }
+                regex: /\)(?=$)/,
+                next: popAtEol
             }, {
                 token: "paren.rparen",
                 regex: /\)/,
@@ -739,6 +788,10 @@ var GDScriptHighlightRules = function() {
             regex: /\{/,
             push: [{
                 token: "paren.rparen",
+                regex: /\}(?=$)/,
+                next: popAtEol
+            }, {
+                token: "paren.rparen",
                 regex: /\}/,
                 next: "pop"
             }, {
@@ -752,6 +805,10 @@ var GDScriptHighlightRules = function() {
             regex: /\[/,
             push: [{
                 token: "paren.rparen",
+                regex: /\](?=$)/,
+                next: popAtEol
+            }, {
+                token: "paren.rparen",
                 regex: /\]/,
                 next: "pop"
             }, {
@@ -764,6 +821,10 @@ var GDScriptHighlightRules = function() {
             token: "paren.lparen",
             regex: /\(/,
             push: [{
+                token: "paren.rparen",
+                regex: /\)(?=$)/,
+                next: popAtEol
+            }, {
                 token: "paren.rparen",
                 regex: /\)/,
                 next: "pop"
@@ -809,12 +870,16 @@ var GDScriptHighlightRules = function() {
                 "constant.language.gdscript",
                 "variable.other.property.gdscript"
             ],
-            regex: /\b(\.)(\s*)(?<![@\$#%])(?:([A-Z_][A-Z_0-9]*)|([A-Za-z_]\w*))\b(?![(])/
+            regex: /(\.)(\s*)(?<![@\$#%])(?:([A-Z_][A-Z_0-9]*)|([A-Za-z_]\w*))\b(?![(])/
         }],
         "#function_call": [{
             token: "meta.function-call.gdscript",
             regex: /(?=\b[a-zA-Z_]\w*\b\s*\()/,
             push: [{
+                token: "paren.rparen",
+                regex: /\)(?=$)/,
+                next: popAtEol
+            }, {
                 token: "paren.rparen",
                 regex: /\)/,
                 next: "pop"

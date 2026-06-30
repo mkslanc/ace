@@ -1,0 +1,51 @@
+# Declaration states must close when a nested initializer consumes EOL.
+var string_value = "text"
+var triple_string_value = """text"""
+var dictionary_value = {"key": 1}
+var array_value = [1]
+var nested_value = {"items": [[build_value()]]}
+var parenthesized_value = (1 + 2)
+var call_value = build_value(1)
+var node_path_value = NodePath("Child")
+var get_node_value = get_node("Child")
+var quoted_shorthand_value = $"Child"
+var bare_shorthand_value = $Root/Child
+const ARRAY_VALUE = [1]
+var lambda_value = func(argument):
+
+# Comments, terminators, and continuations keep their normal behavior.
+var commented_value = [1] # comment
+var terminated_value = [1];
+var spaced_array_value = [1]   
+var spaced_string_value = "text"   
+var continued_value = [1] \
+    + [2]
+
+# Incomplete declarations are common while editing and must not leak state.
+func incomplete_function(argument)
+var incomplete_lambda = func(argument)
+
+# Multiline declaration parameters retain parameter styling and close cleanly.
+signal changed(
+    value
+)
+func multiline_function(
+    value
+):
+    pass
+
+
+
+"{{, }}"
+"{user}"
+"{user.name}"
+"{user[0]}"
+"{value:.2f}"
+"{value:${width}}"
+"{value:{width}.2f}"
+"{user.name!r:>10}"
+
+
+  get_node(path_var)       # path_var gets nodepath-literal styling
+  get_node(make_path())    # inner ")" closes get_node prematurely
+  get_node(paths[index])   # expression structure is not parsed
