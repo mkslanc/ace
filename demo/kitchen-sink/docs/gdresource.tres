@@ -1,6 +1,18 @@
-[gd_resource type="ShaderMaterial" load_steps=2 format=3]
+[gd_resource type="Resource" load_steps=2 format=3]
 
-[ext_resource type="Shader" path="res://outline.gdshader" id="1"]
+[sub_resource type="GDScript" id="GDScript_demo"]
+  script/source = "extends Resource
+
+const MESSAGE = \"Hello from embedded GDScript\"
+const QUOTED = \"He said \\\"hello\\\"\"
+const FORMAT = \"value: %s {name}\"
+const RAW = r\"raw string\"
+const MULTILINE = \"\"\"first line
+second line\"\"\"
+
+func greet() -> void:
+	print(\"Hello from embedded GDScript\")
+"
 
 [resource]
-shader = ExtResource("1")
+script = SubResource("GDScript_demo")

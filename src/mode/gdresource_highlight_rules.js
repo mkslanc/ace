@@ -2,6 +2,7 @@
 
 var oop = require("../lib/oop");
 var TextHighlightRules = require("./text_highlight_rules").TextHighlightRules;
+var GDScriptHighlightRules = require("./gdscript_highlight_rules").GDScriptHighlightRules;
 
 var gdResourceHighlightRules = function() {
 
@@ -40,17 +41,10 @@ var gdResourceHighlightRules = function() {
                 defaultToken: "meta.embedded.block.gdshader"
             }]
         }],
-        "#embedded_gdscript": [{ //TODO: link to script
-            token: ["variable.other.property.gdresource", "text"],
-            regex: /(script\/source)( = ")/,
-            push: [{
-                token: "text",
-                regex: /"/,
-                next: "pop"
-            }, {
-                include: "source.gdscript"
-            }],
-            comment: "meta.embedded.block.gdscript"
+        "#embedded_gdscript": [{
+            token: ["text", "variable.other.property.gdresource", "text"],
+            regex: /(\s*)(script\/source)(\s*=\s*")/,
+            push: "gdscript-start"
         }],
         "#heading": [{
             token: ["paren.lparen", "keyword.control.gdresource"],
@@ -239,6 +233,79 @@ var gdResourceHighlightRules = function() {
             }]
         }]
     };
+
+    var gdscriptRules = new GDScriptHighlightRules().getRules();
+    var doubleQuotePattern = /((?:r)?)(")/.source;
+    var tripleDoubleQuotePattern = /((?:r)?)(""")/.source;
+    var doubleQuoteAtEolPattern = /"(?=$)/.source;
+    var tripleDoubleQuoteAtEolPattern = /"""(?=$)/.source;
+    var encodedDoubleStringStates = Object.create(null);
+    var gdscriptEolStates = {
+        "gdscript-signal_declaration": true,
+        "gdscript-lambda_declaration": true,
+        "gdscript-function_declaration": true,
+        "gdscript-variable_declaration": true
+    };
+
+    var popEscapedStringAtEol = function(currentState, stack) {
+        stack.shift();
+        var parent = stack.shift() || "start";
+        while (gdscriptEolStates[parent]) {
+            stack.shift();
+            parent = stack.shift() || "start";
+        }
+        return parent;
+    };
+
+    Object.keys(gdscriptRules).forEach(function(stateName) {
+        var rules = gdscriptRules[stateName];
+        for (var i = rules.length - 1; i >= 0; i--) {
+            var rule = rules[i];
+            var pattern = rule.regex && rule.regex.source;
+            if (pattern === tripleDoubleQuotePattern) {
+                rule.regex = /((?:r)?)((?:\\"){3})/;
+                encodedDoubleStringStates[rule.nextState] = true;
+            } else if (pattern === doubleQuotePattern || pattern === "\"" && rule.nextState) {
+                rule.regex = pattern === doubleQuotePattern
+                    ? /((?:r)?)(\\")/
+                    : /\\"/;
+                encodedDoubleStringStates[rule.nextState] = false;
+            }
+        }
+    });
+
+    Object.keys(encodedDoubleStringStates).forEach(function(stateName) {
+        var isTripleQuoted = encodedDoubleStringStates[stateName];
+        var rules = gdscriptRules[stateName];
+        var hasEscapeRule = false;
+
+        rules.forEach(function(rule) {
+            var pattern = rule.regex && rule.regex.source;
+            if (pattern === (isTripleQuoted ? tripleDoubleQuoteAtEolPattern : doubleQuoteAtEolPattern)) {
+                rule.regex = isTripleQuoted ? /(?:\\"){3}(?=$)/ : /\\"(?=$)/;
+                rule.next = popEscapedStringAtEol;
+            } else if (pattern === (isTripleQuoted ? tripleDoubleQuotePattern : "\"")) {
+                rule.regex = isTripleQuoted ? /(?:\\"){3}/ : /\\"/;
+            } else if (pattern === /\\./.source) {
+                // GDScript escapes such as \n, \", and \\ are themselves escaped by Variant serialization.
+                rule.regex = /\\\\(?:\\\\|\\"|.)/;
+                hasEscapeRule = true;
+            }
+        });
+
+        if (!hasEscapeRule) {
+            rules.splice(rules.length - 1, 0, {
+                token: "constant.character.escape.gdscript",
+                regex: /\\\\(?:\\\\|\\"|.)/
+            });
+        }
+    });
+
+    this.embedRules(gdscriptRules, "gdscript-", [{
+        token: "text",
+        regex: /"/,
+        next: "pop"
+    }], ["start"]);
     
     this.normalizeRules();
 };

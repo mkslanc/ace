@@ -46,6 +46,39 @@ func multiline_function(
 "{user.name!r:>10}"
 
 
-  get_node(path_var)       # path_var gets nodepath-literal styling
-  get_node(make_path())    # inner ")" closes get_node prematurely
-  get_node(paths[index])   # expression structure is not parsed
+get_node(path_var)
+get_node(make_path())
+get_node(paths[index])
+
+# Class declarations and explicit class names.
+class Inner:
+    pass
+class_name Player
+class_name Namespace.Player
+
+# Property access requires an object on the left.
+object.property
+object. spaced_property
+object.CONSTANT
+.not_a_property
+..not_a_property
+@.not_a_property
+
+# Constructors require a literal dot and retain balanced parentheses.
+Foo.new()
+foo.new()
+foo-new()
+foo new()
+
+# Type checks require the complete "is not" phrase.
+value is not Node
+value is no  Node
+
+# Inheritance supports names, nested names, and script paths.
+extends Node
+extends Outer.Inner.Deep
+extends "res://base.gd"
+
+# Invalid question-mark cases must not match the case-label rule.
+case 1:
+case ?:

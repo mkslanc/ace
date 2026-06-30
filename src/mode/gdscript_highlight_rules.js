@@ -80,7 +80,7 @@ var GDScriptHighlightRules = function() {
             regex: /\b(?<!\.)class\b/
         }, {
             token: ["text", "keyword.control.flow.gdscript"],
-            regex: /(?:^|:)(\s*)(case|match)(?=\s*(?:[-+\w\d(?:\[{'":#]|$))\b/
+            regex: /(?:^|:)(\s*)(case|match)(?=\s*(?:[-+\w\d(\[{'":#]|$))\b/
         }],
         "#extends_statement": [{
             token: [
@@ -88,10 +88,16 @@ var GDScriptHighlightRules = function() {
                 "text",
                 "entity.other.inherited-class.gdscript"
             ],
-            regex: /(extends)(\s+)((?:[a-zA-Z_]\w*\.[a-zA-Z_]\w*)?)/
+            regex: /(extends)(\s+)((?:[a-zA-Z_]\w*(?:\.[a-zA-Z_]\w*)*)|(?:"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'))/
         }],
         "#expression": [{
             include: "#getter_setter_godot4"
+        }, {
+            include: "#class_declaration"
+        }, {
+            include: "#class_name"
+        }, {
+            include: "#class_new"
         }, {
             include: "#base_expression"
         }, {
@@ -99,11 +105,7 @@ var GDScriptHighlightRules = function() {
         }, {
             include: "#annotations"
         }, {
-            include: "#class_name"
-        }, {
             include: "#builtin_classes"
-        }, {
-            include: "#class_new"
         }, {
             include: "#class_is"
         }, {
@@ -131,8 +133,6 @@ var GDScriptHighlightRules = function() {
             include: "#operators"
         }, {
             include: "#lambda_declaration"
-        }, {
-            include: "#class_declaration"
         }, {
             include: "#variable_declaration"
         }, {
@@ -488,20 +488,20 @@ var GDScriptHighlightRules = function() {
         }],
         "#class_declaration": [{
             token: [
+                "storage.type.class.gdscript",
                 "text",
                 "entity.name.type.class.gdscript",
                 "text"
             ],
-            regex: /(?<=^class)(\s+)([a-zA-Z_]\w*)(\s*)(?=:)/
+            regex: /\b(?<!\.)(class)(\s+)([a-zA-Z_]\w*)(\s*)(?=:)/
         }],
         "#class_new": [{
             token: [
                 "entity.name.type.class.gdscript",
                 "text",
-                "storage.type.new.gdscript",
-                "paren.lparen",
+                "storage.type.new.gdscript"
             ],
-            regex: /\b([a-zA-Z_]\w*)(.)(new)(\()/
+            regex: /\b([a-zA-Z_]\w*)(\.)(new)(?=\()/
         }],
         "#class_is": [{
             token: [
@@ -512,7 +512,7 @@ var GDScriptHighlightRules = function() {
                 "text",
                 "entity.name.type.class.gdscript"
             ],
-            regex: /(\s+)(is)(\s+)(not?)(\s+\s+)([a-zA-Z_]\w*)/
+            regex: /(\s+)(is)(\s+)(not)(\s+)([a-zA-Z_]\w*)\b/
         }],
         "#class_enum": [{
             token: [
@@ -524,11 +524,12 @@ var GDScriptHighlightRules = function() {
         }],
         "#class_name": [{
             token: [
+                "keyword.language.gdscript",
                 "text",
                 "entity.name.type.class.gdscript",
                 "class.other.gdscript"
             ],
-            regex: /(?<=class_name)(\s+)([a-zA-Z_]\w*)((?:\.[a-zA-Z_]\w*)?)/
+            regex: /\b(class_name)(\s+)([a-zA-Z_]\w*)((?:\.[a-zA-Z_]\w*)?)/
         }],
         "#builtin_get_node_shorthand": [{
             include: "#builtin_get_node_shorthand_quoted"
@@ -864,13 +865,30 @@ var GDScriptHighlightRules = function() {
             regex: /\b(?<![@\$#%])[A-Za-z_]\w*\b(?![(])/
         }],
         "#any_property": [{
-            token: [
-                "punctuation.accessor.gdscript",
-                "text",
-                "constant.language.gdscript",
-                "variable.other.property.gdscript"
-            ],
-            regex: /(\.)(\s*)(?<![@\$#%])(?:([A-Z_][A-Z_0-9]*)|([A-Za-z_]\w*))\b(?![(])/
+            token: function(value) {
+                var match = /^\.(\s*)(.*)$/.exec(value);
+                var property = match[2];
+                var tokens = [{
+                    type: "punctuation.accessor.gdscript",
+                    value: "."
+                }];
+
+                if (match[1]) {
+                    tokens.push({
+                        type: "text",
+                        value: match[1]
+                    });
+                }
+
+                tokens.push({
+                    type: /^[A-Z_][A-Z_0-9]*$/.test(property)
+                        ? "constant.language.gdscript"
+                        : "variable.other.property.gdscript",
+                    value: property
+                });
+                return tokens;
+            },
+            regex: /(?<=\w)\.\s*(?:[A-Z_][A-Z_0-9]*|[A-Za-z_]\w*)\b(?![(])/
         }],
         "#function_call": [{
             token: "meta.function-call.gdscript",

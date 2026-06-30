@@ -1,0 +1,540 @@
+[[
+   "start",
+  ["comment","# Declaration states must close when a nested initializer consumes EOL."]
+],[
+   "start",
+  ["keyword.language.gdscript storage.type.var.gdscript","var"],
+  ["meta.variable.declaration.gdscript"," "],
+  ["variable.other.gdscript","string_value"],
+  ["meta.variable.declaration.gdscript"," "],
+  ["keyword.operator.assignment.gdscript","="],
+  ["meta.variable.declaration.gdscript"," "],
+  ["string","\""],
+  ["string","text\""]
+],[
+   "start",
+  ["keyword.language.gdscript storage.type.var.gdscript","var"],
+  ["meta.variable.declaration.gdscript"," "],
+  ["variable.other.gdscript","triple_string_value"],
+  ["meta.variable.declaration.gdscript"," "],
+  ["keyword.operator.assignment.gdscript","="],
+  ["meta.variable.declaration.gdscript"," "],
+  ["string","\"\"\""],
+  ["string","text\"\"\""]
+],[
+   "start",
+  ["keyword.language.gdscript storage.type.var.gdscript","var"],
+  ["meta.variable.declaration.gdscript"," "],
+  ["variable.other.gdscript","dictionary_value"],
+  ["meta.variable.declaration.gdscript"," "],
+  ["keyword.operator.assignment.gdscript","="],
+  ["meta.variable.declaration.gdscript"," "],
+  ["paren.lparen","{"],
+  ["string","\""],
+  ["string","key\""],
+  ["text",": "],
+  ["constant.numeric.integer.gdscript","1"],
+  ["paren.rparen","}"]
+],[
+   "start",
+  ["keyword.language.gdscript storage.type.var.gdscript","var"],
+  ["meta.variable.declaration.gdscript"," "],
+  ["variable.other.gdscript","array_value"],
+  ["meta.variable.declaration.gdscript"," "],
+  ["keyword.operator.assignment.gdscript","="],
+  ["meta.variable.declaration.gdscript"," "],
+  ["paren.lparen","["],
+  ["constant.numeric.integer.gdscript","1"],
+  ["paren.rparen","]"]
+],[
+   "start",
+  ["keyword.language.gdscript storage.type.var.gdscript","var"],
+  ["meta.variable.declaration.gdscript"," "],
+  ["variable.other.gdscript","nested_value"],
+  ["meta.variable.declaration.gdscript"," "],
+  ["keyword.operator.assignment.gdscript","="],
+  ["meta.variable.declaration.gdscript"," "],
+  ["paren.lparen","{"],
+  ["string","\""],
+  ["string","items\""],
+  ["text",": "],
+  ["paren.lparen","[["],
+  ["entity.name.function.gdscript","build_value"],
+  ["paren.lparen","("],
+  ["paren.rparen",")]]}"]
+],[
+   "start",
+  ["keyword.language.gdscript storage.type.var.gdscript","var"],
+  ["meta.variable.declaration.gdscript"," "],
+  ["variable.other.gdscript","parenthesized_value"],
+  ["meta.variable.declaration.gdscript"," "],
+  ["keyword.operator.assignment.gdscript","="],
+  ["meta.variable.declaration.gdscript"," "],
+  ["paren.lparen","("],
+  ["constant.numeric.integer.gdscript","1"],
+  ["text"," "],
+  ["keyword.operator.arithmetic.gdscript","+"],
+  ["text"," "],
+  ["constant.numeric.integer.gdscript","2"],
+  ["paren.rparen",")"]
+],[
+   "start",
+  ["keyword.language.gdscript storage.type.var.gdscript","var"],
+  ["meta.variable.declaration.gdscript"," "],
+  ["variable.other.gdscript","call_value"],
+  ["meta.variable.declaration.gdscript"," "],
+  ["keyword.operator.assignment.gdscript","="],
+  ["meta.variable.declaration.gdscript"," "],
+  ["entity.name.function.gdscript","build_value"],
+  ["paren.lparen","("],
+  ["constant.numeric.integer.gdscript","1"],
+  ["paren.rparen",")"]
+],[
+   "start",
+  ["keyword.language.gdscript storage.type.var.gdscript","var"],
+  ["meta.variable.declaration.gdscript"," "],
+  ["variable.other.gdscript","node_path_value"],
+  ["meta.variable.declaration.gdscript"," "],
+  ["keyword.operator.assignment.gdscript","="],
+  ["meta.variable.declaration.gdscript"," "],
+  ["support.class.library.gdscript","NodePath"],
+  ["paren.lparen","("],
+  ["string","\"Child\""],
+  ["paren.rparen",")"]
+],[
+   "start",
+  ["keyword.language.gdscript storage.type.var.gdscript","var"],
+  ["meta.variable.declaration.gdscript"," "],
+  ["variable.other.gdscript","get_node_value"],
+  ["meta.variable.declaration.gdscript"," "],
+  ["keyword.operator.assignment.gdscript","="],
+  ["meta.variable.declaration.gdscript"," "],
+  ["entity.name.function.gdscript","get_node"],
+  ["paren.lparen","("],
+  ["string","\"Child\""],
+  ["paren.rparen",")"]
+],[
+   "start",
+  ["keyword.language.gdscript storage.type.var.gdscript","var"],
+  ["meta.variable.declaration.gdscript"," "],
+  ["variable.other.gdscript","quoted_shorthand_value"],
+  ["meta.variable.declaration.gdscript"," "],
+  ["keyword.operator.assignment.gdscript","="],
+  ["meta.variable.declaration.gdscript"," "],
+  ["keyword.control.flow.gdscript","$"],
+  ["string","\""],
+  ["string","Child\""]
+],[
+   "start",
+  ["keyword.language.gdscript storage.type.var.gdscript","var"],
+  ["meta.variable.declaration.gdscript"," "],
+  ["variable.other.gdscript","bare_shorthand_value"],
+  ["meta.variable.declaration.gdscript"," "],
+  ["keyword.operator.assignment.gdscript","="],
+  ["meta.variable.declaration.gdscript"," "],
+  ["keyword.control.flow.gdscript","$"],
+  ["constant.character.escape.gdscript","Root"],
+  ["constant.character.escape.gdscript","/"],
+  ["constant.character.escape.gdscript","Child"]
+],[
+   "start",
+  ["keyword.language.gdscript storage.type.const.gdscript","const"],
+  ["meta.variable.declaration.gdscript"," "],
+  ["variable.other.constant.gdscript","ARRAY_VALUE"],
+  ["meta.variable.declaration.gdscript"," "],
+  ["keyword.operator.assignment.gdscript","="],
+  ["meta.variable.declaration.gdscript"," "],
+  ["paren.lparen","["],
+  ["constant.numeric.integer.gdscript","1"],
+  ["paren.rparen","]"]
+],[
+   "start",
+  ["keyword.language.gdscript storage.type.var.gdscript","var"],
+  ["meta.variable.declaration.gdscript"," "],
+  ["variable.other.gdscript","lambda_value"],
+  ["meta.variable.declaration.gdscript"," "],
+  ["keyword.operator.assignment.gdscript","="],
+  ["meta.variable.declaration.gdscript"," "],
+  ["keyword.language.gdscript storage.type.function.gdscript","func"],
+  ["paren.lparen","("],
+  ["variable.parameter.function.language.gdscript","argument"],
+  ["paren.rparen",")"],
+  ["meta.function.gdscript",":"]
+],[
+   "start"
+],[
+   "start",
+  ["comment","# Comments, terminators, and continuations keep their normal behavior."]
+],[
+   "start",
+  ["keyword.language.gdscript storage.type.var.gdscript","var"],
+  ["meta.variable.declaration.gdscript"," "],
+  ["variable.other.gdscript","commented_value"],
+  ["meta.variable.declaration.gdscript"," "],
+  ["keyword.operator.assignment.gdscript","="],
+  ["meta.variable.declaration.gdscript"," "],
+  ["paren.lparen","["],
+  ["constant.numeric.integer.gdscript","1"],
+  ["paren.rparen","]"],
+  ["meta.variable.declaration.gdscript"," "],
+  ["comment","# comment"]
+],[
+   "start",
+  ["keyword.language.gdscript storage.type.var.gdscript","var"],
+  ["meta.variable.declaration.gdscript"," "],
+  ["variable.other.gdscript","terminated_value"],
+  ["meta.variable.declaration.gdscript"," "],
+  ["keyword.operator.assignment.gdscript","="],
+  ["meta.variable.declaration.gdscript"," "],
+  ["paren.lparen","["],
+  ["constant.numeric.integer.gdscript","1"],
+  ["paren.rparen","]"],
+  ["meta.variable.declaration.gdscript",";"]
+],[
+   "start",
+  ["keyword.language.gdscript storage.type.var.gdscript","var"],
+  ["meta.variable.declaration.gdscript"," "],
+  ["variable.other.gdscript","spaced_array_value"],
+  ["meta.variable.declaration.gdscript"," "],
+  ["keyword.operator.assignment.gdscript","="],
+  ["meta.variable.declaration.gdscript"," "],
+  ["paren.lparen","["],
+  ["constant.numeric.integer.gdscript","1"],
+  ["paren.rparen","]"],
+  ["meta.variable.declaration.gdscript","   "]
+],[
+   "start",
+  ["keyword.language.gdscript storage.type.var.gdscript","var"],
+  ["meta.variable.declaration.gdscript"," "],
+  ["variable.other.gdscript","spaced_string_value"],
+  ["meta.variable.declaration.gdscript"," "],
+  ["keyword.operator.assignment.gdscript","="],
+  ["meta.variable.declaration.gdscript"," "],
+  ["string","\""],
+  ["string","text\""],
+  ["meta.variable.declaration.gdscript","   "]
+],[
+   ["punctuation.separator.continuation.line.gdscript","variable_declaration"],
+  ["keyword.language.gdscript storage.type.var.gdscript","var"],
+  ["meta.variable.declaration.gdscript"," "],
+  ["variable.other.gdscript","continued_value"],
+  ["meta.variable.declaration.gdscript"," "],
+  ["keyword.operator.assignment.gdscript","="],
+  ["meta.variable.declaration.gdscript"," "],
+  ["paren.lparen","["],
+  ["constant.numeric.integer.gdscript","1"],
+  ["paren.rparen","]"],
+  ["meta.variable.declaration.gdscript"," "],
+  ["punctuation.separator.continuation.line.gdscript","\\"]
+],[
+   "start",
+  ["meta.variable.declaration.gdscript","    "],
+  ["keyword.operator.arithmetic.gdscript","+"],
+  ["meta.variable.declaration.gdscript"," "],
+  ["paren.lparen","["],
+  ["constant.numeric.integer.gdscript","2"],
+  ["paren.rparen","]"]
+],[
+   "start"
+],[
+   "start",
+  ["comment","# Incomplete declarations are common while editing and must not leak state."]
+],[
+   "start",
+  ["keyword.language.gdscript storage.type.function.gdscript","func"],
+  ["text"," "],
+  ["entity.name.function.gdscript","incomplete_function"],
+  ["paren.lparen","("],
+  ["variable.parameter.function.language.gdscript","argument"],
+  ["paren.rparen",")"]
+],[
+   "start",
+  ["keyword.language.gdscript storage.type.var.gdscript","var"],
+  ["meta.variable.declaration.gdscript"," "],
+  ["variable.other.gdscript","incomplete_lambda"],
+  ["meta.variable.declaration.gdscript"," "],
+  ["keyword.operator.assignment.gdscript","="],
+  ["meta.variable.declaration.gdscript"," "],
+  ["keyword.language.gdscript storage.type.function.gdscript","func"],
+  ["paren.lparen","("],
+  ["variable.parameter.function.language.gdscript","argument"],
+  ["paren.rparen",")"]
+],[
+   "start"
+],[
+   "start",
+  ["comment","# Multiline declaration parameters retain parameter styling and close cleanly."]
+],[
+   ["paren.lparen","signal_declaration"],
+  ["keyword.language.gdscript storage.type.function.gdscript","signal"],
+  ["text"," "],
+  ["entity.name.function.gdscript","changed"],
+  ["paren.lparen","("]
+],[
+   ["paren.lparen","signal_declaration"],
+  ["meta.function.parameters.gdscript","    "],
+  ["variable.parameter.function.language.gdscript","value"]
+],[
+   "start",
+  ["paren.rparen",")"]
+],[
+   ["paren.lparen","function_declaration"],
+  ["keyword.language.gdscript storage.type.function.gdscript","func"],
+  ["text"," "],
+  ["entity.name.function.gdscript","multiline_function"],
+  ["paren.lparen","("]
+],[
+   ["paren.lparen","function_declaration"],
+  ["meta.function.parameters.gdscript","    "],
+  ["variable.parameter.function.language.gdscript","value"]
+],[
+   "start",
+  ["paren.rparen",")"],
+  ["punctuation.section.function.begin.gdscript",":"]
+],[
+   "start",
+  ["text","    "],
+  ["keyword.control.flow.gdscript","pass"]
+],[
+   "start"
+],[
+   "start"
+],[
+   "start"
+],[
+   "start",
+  ["string","\""],
+  ["constant.character.format.other.gdscript","{{"],
+  ["string",", "],
+  ["constant.character.format.other.gdscript","}}"],
+  ["string","\""]
+],[
+   "start",
+  ["string","\""],
+  ["constant.character.format.other.gdscript","{user"],
+  ["constant.character.format.other.gdscript","}"],
+  ["string","\""]
+],[
+   "start",
+  ["string","\""],
+  ["constant.character.format.other.gdscript","{user"],
+  ["constant.character.format.other.gdscript",".name"],
+  ["constant.character.format.other.gdscript","}"],
+  ["string","\""]
+],[
+   "start",
+  ["string","\""],
+  ["constant.character.format.other.gdscript","{user"],
+  ["constant.character.format.other.gdscript","[0]"],
+  ["constant.character.format.other.gdscript","}"],
+  ["string","\""]
+],[
+   "start",
+  ["string","\""],
+  ["constant.character.format.other.gdscript","{value"],
+  ["storage.type.format.gdscript",":.2f"],
+  ["constant.character.format.other.gdscript","}"],
+  ["string","\""]
+],[
+   "start",
+  ["string","\""],
+  ["constant.character.format.other.gdscript","{value"],
+  ["storage.type.format.gdscript",":"],
+  ["constant.character.format.other.gdscript","${width}"],
+  ["constant.character.format.other.gdscript","}"],
+  ["string","\""]
+],[
+   "start",
+  ["string","\""],
+  ["constant.character.format.other.gdscript","{value"],
+  ["storage.type.format.gdscript",":"],
+  ["constant.character.format.other.gdscript","{width}.2f"],
+  ["constant.character.format.other.gdscript","}"],
+  ["string","\""]
+],[
+   "start",
+  ["string","\""],
+  ["constant.character.format.other.gdscript","{user"],
+  ["constant.character.format.other.gdscript",".name"],
+  ["storage.type.format.gdscript","!r"],
+  ["storage.type.format.gdscript",":>10"],
+  ["constant.character.format.other.gdscript","}"],
+  ["string","\""]
+],[
+   "start"
+],[
+   "start"
+],[
+   "start",
+  ["entity.name.function.gdscript","get_node"],
+  ["paren.lparen","("],
+  ["variable.other.gdscript","path_var"],
+  ["paren.rparen",")"]
+],[
+   "start",
+  ["entity.name.function.gdscript","get_node"],
+  ["paren.lparen","("],
+  ["entity.name.function.gdscript","make_path"],
+  ["paren.lparen","("],
+  ["paren.rparen","))"]
+],[
+   "start",
+  ["entity.name.function.gdscript","get_node"],
+  ["paren.lparen","("],
+  ["variable.other.gdscript","paths"],
+  ["paren.lparen","["],
+  ["variable.other.gdscript","index"],
+  ["paren.rparen","])"]
+],[
+   "start"
+],[
+   "start",
+  ["comment","# Class declarations and explicit class names."]
+],[
+   "start",
+  ["storage.type.class.gdscript","class"],
+  ["text"," "],
+  ["entity.name.type.class.gdscript","Inner"],
+  ["text",":"]
+],[
+   "start",
+  ["text","    "],
+  ["keyword.control.flow.gdscript","pass"]
+],[
+   "start",
+  ["keyword.language.gdscript","class_name"],
+  ["text"," "],
+  ["entity.name.type.class.gdscript","Player"]
+],[
+   "start",
+  ["keyword.language.gdscript","class_name"],
+  ["text"," "],
+  ["entity.name.type.class.gdscript","Namespace"],
+  ["class.other.gdscript",".Player"]
+],[
+   "start"
+],[
+   "start",
+  ["comment","# Property access requires an object on the left."]
+],[
+   "start",
+  ["variable.other.gdscript","object"],
+  ["punctuation.accessor.gdscript","."],
+  ["variable.other.property.gdscript","property"]
+],[
+   "start",
+  ["variable.other.gdscript","object"],
+  ["punctuation.accessor.gdscript","."],
+  ["text"," "],
+  ["variable.other.property.gdscript","spaced_property"]
+],[
+   "start",
+  ["variable.other.gdscript","object"],
+  ["punctuation.accessor.gdscript","."],
+  ["constant.language.gdscript","CONSTANT"]
+],[
+   "start",
+  ["text","."],
+  ["variable.other.gdscript","not_a_property"]
+],[
+   "start",
+  ["text",".."],
+  ["variable.other.gdscript","not_a_property"]
+],[
+   "start",
+  ["text","@."],
+  ["variable.other.gdscript","not_a_property"]
+],[
+   "start"
+],[
+   "start",
+  ["comment","# Constructors require a literal dot and retain balanced parentheses."]
+],[
+   "start",
+  ["entity.name.type.class.gdscript","Foo"],
+  ["text","."],
+  ["storage.type.new.gdscript","new"],
+  ["paren.lparen","("],
+  ["paren.rparen",")"]
+],[
+   "start",
+  ["entity.name.type.class.gdscript","foo"],
+  ["text","."],
+  ["storage.type.new.gdscript","new"],
+  ["paren.lparen","("],
+  ["paren.rparen",")"]
+],[
+   "start",
+  ["variable.other.gdscript","foo"],
+  ["keyword.operator.arithmetic.gdscript","-"],
+  ["entity.name.function.gdscript","new"],
+  ["paren.lparen","("],
+  ["paren.rparen",")"]
+],[
+   "start",
+  ["variable.other.gdscript","foo"],
+  ["text"," "],
+  ["entity.name.function.gdscript","new"],
+  ["paren.lparen","("],
+  ["paren.rparen",")"]
+],[
+   "start"
+],[
+   "start",
+  ["comment","# Type checks require the complete \"is not\" phrase."]
+],[
+   "start",
+  ["variable.other.gdscript","value"],
+  ["text"," "],
+  ["storage.type.is.gdscript","is"],
+  ["text"," "],
+  ["storage.type.not.gdscript","not"],
+  ["text"," "],
+  ["entity.name.type.class.gdscript","Node"]
+],[
+   "start",
+  ["variable.other.gdscript","value"],
+  ["text"," "],
+  ["keyword.language.gdscript","is"],
+  ["text"," "],
+  ["variable.other.gdscript","no"],
+  ["text","  "],
+  ["entity.name.type.class.gdscript","Node"]
+],[
+   "start"
+],[
+   "start",
+  ["comment","# Inheritance supports names, nested names, and script paths."]
+],[
+   "start",
+  ["keyword.language.gdscript","extends"],
+  ["text"," "],
+  ["entity.other.inherited-class.gdscript","Node"]
+],[
+   "start",
+  ["keyword.language.gdscript","extends"],
+  ["text"," "],
+  ["entity.other.inherited-class.gdscript","Outer.Inner.Deep"]
+],[
+   "start",
+  ["keyword.language.gdscript","extends"],
+  ["text"," "],
+  ["entity.other.inherited-class.gdscript","\"res://base.gd\""]
+],[
+   "start"
+],[
+   "start",
+  ["comment","# Invalid question-mark cases must not match the case-label rule."]
+],[
+   "start",
+  ["keyword.control.flow.gdscript","case"],
+  ["text"," "],
+  ["constant.numeric.integer.gdscript","1"],
+  ["text",":"]
+],[
+   "start",
+  ["variable.other.gdscript","case"],
+  ["text"," ?:"]
+],[
+   "start"
+]]
