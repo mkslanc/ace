@@ -13,7 +13,6 @@ oop.inherits(Mode, TextMode);
 
 (function() {
     this.lineCommentStart = "#";
-    // this.blockComment = {start: ""/*"", end: ""*/""};
     this.$id = "ace/mode/gdscript";
 }).call(Mode.prototype);
 

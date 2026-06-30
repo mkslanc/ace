@@ -2,18 +2,19 @@
 
 var oop = require("../lib/oop");
 var TextMode = require("./text").Mode;
-var GDResourceHighlightRules = require("./gdresource_highlight_rules").GDResourceHighlightRules;
+var GDShaderHighlightRules = require("./gdshader_highlight_rules").GDShaderHighlightRules;
 var FoldMode = require("./folding/cstyle").FoldMode;
 
 var Mode = function() {
-    this.HighlightRules = GDResourceHighlightRules;
+    this.HighlightRules = GDShaderHighlightRules;
     this.foldingRules = new FoldMode();
 };
 oop.inherits(Mode, TextMode);
 
 (function() {
-    this.lineCommentStart = ";";
-    this.$id = "ace/mode/gdresource";
+    this.lineCommentStart = "//";
+    this.blockComment = {start: "/*", end: "*/"};
+    this.$id = "ace/mode/gdshader";
 }).call(Mode.prototype);
 
 exports.Mode = Mode;

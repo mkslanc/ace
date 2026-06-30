@@ -3,8 +3,9 @@
 var oop = require("../lib/oop");
 var TextHighlightRules = require("./text_highlight_rules").TextHighlightRules;
 var GDScriptHighlightRules = require("./gdscript_highlight_rules").GDScriptHighlightRules;
+var GDShaderHighlightRules = require("./gdshader_highlight_rules").GDShaderHighlightRules;
 
-var gdResourceHighlightRules = function() {
+var GDResourceHighlightRules = function() {
 
     this.$rules = {
         start: [{
@@ -25,21 +26,10 @@ var gdResourceHighlightRules = function() {
             ],
             regex: /(;)(.*$)/
         }],
-        "#embedded_shader": [{ //TODO: link to shader
-            token: [
-                "variable.other.property.gdresource",
-                "meta.embedded.block.gdshader"
-            ],
-            regex: /(code)( = ")/,
-            push: [{
-                token: "meta.embedded.block.gdshader",
-                regex: /"/,
-                next: "pop"
-            }, {
-                include: "source.gdshader"
-            }, {
-                defaultToken: "meta.embedded.block.gdshader"
-            }]
+        "#embedded_shader": [{
+            token: ["text", "variable.other.property.gdresource", "text"],
+            regex: /(\s*)(code)(\s*=\s*")/,
+            push: "gdshader-start"
         }],
         "#embedded_gdscript": [{
             token: ["text", "variable.other.property.gdresource", "text"],
@@ -73,6 +63,10 @@ var gdResourceHighlightRules = function() {
             regex: /(\s*)([A-Za-z_-][^\s]*|".+"|'.+'|[0-9]+)(\s*)(=)(\s*)/,
             push: [{
                 token: "text",
+                regex: /^/,
+                next: "pop"
+            }, {
+                token: "text",
                 regex: /$|(?==)|\,?|\s*(?=\})/,
                 next: "pop"
             }, {
@@ -92,6 +86,10 @@ var gdResourceHighlightRules = function() {
             ],
             regex: /(\s*)([A-Za-z_-][^\s]*|".+"|'.+'|[0-9]+)(\s*)(=)(\s*)/,
             push: [{
+                token: "text",
+                regex: /^/,
+                next: "pop"
+            }, {
                 token: "text",
                 regex: /$|(?==)|\,|\s*(?=\})/,
                 next: "pop"
@@ -234,6 +232,32 @@ var gdResourceHighlightRules = function() {
         }]
     };
 
+    var gdshaderRules = new GDShaderHighlightRules().getRules();
+    var shaderIncludePattern = /(#[ \t]*include)([ \t]+)("[^"\r\n]*")/.source;
+    var shaderHintStringPattern = /"[^"\r\n]*"/.source;
+
+    Object.keys(gdshaderRules).forEach(function(stateName) {
+        gdshaderRules[stateName].forEach(function(rule) {
+            var pattern = rule.regex && rule.regex.source;
+            if (pattern === shaderIncludePattern) {
+                rule.regex = /(#[ \t]*include)([ \t]+)(\\"[^"\r\n]*\\")/;
+            } else if (pattern === shaderHintStringPattern) {
+                rule.regex = /\\"[^"\r\n]*\\"/;
+            }
+        });
+    });
+
+    var endEmbeddedShader = function(currentState, stack) {
+        stack.length = 0;
+        return "start";
+    };
+
+    this.embedRules(gdshaderRules, "gdshader-", [{
+        token: "text",
+        regex: /(?<!\\)"/,
+        next: endEmbeddedShader
+    }]);
+
     var gdscriptRules = new GDScriptHighlightRules().getRules();
     var doubleQuotePattern = /((?:r)?)(")/.source;
     var tripleDoubleQuotePattern = /((?:r)?)(""")/.source;
@@ -310,6 +334,6 @@ var gdResourceHighlightRules = function() {
     this.normalizeRules();
 };
 
-oop.inherits(gdResourceHighlightRules, TextHighlightRules);
+oop.inherits(GDResourceHighlightRules, TextHighlightRules);
 
-exports.gdResourceHighlightRules = gdResourceHighlightRules;
+exports.GDResourceHighlightRules = GDResourceHighlightRules;

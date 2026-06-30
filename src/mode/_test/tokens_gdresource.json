@@ -1,0 +1,415 @@
+[[
+   "start",
+  ["paren.lparen","["],
+  ["keyword.control.gdresource","gd_resource"],
+  ["text"," "],
+  ["variable.other.property.gdresource","type"],
+  ["punctuation.definition.keyValue.gdresource","="],
+  ["support.class.library.gdresource","\"ShaderMaterial\""],
+  ["text"," "],
+  ["variable.other.property.gdresource","load_steps"],
+  ["punctuation.definition.keyValue.gdresource","="],
+  ["constant.numeric.integer.gdresource","3"],
+  ["text"," "],
+  ["variable.other.property.gdresource","format"],
+  ["punctuation.definition.keyValue.gdresource","="],
+  ["constant.numeric.integer.gdresource","3"],
+  ["paren.rparen","]"]
+],[
+   "start"
+],[
+   "start",
+  ["paren.lparen","["],
+  ["keyword.control.gdresource","sub_resource"],
+  ["text"," "],
+  ["variable.other.property.gdresource","type"],
+  ["punctuation.definition.keyValue.gdresource","="],
+  ["support.class.library.gdresource","\"GDScript\""],
+  ["text"," "],
+  ["variable.other.property.gdresource","id"],
+  ["punctuation.definition.keyValue.gdresource","="],
+  ["string","\"GDScript_demo\""],
+  ["paren.rparen","]"]
+],[
+   "gdscript-start",
+  ["text","  "],
+  ["variable.other.property.gdresource","script/source"],
+  ["text"," = \""],
+  ["keyword.language.gdscript","extends"],
+  ["text"," "],
+  ["entity.other.inherited-class.gdscript","Resource"]
+],[
+   "gdscript-start"
+],[
+   "gdscript-start",
+  ["keyword.language.gdscript storage.type.const.gdscript","const"],
+  ["meta.variable.declaration.gdscript"," "],
+  ["variable.other.constant.gdscript","MESSAGE"],
+  ["meta.variable.declaration.gdscript"," "],
+  ["keyword.operator.assignment.gdscript","="],
+  ["meta.variable.declaration.gdscript"," "],
+  ["string","\\\""],
+  ["string","Hello from embedded GDScript\\\""]
+],[
+   "gdscript-start",
+  ["keyword.language.gdscript storage.type.const.gdscript","const"],
+  ["meta.variable.declaration.gdscript"," "],
+  ["variable.other.constant.gdscript","QUOTED"],
+  ["meta.variable.declaration.gdscript"," "],
+  ["keyword.operator.assignment.gdscript","="],
+  ["meta.variable.declaration.gdscript"," "],
+  ["string","\\\""],
+  ["string","He said "],
+  ["constant.character.escape.gdscript","\\\\\\\""],
+  ["string","hello"],
+  ["constant.character.escape.gdscript","\\\\\\\""],
+  ["string","\\\""]
+],[
+   "gdscript-start",
+  ["keyword.language.gdscript storage.type.const.gdscript","const"],
+  ["meta.variable.declaration.gdscript"," "],
+  ["variable.other.constant.gdscript","FORMAT"],
+  ["meta.variable.declaration.gdscript"," "],
+  ["keyword.operator.assignment.gdscript","="],
+  ["meta.variable.declaration.gdscript"," "],
+  ["string","\\\""],
+  ["string","value: "],
+  ["constant.character.format.other.gdscript","%s"],
+  ["string"," "],
+  ["constant.character.format.other.gdscript","{name"],
+  ["constant.character.format.other.gdscript","}"],
+  ["string","\\\""]
+],[
+   "gdscript-start",
+  ["keyword.language.gdscript storage.type.const.gdscript","const"],
+  ["meta.variable.declaration.gdscript"," "],
+  ["variable.other.constant.gdscript","RAW"],
+  ["meta.variable.declaration.gdscript"," "],
+  ["keyword.operator.assignment.gdscript","="],
+  ["meta.variable.declaration.gdscript"," "],
+  ["constant.character.escape.gdscript","r"],
+  ["string","\\\""],
+  ["string","raw string\\\""]
+],[
+   ["gdscript-constant.character.escape.gdscript","gdscript-variable_declaration","gdscript-variable_declaration","gdscript-start"],
+  ["keyword.language.gdscript storage.type.const.gdscript","const"],
+  ["meta.variable.declaration.gdscript"," "],
+  ["variable.other.constant.gdscript","MULTILINE"],
+  ["meta.variable.declaration.gdscript"," "],
+  ["keyword.operator.assignment.gdscript","="],
+  ["meta.variable.declaration.gdscript"," "],
+  ["string","\\\"\\\"\\\""],
+  ["string","first line"]
+],[
+   "gdscript-start",
+  ["string","second line\\\"\\\"\\\""]
+],[
+   "gdscript-start"
+],[
+   "gdscript-start",
+  ["keyword.language.gdscript storage.type.function.gdscript","func"],
+  ["text"," "],
+  ["entity.name.function.gdscript","greet"],
+  ["paren.lparen","("],
+  ["paren.rparen",")"],
+  ["text"," "],
+  ["keyword.operator.arithmetic.gdscript","->"],
+  ["text"," "],
+  ["entity.name.type.class.builtin.gdscript","void"],
+  ["punctuation.section.function.begin.gdscript",":"]
+],[
+   "gdscript-start",
+  ["text","\t"],
+  ["entity.name.function.gdscript","print"],
+  ["paren.lparen","("],
+  ["string","\\\""],
+  ["string","Hello from embedded GDScript\\\""],
+  ["paren.rparen",")"]
+],[
+   "start",
+  ["text","\""]
+],[
+   "start"
+],[
+   "start",
+  ["paren.lparen","["],
+  ["keyword.control.gdresource","sub_resource"],
+  ["text"," "],
+  ["variable.other.property.gdresource","type"],
+  ["punctuation.definition.keyValue.gdresource","="],
+  ["support.class.library.gdresource","\"Shader\""],
+  ["text"," "],
+  ["variable.other.property.gdresource","id"],
+  ["punctuation.definition.keyValue.gdresource","="],
+  ["string","\"Shader_demo\""],
+  ["paren.rparen","]"]
+],[
+   "gdshader-start",
+  ["variable.other.property.gdresource","code"],
+  ["text"," = \""],
+  ["keyword.language.classifier.gdshader","shader_type"],
+  ["meta.classifier.gdshader"," "],
+  ["entity.other.inherited-class.gdshader","spatial"],
+  ["punctuation.terminator.statement.gdshader",";"]
+],[
+   "gdshader-start",
+  ["keyword.language.classifier.gdshader","render_mode"],
+  ["meta.classifier.gdshader"," "],
+  ["entity.other.inherited-class.gdshader","unshaded"],
+  ["punctuation.terminator.statement.gdshader",";"]
+],[
+   "gdshader-start"
+],[
+   "gdshader-start",
+  ["storage.modifier.gdshader","uniform"],
+  ["text"," "],
+  ["support.type.gdshader","vec4"],
+  ["text"," "],
+  ["variable.name.gdshader","base_color"],
+  ["text"," "],
+  ["keyword.operator.type.annotation.gdshader",":"],
+  ["text"," "],
+  ["support.type.annotation.gdshader","source_color"],
+  ["text"," "],
+  ["keyword.operator.gdshader","="],
+  ["text"," "],
+  ["support.type.gdshader","vec4"],
+  ["paren.lparen","("],
+  ["constant.numeric.float.gdshader","0.15"],
+  ["punctuation.separator.comma.gdshader",","],
+  ["text"," "],
+  ["constant.numeric.float.gdshader","0.45"],
+  ["punctuation.separator.comma.gdshader",","],
+  ["text"," "],
+  ["constant.numeric.float.gdshader","0.85"],
+  ["punctuation.separator.comma.gdshader",","],
+  ["text"," "],
+  ["constant.numeric.float.gdshader","1.0"],
+  ["paren.rparen",")"],
+  ["punctuation.terminator.statement.gdshader",";"]
+],[
+   "gdshader-start",
+  ["storage.modifier.gdshader","uniform"],
+  ["text"," "],
+  ["support.type.gdshader","float"],
+  ["text"," "],
+  ["variable.name.gdshader","pulse_speed"],
+  ["text"," "],
+  ["keyword.operator.type.annotation.gdshader",":"],
+  ["text"," "],
+  ["support.type.annotation.gdshader","hint_range"],
+  ["paren.lparen","("],
+  ["constant.numeric.float.gdshader","0.0"],
+  ["punctuation.separator.comma.gdshader",","],
+  ["text"," "],
+  ["constant.numeric.float.gdshader","8.0"],
+  ["punctuation.separator.comma.gdshader",","],
+  ["text"," "],
+  ["constant.numeric.float.gdshader","0.1"],
+  ["paren.rparen",")"],
+  ["text"," "],
+  ["keyword.operator.gdshader","="],
+  ["text"," "],
+  ["constant.numeric.float.gdshader","2.0"],
+  ["punctuation.terminator.statement.gdshader",";"]
+],[
+   "gdshader-start",
+  ["storage.modifier.gdshader","uniform"],
+  ["text"," "],
+  ["support.type.gdshader","int"],
+  ["text"," "],
+  ["variable.name.gdshader","palette"],
+  ["text"," "],
+  ["keyword.operator.type.annotation.gdshader",":"],
+  ["text"," "],
+  ["support.type.annotation.gdshader","hint_enum"],
+  ["paren.lparen","("],
+  ["string","\\\"Ocean\\\""],
+  ["punctuation.separator.comma.gdshader",","],
+  ["text"," "],
+  ["string","\\\"Sunset:2\\\""],
+  ["punctuation.separator.comma.gdshader",","],
+  ["text"," "],
+  ["string","\\\"Forest\\\""],
+  ["paren.rparen",")"],
+  ["text"," "],
+  ["keyword.operator.gdshader","="],
+  ["text"," "],
+  ["constant.numeric.integer.gdshader","0"],
+  ["punctuation.terminator.statement.gdshader",";"]
+],[
+   "gdshader-start"
+],[
+   ["gdshader-paren.lparen1","gdshader-text","gdshader-text","gdshader-start"],
+  ["keyword.other.struct.gdshader","struct"],
+  ["text"," "],
+  ["entity.name.type.struct.gdshader","SurfaceData"],
+  ["text"," "],
+  ["paren.lparen","{"]
+],[
+   ["gdshader-paren.lparen1","gdshader-text","gdshader-text","gdshader-start"],
+  ["text","\t"],
+  ["support.type.gdshader","vec3"],
+  ["text"," "],
+  ["entity.name.variable.field.gdshader","albedo"],
+  ["punctuation.terminator.statement.gdshader",";"]
+],[
+   ["gdshader-paren.lparen1","gdshader-text","gdshader-text","gdshader-start"],
+  ["text","\t"],
+  ["support.type.gdshader","float"],
+  ["text"," "],
+  ["entity.name.variable.field.gdshader","emission"],
+  ["punctuation.terminator.statement.gdshader",";"]
+],[
+   "gdshader-start",
+  ["paren.rparen","}"],
+  ["punctuation.terminator.statement.gdshader",";"]
+],[
+   "gdshader-start"
+],[
+   "gdshader-start",
+  ["support.type.gdshader","void"],
+  ["text"," "],
+  ["support.function.gdshader","fragment"],
+  ["paren.lparen","("],
+  ["paren.rparen",")"],
+  ["text"," {"]
+],[
+   "gdshader-start",
+  ["text","\t"],
+  ["support.type.gdshader","float"],
+  ["text"," "],
+  ["variable.name.gdshader","pulse"],
+  ["text"," "],
+  ["keyword.operator.gdshader","="],
+  ["text"," "],
+  ["entity.name.function.gdshader","sin"],
+  ["paren.lparen","("],
+  ["variable.language.gdshader","TIME"],
+  ["text"," "],
+  ["keyword.operator.gdshader","*"],
+  ["text"," "],
+  ["variable.name.gdshader","pulse_speed"],
+  ["paren.rparen",")"],
+  ["text"," "],
+  ["keyword.operator.gdshader","*"],
+  ["text"," "],
+  ["constant.numeric.float.gdshader","0.5"],
+  ["text"," "],
+  ["keyword.operator.gdshader","+"],
+  ["text"," "],
+  ["constant.numeric.float.gdshader","0.5"],
+  ["punctuation.terminator.statement.gdshader",";"]
+],[
+   ["gdshader-paren.lparen","gdshader-start"],
+  ["text","\t"],
+  ["entity.name.type.gdshader","SurfaceData"],
+  ["text"," "],
+  ["variable.name.gdshader","surface"],
+  ["text"," "],
+  ["keyword.operator.gdshader","="],
+  ["text"," "],
+  ["entity.name.type.constructor.gdshader","SurfaceData"],
+  ["paren.lparen","("]
+],[
+   ["gdshader-paren.lparen","gdshader-start"],
+  ["text","\t\t"],
+  ["entity.name.function.gdshader","mix"],
+  ["paren.lparen","("],
+  ["variable.name.gdshader","base_color"],
+  ["punctuation.accessor.gdshader","."],
+  ["variable.other.property.gdshader","rgb"],
+  ["punctuation.separator.comma.gdshader",","],
+  ["text"," "],
+  ["support.type.gdshader","vec3"],
+  ["paren.lparen","("],
+  ["constant.numeric.float.gdshader","1.0"],
+  ["paren.rparen",")"],
+  ["punctuation.separator.comma.gdshader",","],
+  ["text"," "],
+  ["variable.name.gdshader","pulse"],
+  ["text"," "],
+  ["keyword.operator.gdshader","*"],
+  ["text"," "],
+  ["constant.numeric.float.gdshader","0.2"],
+  ["paren.rparen",")"],
+  ["punctuation.separator.comma.gdshader",","]
+],[
+   ["gdshader-paren.lparen","gdshader-start"],
+  ["text","\t\t"],
+  ["variable.name.gdshader","pulse"],
+  ["text"," "],
+  ["keyword.operator.gdshader","*"],
+  ["text"," "],
+  ["constant.numeric.float.gdshader","0.15"]
+],[
+   "gdshader-start",
+  ["text","\t"],
+  ["paren.rparen",")"],
+  ["punctuation.terminator.statement.gdshader",";"]
+],[
+   "gdshader-start"
+],[
+   "gdshader-start",
+  ["text","\t"],
+  ["variable.language.gdshader","ALBEDO"],
+  ["text"," "],
+  ["keyword.operator.gdshader","="],
+  ["text"," "],
+  ["variable.name.gdshader","surface"],
+  ["punctuation.accessor.gdshader","."],
+  ["entity.name.variable.field.gdshader","albedo"],
+  ["punctuation.terminator.statement.gdshader",";"]
+],[
+   "gdshader-start",
+  ["text","\t"],
+  ["variable.language.gdshader","EMISSION"],
+  ["text"," "],
+  ["keyword.operator.gdshader","="],
+  ["text"," "],
+  ["variable.name.gdshader","surface"],
+  ["punctuation.accessor.gdshader","."],
+  ["entity.name.variable.field.gdshader","albedo"],
+  ["text"," "],
+  ["keyword.operator.gdshader","*"],
+  ["text"," "],
+  ["variable.name.gdshader","surface"],
+  ["punctuation.accessor.gdshader","."],
+  ["entity.name.variable.field.gdshader","emission"],
+  ["punctuation.terminator.statement.gdshader",";"]
+],[
+   "gdshader-start",
+  ["text","}"]
+],[
+   "start",
+  ["text","\""]
+],[
+   "start"
+],[
+   "start",
+  ["paren.lparen","["],
+  ["keyword.control.gdresource","resource"],
+  ["paren.rparen","]"]
+],[
+   "text1",
+  ["variable.other.property.gdresource","script"],
+  ["text"," "],
+  ["punctuation.definition.keyValue.gdresource","="],
+  ["text"," "],
+  ["keyword.control.gdresource","SubResource"],
+  ["paren.lparen","("],
+  ["string","\"GDScript_demo\""],
+  ["paren.rparen",")"]
+],[
+   "text1",
+  ["variable.other.property.gdresource","shader"],
+  ["text"," "],
+  ["punctuation.definition.keyValue.gdresource","="],
+  ["text"," "],
+  ["keyword.control.gdresource","SubResource"],
+  ["paren.lparen","("],
+  ["string","\"Shader_demo\""],
+  ["paren.rparen",")"]
+],[
+   "start"
+]]
