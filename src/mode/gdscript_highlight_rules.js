@@ -1,0 +1,889 @@
+"use strict";
+
+var oop = require("../lib/oop");
+var TextHighlightRules = require("./text_highlight_rules").TextHighlightRules;
+
+var GDScriptHighlightRules = function() {
+
+    var nodePathPush = [{
+        token: "paren.rparen",
+        regex: /\)/,
+        next: "pop"
+    }, {
+        token: "string",
+        regex: /"/,
+        push: [{
+            token: "string",
+            regex: /"/,
+            next: "pop"
+        }, {
+            token: "keyword.control.flow.gdscript",
+            regex: /%/
+        }, {
+            defaultToken: "string"
+        }]
+    }, {
+        token: "string",
+        regex: /'/,
+        push: [{
+            token: "string",
+            regex: /'/,
+            next: "pop"
+        }, {
+            token: "keyword.control.flow.gdscript",
+            regex: /%/
+        }, {
+            defaultToken: "string"
+        }]
+    }, {
+        defaultToken: "meta.literal.nodepath.gdscript"
+    }];
+
+    this.$rules = {
+        start: [{
+            include: "#statement"
+        }, {
+            include: "#expression"
+        }],
+        "#statement": [{
+            include: "#extends_statement"
+        }],
+        "#statement_keyword": [{
+            token: "keyword.control.flow.gdscript",
+            regex: /\b(?<!\.)(?:continue|assert|break|elif|else|if|pass|return|while)\b/
+        }, {
+            token: "storage.type.class.gdscript",
+            regex: /\b(?<!\.)class\b/
+        }, {
+            token: ["text", "keyword.control.flow.gdscript"],
+            regex: /(?:^|:)(\s*)(case|match)(?=\s*(?:[-+\w\d(?:\[{'":#]|$))\b/
+        }],
+        "#extends_statement": [{
+            token: [
+                "keyword.language.gdscript",
+                "text",
+                "entity.other.inherited-class.gdscript"
+            ],
+            regex: /(extends)(\s+)((?:[a-zA-Z_]\w*\.[a-zA-Z_]\w*)?)/
+        }],
+        "#expression": [{
+            include: "#getter_setter_godot4"
+        }, {
+            include: "#base_expression"
+        }, {
+            include: "#assignment_operator"
+        }, {
+            include: "#annotations"
+        }, {
+            include: "#class_name"
+        }, {
+            include: "#builtin_classes"
+        }, {
+            include: "#class_new"
+        }, {
+            include: "#class_is"
+        }, {
+            include: "#class_enum"
+        }, {
+            include: "#any_method"
+        }, {
+            include: "#any_variable"
+        }, {
+            include: "#any_property"
+        }],
+        "#base_expression": [{
+            include: "#builtin_get_node_shorthand"
+        }, {
+            include: "#nodepath_object"
+        }, {
+            include: "#strings"
+        }, {
+            include: "#builtin_classes"
+        }, {
+            include: "#const_vars"
+        }, {
+            include: "#keywords"
+        }, {
+            include: "#operators"
+        }, {
+            include: "#lambda_declaration"
+        }, {
+            include: "#class_declaration"
+        }, {
+            include: "#variable_declaration"
+        }, {
+            include: "#signal_declaration_bare"
+        }, {
+            include: "#signal_declaration"
+        }, {
+            include: "#function_declaration"
+        }, {
+            include: "#statement_keyword"
+        }, {
+            include: "#assignment_operator"
+        }, {
+            include: "#in_keyword"
+        }, {
+            include: "#control_flow"
+        }, {
+            include: "#match_keyword"
+        }, {
+            include: "#curly_braces"
+        }, {
+            include: "#square_braces"
+        }, {
+            include: "#round_braces"
+        }, {
+            include: "#function_call"
+        }, {
+            include: "#region"
+        }, {
+            include: "#comment"
+        }, {
+            include: "#func"
+        }, {
+            include: "#letter"
+        }, {
+            include: "#numbers"
+        }, {
+            include: "#pascal_case_class"
+        }, {
+            include: "#line_continuation"
+        }],
+        "#region": [{
+            token: "keyword.language.region.gdscript",
+            regex: /#(?:end)?region.*$/
+        }],
+        "#comment": [{
+            token: "comment",
+            regex: /(?:##|#).*$/
+        }],
+        "#strings": [{
+            token: [
+                "constant.character.escape.gdscript",
+                "string"
+            ],
+            regex: /((?:r)?)(""")/,
+            push: [{
+                token: "string",
+                regex: /"""/,
+                next: "pop"
+            }, {
+                token: "constant.character.escape.gdscript",
+                regex: /\\./
+            }, {
+                include: "#string_percent_placeholders"
+            }, {
+                include: "#string_bracket_placeholders"
+            }, {
+                defaultToken: "string"
+            }]
+        }, {
+            token: [
+                "constant.character.escape.gdscript",
+                "string"
+            ],
+            regex: /((?:r)?)(''')/,
+            push: [{
+                token: "string",
+                regex: /'''/,
+                next: "pop"
+            }, {
+                token: "constant.character.escape.gdscript",
+                regex: /\\./
+            }, {
+                include: "#string_percent_placeholders"
+            }, {
+                include: "#string_bracket_placeholders"
+            }, {
+                defaultToken: "string"
+            }]
+        }, {
+            token: [
+                "constant.character.escape.gdscript",
+                "string"
+            ],
+            regex: /((?:r)?)(")/,
+            push: [{
+                token: "string",
+                regex: /"/,
+                next: "pop"
+            }, {
+                token: "constant.character.escape.gdscript",
+                regex: /\\./
+            }, {
+                include: "#string_percent_placeholders"
+            }, {
+                include: "#string_bracket_placeholders"
+            }, {
+                defaultToken: "string"
+            }]
+        }, {
+            token: [
+                "constant.character.escape.gdscript",
+                "string"
+            ],
+            regex: /((?:r)?)(')/,
+            push: [{
+                token: "string",
+                regex: /'/,
+                next: "pop"
+            }, {
+                token: "constant.character.escape.gdscript",
+                regex: /\\./
+            }, {
+                include: "#string_percent_placeholders"
+            }, {
+                include: "#string_bracket_placeholders"
+            }, {
+                defaultToken: "string"
+            }]
+        }],
+        "#string_percent_placeholders": [{
+            token: "constant.character.format.placeholder.other.gdscript",
+            regex: /%(?:\([\w\s]*\))?[-+#0 ]*(?:\d+|\*)?(?:\.(?:\d+|\*))?(?:[hlL])?[diouxXeEfFgGcrsab%]/
+        }],
+        "#string_bracket_placeholders": [{
+            token: [
+                "constant.character.format.placeholder.other.gdscript",
+                "constant.character.format.placeholder.other.gdscript",
+                "constant.character.format.placeholder.other.gdscript",
+                "constant.character.format.placeholder.other.gdscript",
+                "storage.type.format.gdscript",
+                "storage.type.format.gdscript",
+                "constant.character.format.placeholder.other.gdscript"
+            ],
+            regex: /({{)|(}})|({\w*)((?:\.[[:alpha:]_]\w*|\[[^\]'"]+\])*)((?:![rsa])?)((?::\w?[<>=^]?[-+ ]?\#?\d*,?(?:\.\d+)?[bcdeEfFgGnosxX%]?)?)(})/
+        }, {
+            token: [
+                "constant.character.format.placeholder.other.gdscript",
+                "constant.character.format.placeholder.other.gdscript",
+                "storage.type.format.gdscript",
+                "storage.type.format.gdscript",
+                "constant.character.format.placeholder.other.gdscript",
+                "constant.character.format.placeholder.other.gdscript"
+            ],
+            regex: /({\w*)((?:\.[[:alpha:]_]\w*|\[[^\]'"]+\])*)((?:![rsa])?)(:)([^'"{}$]*)(?:\{[^'"}$]*?\}[^'"{}$]*)*(})/
+        }],
+        "#nodepath_object": [{
+            token: ["support.class.library.gdscript", "text", "paren.lparen"],
+            regex: /(NodePath)(\s*)(\()/,
+            push: nodePathPush
+        }, {
+            token: ["entity.name.function.gdscript", "text", "paren.lparen"],
+            regex: /(get_node_or_null|has_node|has_node_and_resource|find_node|get_node)(\s*)(\()/,
+            push: nodePathPush
+        }],
+        "#func": [{
+            token: "keyword.language.gdscript storage.type.function.gdscript",
+            regex: /\bfunc\b/
+        }],
+        "#in_keyword": [{
+            token: "keyword.control.gdscript",
+            regex: /\bfor\b/,
+            push: [{
+                token: "text",
+                regex: /:/,
+                next: "pop"
+            }, {
+                token: "keyword.control.gdscript",
+                regex: /\bin\b/
+            }, {
+                include: "#base_expression"
+            }, {
+                include: "#any_variable"
+            }, {
+                include: "#any_property"
+            }]
+        }, {
+            token: "keyword.operator.wordlike.gdscript",
+            regex: /\bin\b/
+        }],
+        "#operators": [{
+            include: "#wordlike_operator"
+        }, {
+            include: "#boolean_operator"
+        }, {
+            include: "#arithmetic_operator"
+        }, {
+            include: "#bitwise_operator"
+        }, {
+            include: "#compare_operator"
+        }],
+        "#wordlike_operator": [{
+            token: "keyword.operator.wordlike.gdscript",
+            regex: /\b(?:and|or|not)\b/
+        }],
+        "#boolean_operator": [{
+            token: "keyword.operator.boolean.gdscript",
+            regex: /&&|\|\|/
+        }],
+        "#bitwise_operator": [{
+            token: "keyword.operator.bitwise.gdscript",
+            regex: /&|\||<<=|>>=|<<|>>|\^|~/
+        }],
+        "#compare_operator": [{
+            token: "keyword.operator.comparison.gdscript",
+            regex: /<=|>=|==|<|>|!=|!/
+        }],
+        "#arithmetic_operator": [{
+            token: "keyword.operator.arithmetic.gdscript",
+            regex: /->|\+=|-=|\*\*=|\*=|\^=|\/=|%=|&=|~=|\|=|\*\*|\*|\/|%|\+|-/
+        }],
+        "#assignment_operator": [{
+            token: "keyword.operator.assignment.gdscript",
+            regex: /=/
+        }],
+        "#control_flow": [{
+            token: "keyword.control.gdscript",
+            regex: /\b(?:if|elif|else|while|break|continue|pass|return|when|yield|await)\b/
+        }],
+        "#match_keyword": [{
+            token: ["text", "keyword.control.flow.gdscript"],
+            regex: /(?:^|:)(\s*)(match)\b/
+        }],
+        "#keywords": [{
+            token: "keyword.language.gdscript",
+            regex: /\b(?:class|class_name|is|onready|tool|static|export|as|enum|assert|breakpoint|sync|remote|master|puppet|slave|remotesync|mastersync|puppetsync|trait|namespace|super|self)\b/
+        }],
+        "#letter": [{
+            token: "constant.language.gdscript",
+            regex: /\b(?:true|false|null)\b/
+        }],
+        "#numbers": [{
+            token: "constant.numeric.integer.binary.gdscript",
+            regex: /0b[01_]+/
+        }, {
+            token: "constant.numeric.integer.hexadecimal.gdscript",
+            regex: /0x[0-9A-Fa-f_]+/
+        }, {
+            token: "constant.numeric.float.gdscript",
+            regex: /\.[0-9][0-9_]*(?:[eE][+-]?[0-9_]+)?/
+        }, {
+            token: "constant.numeric.float.gdscript",
+            regex: /[0-9][0-9_]*\.[0-9_]*(?:[eE][+-]?[0-9_]+)?/
+        }, {
+            token: "constant.numeric.float.gdscript",
+            regex: /(?:[0-9][0-9_]*)?\.[0-9_]*[eE][+-]?[0-9_]+/
+        }, {
+            token: "constant.numeric.float.gdscript",
+            regex: /[0-9][0-9_]*[eE][+-]?[0-9_]+/
+        }, {
+            token: "constant.numeric.integer.gdscript",
+            regex: /[-]?[0-9][0-9_]*/
+        }],
+        "#variable_declaration": [{
+            token: [
+                "keyword.language.gdscript storage.type.var.gdscript",
+                "keyword.language.gdscript storage.type.const.gdscript"
+            ],
+            regex: /\b(?:(var)|(const))\b/,
+            push: [{
+                token: "meta.variable.declaration.gdscript",
+                regex: /$|;/,
+                next: "pop"
+            }, {
+                token: [
+                    "punctuation.separator.annotation.gdscript",
+                    "text",
+                    "entity.name.function.gdscript",
+                    "text",
+                    "entity.name.function.gdscript"
+                ],
+                regex: /((?::)?)(\s*)(set|get)(\s+=\s+)([a-zA-Z_]\w*)/
+            }, {
+                token: "keyword.operator.assignment.gdscript",
+                regex: /:=|=(?!=)/
+            }, {
+                token: [
+                    "punctuation.separator.annotation.gdscript",
+                    "text",
+                    "entity.name.type.class.gdscript"
+                ],
+                regex: /(:)(\s*)((?:[a-zA-Z_]\w*)?)/
+            }, {
+                token: [
+                    "keyword.language.gdscript",
+                    "text",
+                    "entity.name.function.gdscript",
+                    "text",
+                    "entity.name.function.gdscript"
+                ],
+                regex: /(setget)(\s+)([a-zA-Z_]\w*)(?:([,]\s*)([a-zA-Z_]\w*))?/
+            }, {
+                include: "#expression"
+            }, {
+                include: "#letter"
+            }, {
+                include: "#any_variable"
+            }, {
+                include: "#any_property"
+            }, {
+                include: "#keywords"
+            }, {
+                defaultToken: "meta.variable.declaration.gdscript"
+            }]
+        }],
+        "#getter_setter_godot4": [{
+            token: [
+                "entity.name.function.gdscript",
+                "text",
+                "punctuation.separator.annotation.gdscript"
+            ],
+            regex: /(get)(\s*)(:)/
+        }, {
+            token: [
+                "entity.name.function.gdscript",
+                "text",
+                "paren.lparen",
+                "text",
+                "variable.other.gdscript",
+                "text",
+                "paren.rparen",
+                "text",
+                "punctuation.separator.annotation.gdscript"
+            ],
+            regex: /(set)(\s*)(\()(\s*)([A-Za-z_]\w*)(\s*)(\))(\s*)(:)/
+        }],
+        "#class_declaration": [{
+            token: [
+                "text",
+                "entity.name.type.class.gdscript",
+                "text"
+            ],
+            regex: /(?<=^class)(\s+)([a-zA-Z_]\w*)(\s*)(?=:)/
+        }],
+        "#class_new": [{
+            token: [
+                "entity.name.type.class.gdscript",
+                "text",
+                "storage.type.new.gdscript",
+                "paren.lparen",
+            ],
+            regex: /\b([a-zA-Z_]\w*)(.)(new)(\()/
+        }],
+        "#class_is": [{
+            token: [
+                "text",
+                "storage.type.is.gdscript",
+                "text",
+                "storage.type.not.gdscript",
+                "text",
+                "entity.name.type.class.gdscript"
+            ],
+            regex: /(\s+)(is)(\s+)(not?)(\s+\s+)([a-zA-Z_]\w*)/
+        }],
+        "#class_enum": [{
+            token: [
+                "entity.name.type.class.gdscript",
+                "text",
+                "variable.other.enummember.gdscript"
+            ],
+            regex: /\b([A-Z][a-zA-Z_0-9]*)(\.)([A-Z_0-9]+)/
+        }],
+        "#class_name": [{
+            token: [
+                "text",
+                "entity.name.type.class.gdscript",
+                "class.other.gdscript"
+            ],
+            regex: /(?<=class_name)(\s+)([a-zA-Z_]\w*)((?:\.[a-zA-Z_]\w*)?)/
+        }],
+        "#builtin_get_node_shorthand": [{
+            include: "#builtin_get_node_shorthand_quoted"
+        }, {
+            include: "#builtin_get_node_shorthand_bare"
+        }, {
+            include: "#builtin_get_node_shorthand_bare_multi"
+        }],
+        "#builtin_get_node_shorthand_quoted": [{
+            token: [
+                "keyword.control.flow.gdscript",
+                "variable.other.enummember.gdscript",
+                "string"
+            ],
+            regex: /(?:(\$|%)|(&|\^|@))(")/,
+            push: [{
+                token: "string",
+                regex: /"/,
+                next: "pop"
+            }, {
+                token: "keyword.control.flow",
+                regex: /%/
+            }, {
+                defaultToken: "string"
+            }]
+        }, {
+            token: [
+                "keyword.control.flow.gdscript",
+                "variable.other.enummember.gdscript",
+                "string"
+            ],
+            regex: /(?:(\$|%)|(&|\^|@))(')/,
+            push: [{
+                token: "string",
+                regex: /'/,
+                next: "pop"
+            }, {
+                token: "keyword.control.flow",
+                regex: /%/
+            }, {
+                defaultToken: "string"
+            }]
+        }],
+        "#builtin_get_node_shorthand_bare": [{
+            token: [
+                "keyword.control.flow.gdscript",
+                "constant.character.escape.gdscript",
+                "constant.character.escape.gdscript"
+            ],
+            regex: /(?<!\/\s*)(\$\s*|%|\$%\s*)((?:\/\s*)?)([a-zA-Z_]\w*)\b(?!\s*\/)/
+        }],
+        "#builtin_get_node_shorthand_bare_multi": [{
+            token: [
+                "keyword.control.flow.gdscript",
+                "constant.character.escape.gdscript",
+                "constant.character.escape.gdscript"
+            ],
+            regex: /(\$\s*|%|\$%\s*)((?:\/\s*)?)([a-zA-Z_]\w*)/,
+            push: [{
+                token: "meta.literal.nodepath.bare.gdscript",
+                regex: /(?!\s*\/\s*%?\s*[a-zA-Z_]\w*)/,
+                next: "pop"
+            }, {
+                token: [
+                    "constant.character.escape.gdscript",
+                    "text",
+                    "keyword.control.flow.gdscript",
+                    "text",
+                    "constant.character.escape.gdscript",
+                    "text"
+                ],
+                regex: /(\/)(\s*)((?:%)?)(\s*)([a-zA-Z_]\w*)(\s*)/
+            }, {
+                defaultToken: "meta.literal.nodepath.bare.gdscript"
+            }]
+        }],
+        "#annotations": [{
+            token: [
+                "entity.name.function.decorator.gdscript",
+                "entity.name.function.decorator.gdscript"
+            ],
+            regex: /(@)(abstract|export|export_category|export_color_no_alpha|export_custom|export_dir|export_enum|export_exp_easing|export_file|export_file_path|export_flags|export_flags_2d_navigation|export_flags_2d_physics|export_flags_2d_render|export_flags_3d_navigation|export_flags_3d_physics|export_flags_3d_render|export_flags_avoidance|export_global_dir|export_global_file|export_group|export_multiline|export_node_path|export_placeholder|export_range|export_storage|export_subgroup|export_tool_button|icon|onready|rpc|static_unload|tool|warning_ignore|warning_ignore_restore|warning_ignore_start)\b/
+        }],
+        "#builtin_classes": [{
+            token: "entity.name.type.class.builtin.gdscript",
+            regex: /(?<![^.]\.|:)\b(?:Vector2|Vector2i|Vector3|Vector3i|Vector4|Vector4i|Color|Rect2|Rect2i|Array|Basis|Dictionary|Plane|Quat|RID|Rect3|Transform|Transform2D|Transform3D|AABB|String|Color|NodePath|PoolByteArray|PoolIntArray|PoolRealArray|PoolStringArray|PoolVector2Array|PoolVector3Array|PoolColorArray|bool|int|float|Signal|Callable|StringName|Quaternion|Projection|PackedByteArray|PackedInt32Array|PackedInt64Array|PackedFloat32Array|PackedFloat64Array|PackedStringArray|PackedVector2Array|PackedVector2iArray|PackedVector3Array|PackedVector3iArray|PackedVector4Array|PackedColorArray|JSON|UPNP|OS|IP|JSONRPC|XRVRS|Variant|void)\b/
+        }],
+        "#const_vars": [{
+            token: "variable.other.constant.gdscript",
+            regex: /\b[A-Z_][A-Z_0-9]*\b/
+        }],
+        "#pascal_case_class": [{
+            token: "entity.name.type.class.gdscript",
+            regex: /\b[A-Z]+(?:[a-z]+[A-Za-z0-9_]*)+\b/
+        }],
+        "#signal_declaration_bare": [{
+            token: [
+                "text",
+                "keyword.language.gdscript storage.type.function.gdscript",
+                "text",
+                "entity.name.function.gdscript"
+            ],
+            regex: /(\s*)(signal)(\s+)([a-zA-Z_]\w*)(?=$|\s)/
+        }],
+        "#signal_declaration": [{
+            token: [
+                "text",
+                "keyword.language.gdscript storage.type.function.gdscript",
+                "text",
+                "entity.name.function.gdscript",
+                "text"
+            ],
+            regex: /(\s*)(signal)(\s+)([a-zA-Z_]\w*)(\s*)(?=\()/,
+            stateName: "signal_declaration",
+            push: [{
+                token: "empty",
+                regex: /(?=#|'|"|$)/,
+                next: "pop"
+            }, {
+                include: "#parameters"
+            }, {
+                include: "#line_continuation"
+            }, {
+                defaultToken: "text"
+            }]
+        }],
+        "#lambda_declaration": [{
+            token: [
+                "keyword.language.gdscript storage.type.function.gdscript",
+                "text"
+            ],
+            regex: /(func)(\s?)(?=\()/,
+            push: [{
+                token: "meta.function.gdscript",
+                regex: /:|(?=#|'|"|$)/,
+                next: "pop"
+            }, {
+                include: "#parameters"
+            }, {
+                include: "#line_continuation"
+            }, {
+                include: "#base_expression"
+            }, {
+                include: "#any_variable"
+            }, {
+                include: "#any_property"
+            }, {
+                defaultToken: "text"
+            }]
+        }],
+        "#function_declaration": [{
+            token: [
+                "text",
+                "keyword.language.gdscript storage.type.function.gdscript",
+                "text",
+                "entity.name.function.gdscript",
+                "text"
+            ],
+            regex: /(\s*)(func)(\s+)([a-zA-Z_]\w*)(\s*)(?=\()/,
+            push: [{
+                token: [
+                    "punctuation.section.function.begin.gdscript",
+                    "empty"
+                ],
+                regex: /(:)|($)/,
+                next: "pop"
+            }, {
+                include: "#parameters"
+            }, {
+                include: "#line_continuation"
+            }, {
+                include: "#base_expression"
+            }, {
+                defaultToken: "text"
+            }]
+        }],
+        "#parameters": [{
+            token: "paren.lparen",
+            regex: /\(/,
+            push: [{
+                token: "paren.rparen",
+                regex: /\)(?=\s*$)/,
+                next: function(currentState, stack) {
+                    stack.shift();
+                    var parent = stack.shift() || "start";
+
+                    if (parent === "signal_declaration") {
+                        stack.shift();
+                        return stack.shift() || "start";
+                    }
+
+                    return parent;
+                }
+            }, {
+                token: "paren.rparen",
+                regex: /\)/,
+                next: "pop"
+            }, {
+                include: "#annotated_parameter"
+            }, {
+                token: [
+                    "variable.parameter.function.language.gdscript",
+                    "text",
+                    "punctuation.separator.parameters.gdscript"
+                ],
+                regex: /([a-zA-Z_]\w*)(\s*)(?:(,)|(?=$|[)#=]))/
+            }, {
+                include: "#comment"
+            }, {
+                include: "#loose_default"
+            }, {
+                defaultToken: "meta.function.parameters.gdscript"
+            }]
+        }],
+        "#loose_default": [{
+            token: "keyword.operator.gdscript",
+            regex: /=/,
+            push: [{
+                token: "punctuation.separator.parameters.gdscript",
+                regex: /,|(?=\))/,
+                next: "pop"
+            }, {
+                include: "#expression"
+            }]
+        }],
+        "#annotated_parameter": [{
+            token: [
+                "text",
+                "variable.parameter.function.language.gdscript",
+                "text",
+                "punctuation.separator.annotation.gdscript",
+                "text",
+                "entity.name.type.class.gdscript"
+            ],
+            regex: /(\s*)([a-zA-Z_]\w*)(\s*)(:)(\s*)((?:[a-zA-Z_]\w*)?)/,
+            push: [{
+                token: "punctuation.separator.parameters.gdscript",
+                regex: /,|(?=\))/,
+                next: "pop"
+            }, {
+                include: "#expression"
+            }, {
+                token: "keyword.operator.assignment.gdscript",
+                regex: /=(?!=)/
+            }]
+        }],
+        "#curly_braces": [{
+            token: "paren.lparen",
+            regex: /\{/,
+            push: [{
+                token: "paren.rparen",
+                regex: /\}/,
+                next: "pop"
+            }, {
+                include: "#base_expression"
+            }, {
+                include: "#any_variable"
+            }]
+        }],
+        "#square_braces": [{
+            token: "paren.lparen",
+            regex: /\[/,
+            push: [{
+                token: "paren.rparen",
+                regex: /\]/,
+                next: "pop"
+            }, {
+                include: "#base_expression"
+            }, {
+                include: "#any_variable"
+            }]
+        }],
+        "#round_braces": [{
+            token: "paren.lparen",
+            regex: /\(/,
+            push: [{
+                token: "paren.rparen",
+                regex: /\)/,
+                next: "pop"
+            }, {
+                include: "#base_expression"
+            }, {
+                include: "#any_variable"
+            }]
+        }],
+        "#line_continuation": [{
+            token: [
+                "punctuation.separator.continuation.line.gdscript",
+                "text",
+                "invalid.illegal.line.continuation.gdscript"
+            ],
+            regex: /(\\)(\s*)(\S.*$)/
+        }, {
+            token: [
+                "punctuation.separator.continuation.line.gdscript",
+                "text"
+            ],
+            regex: /(\\)(\s*$)/,
+            push: [{
+                token: "text",
+                regex: /(?=^\s*$)|(?!\s*[rR]?(?:'''|"""|'|")|(?![\s\S]))/,
+                next: "pop"
+            }, {
+                include: "#base_expression"
+            }]
+        }],
+        "#any_method": [{
+            token: "entity.name.function.other.gdscript",
+            regex: /\b[A-Za-z_]\w*\b(?=\s*[(])/
+        }],
+        "#any_variable": [{
+            token: "variable.other.gdscript",
+            regex: /\b(?<![@\$#%])[A-Za-z_]\w*\b(?![(])/
+        }],
+        "#any_property": [{
+            token: [
+                "punctuation.accessor.gdscript",
+                "text",
+                "constant.language.gdscript",
+                "variable.other.property.gdscript"
+            ],
+            regex: /\b(\.)(\s*)(?<![@\$#%])(?:([A-Z_][A-Z_0-9]*)|([A-Za-z_]\w*))\b(?![(])/
+        }],
+        "#function_call": [{
+            token: "meta.function-call.gdscript",
+            regex: /(?=\b[a-zA-Z_]\w*\b\s*\()/,
+            push: [{
+                token: "paren.rparen",
+                regex: /\)/,
+                next: "pop"
+            }, {
+                include: "#function_name"
+            }, {
+                include: "#function_arguments"
+            }, {
+                defaultToken: "meta.function-call.gdscript"
+            }],
+            comment: "Regular function call of the type \"name(args)\" — allows optional whitespace between name and parens"
+        }],
+        "#function_name": [{
+            include: "#builtin_classes"
+        }, {
+            token: "keyword.language.gdscript",
+            regex: /\bpreload\b/
+        }, {
+            token: "entity.name.function.gdscript",
+            regex: /\b[a-zA-Z_]\w*\b/,
+            comment: "Some color schemas support meta.function-call.generic scope"
+        }],
+        "#function_arguments": [{
+            token: "paren.lparen",
+            regex: /\(/,
+            push: [{
+                token: "text",
+                regex: /(?=\))(?!\)\s*\()/,
+                next: "pop"
+            }, {
+                token: "punctuation.separator.arguments.gdscript",
+                regex: /,/
+            }, {
+                token: [
+                    "variable.parameter.function-call.gdscript",
+                    "text",
+                    "keyword.operator.assignment.gdscript"
+                ],
+                regex: /\b([a-zA-Z_]\w*)(\s*)(=)(?!=)/
+            }, {
+                token: "keyword.operator.assignment.gdscript",
+                regex: /=(?!=)/
+            }, {
+                include: "#base_expression"
+            }, {
+                token: [
+                    "text",
+                    "paren.rparen",
+                    "text",
+                    "paren.lparen"
+                ],
+                regex: /(\s*)(\))(\s*)(\()/
+            }, {
+                include: "#letter"
+            }, {
+                include: "#any_variable"
+            }, {
+                include: "#any_property"
+            }, {
+                include: "#keywords"
+            }, {
+                defaultToken: "meta.function.parameters.gdscript"
+            }]
+        }]
+    };
+    
+    this.normalizeRules();
+};
+
+oop.inherits(GDScriptHighlightRules, TextHighlightRules);
+
+exports.GDScriptHighlightRules = GDScriptHighlightRules;

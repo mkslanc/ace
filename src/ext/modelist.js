@@ -127,6 +127,7 @@ var supportedModes = {
     FTL:         ["ftl"],
     Gcode:       ["gcode"],
     Gdresource:  ["tres|tscn"],
+    GDScript:    ["gd"],
     Gherkin:     ["feature"],
     Gitignore:   ["^.gitignore"],
     Glsl:        ["glsl|frag|vert"],
