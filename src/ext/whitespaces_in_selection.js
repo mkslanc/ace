@@ -36,10 +36,7 @@ config.defineOptions(Editor.prototype, "editor", {
             } else {
                 this.off("changeSelection", this.$boundChangeSelectionForWhitespace);
 
-                if (this.session && this.session.$invisibleMarkerId) {
-                    this.session.removeTextMarker(this.session.$invisibleMarkerId);
-                    this.session.$invisibleMarkerId = null;
-                }
+                $removeWhitespaceMarkers(this.session);
 
                 this.$boundChangeSelectionForWhitespace = null;
             }
@@ -51,19 +48,26 @@ config.defineOptions(Editor.prototype, "editor", {
     }
 });
 
-function $onChangeSelectionForWhitespace() {
-    let invisibleMarkerId = this.session.$invisibleMarkerId;
-    if (invisibleMarkerId) {
-        this.session.removeTextMarker(invisibleMarkerId);
-        this.session.$invisibleMarkerId = null;
-    }
+function $removeWhitespaceMarkers(session) {
+    if (!session) return;
 
-    var currentRange = this.selection.getRange();
-    if (!currentRange.isEmpty()) {
-        this.session.$invisibleMarkerId = this.session.addTextMarker(
-            currentRange,
-            "ace_whitespaces_in_selection",
-            "invisible"
-        );
+    var invisibleMarkerIds = session.$invisibleMarkerIds || [];
+    for (var i = 0; i < invisibleMarkerIds.length; i++) {
+        session.removeTextMarker(invisibleMarkerIds[i]);
+    }
+    session.$invisibleMarkerIds = [];
+}
+
+function $onChangeSelectionForWhitespace() {
+    $removeWhitespaceMarkers(this.session);
+
+    var ranges = typeof this.selection.getAllRanges === "function" ? this.selection.getAllRanges()
+        : [this.selection.getRange()];
+
+    for (var j = 0; j < ranges.length; j++) {
+        if (!ranges[j].isEmpty()) {
+            this.session.$invisibleMarkerIds.push(
+                this.session.addTextMarker(ranges[j], "ace_whitespaces_in_selection", "invisible"));
+        }
     }
 }
