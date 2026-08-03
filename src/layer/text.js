@@ -560,12 +560,10 @@ class Text {
                     return;
                 }
             }
-            var childNodes = element.childNodes;
-            if (childNodes) {
-                let node = childNodes[indentLevel - 1];
-                if (node && node.classList && node.classList.contains("ace_indent-guide")) node.classList.add(
-                    "ace_indent-guide-active");
-            }
+            var indentGuides = element.querySelectorAll(".ace_indent-guide");
+            var node = indentGuides[indentLevel - 1];
+            if (node)
+                node.classList.add("ace_indent-guide-active");
         }
     }
 

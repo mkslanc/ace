@@ -267,6 +267,8 @@ module.exports = {
             line.querySelector(".invisible-marker").textContent,
             this.textLayer.SPACE_CHAR.repeat(2)
         );
+        this.textLayer.$setIndentGuideActive(this.textLayer.$lines.cells[0], 1);
+        assert.equal(line.querySelectorAll(".ace_indent-guide-active").length, 1);
     },
 
     "test: invisible marker does not modify globally visible whitespace": function() {
