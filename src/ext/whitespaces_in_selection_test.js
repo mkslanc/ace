@@ -27,6 +27,25 @@ module.exports = {
         assert.ok(this.editor.$boundChangeSelectionForWhitespace);
     },
 
+    "test: toggling extension updates whitespace marker rendering": function() {
+        var renderValues = [];
+        var updateCount = 0;
+        this.editor.renderer.$textLayer = {
+            setRenderWhitespaceMarkers: function(render) {
+                renderValues.push(render);
+            }
+        };
+        this.editor.renderer.updateText = function() {
+            updateCount++;
+        };
+
+        this.editor.setOption("showWhitespacesInSelection", true);
+        this.editor.setOption("showWhitespacesInSelection", false);
+
+        assert.deepEqual(renderValues, [true, false]);
+        assert.equal(updateCount, 2);
+    },
+
     "test: turning off extension": function() {
         this.editor.setOption("showWhitespacesInSelection", true);
         assert.equal(this.editor.getOption("showWhitespacesInSelection"), true);

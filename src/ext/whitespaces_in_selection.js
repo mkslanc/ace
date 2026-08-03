@@ -15,11 +15,11 @@ var dom = require("../lib/dom");
 
 dom.importCssString(`
 .ace_whitespaces_in_selection {
-    color: rgba(0,0,0,0.29);
+    color: rgba(0,0,0,0.29) !important;
 }
 
 .ace_dark .ace_whitespaces_in_selection {
-    color: rgba(187, 181, 181, 0.5);
+    color: rgba(187, 181, 181, 0.5) !important;
 }
 `, "ace_whitespaces_in_selection", false);
 
@@ -33,12 +33,14 @@ config.defineOptions(Editor.prototype, "editor", {
                     this.$boundChangeSelectionForWhitespace = $onChangeSelectionForWhitespace.bind(this);
                 }
                 this.on("changeSelection", this.$boundChangeSelectionForWhitespace);
+                $setRenderWhitespaceMarkers(this, true);
             } else {
                 this.off("changeSelection", this.$boundChangeSelectionForWhitespace);
 
                 $removeWhitespaceMarkers(this.session);
 
                 this.$boundChangeSelectionForWhitespace = null;
+                $setRenderWhitespaceMarkers(this, false);
             }
         },
         get: function() {
@@ -47,6 +49,15 @@ config.defineOptions(Editor.prototype, "editor", {
         initialValue: false
     }
 });
+
+function $setRenderWhitespaceMarkers(editor, render) {
+    var textLayer = editor.renderer && editor.renderer.$textLayer;
+    if (!textLayer || typeof textLayer.setRenderWhitespaceMarkers !== "function")
+        return;
+
+    textLayer.setRenderWhitespaceMarkers(render);
+    editor.renderer.updateText();
+}
 
 function $removeWhitespaceMarkers(session) {
     if (!session) return;

@@ -108,6 +108,21 @@ class Text {
     }
 
     /**
+     * Pre-renders whitespace glyphs so text markers can reveal them without
+     * changing the text layout as the marker range changes.
+     *
+     * @param {boolean} render
+     */
+    setRenderWhitespaceMarkers(render) {
+        render = !!render;
+        if (this.$renderWhitespaceMarkers === render)
+            return;
+
+        this.$renderWhitespaceMarkers = render;
+        this.$computeTabString();
+    }
+
+    /**
      * @param {boolean} display
      */
     setDisplayIndentGuides(display) {
@@ -132,11 +147,15 @@ class Text {
     $computeTabString() {
         var tabSize = this.session.getTabSize();
         this.tabSize = tabSize;
+        var renderTabGlyphs = this.showTabs || this.$renderWhitespaceMarkers;
+        var renderSpaceGlyphs = this.showSpaces || this.$renderWhitespaceMarkers;
         /**@type{any}*/var tabStr = this.$tabStrings = [0];
         for (var i = 1; i < tabSize + 1; i++) {
-            if (this.showTabs) {
+            if (renderTabGlyphs) {
                 var span = this.dom.createElement("span");
                 span.className = "ace_invisible ace_invisible_tab";
+                if (!this.showTabs)
+                    span.className += " ace_invisible_hidden";
                 span.textContent = lang.stringRepeat(this.TAB_CHAR, i);
                 tabStr.push(span);
             } else {
@@ -146,13 +165,17 @@ class Text {
         if (this.displayIndentGuides) {
             this.$indentGuideRe =  /\s\S| \t|\t |\s$/;
             var className = "ace_indent-guide";
-            var spaceClass = this.showSpaces ? " ace_invisible ace_invisible_space" : "";
-            var spaceContent = this.showSpaces
+            var spaceClass = renderSpaceGlyphs ? " ace_invisible ace_invisible_space" : "";
+            if (renderSpaceGlyphs && !this.showSpaces)
+                spaceClass += " ace_invisible_hidden";
+            var spaceContent = renderSpaceGlyphs
                 ? lang.stringRepeat(this.SPACE_CHAR, this.tabSize)
                 : lang.stringRepeat(" ", this.tabSize);
 
-            var tabClass = this.showTabs ? " ace_invisible ace_invisible_tab" : "";
-            var tabContent = this.showTabs
+            var tabClass = renderTabGlyphs ? " ace_invisible ace_invisible_tab" : "";
+            if (renderTabGlyphs && !this.showTabs)
+                tabClass += " ace_invisible_hidden";
+            var tabContent = renderTabGlyphs
                 ? lang.stringRepeat(this.TAB_CHAR, this.tabSize)
                 : spaceContent;
 
@@ -363,7 +386,7 @@ class Text {
             var controlCharacter = m[3];
             var cjkSpace = m[4];
 
-            if (!self.showSpaces && simpleSpace)
+            if (!self.showSpaces && !self.$renderWhitespaceMarkers && simpleSpace)
                 continue;
 
             var before = i != m.index ? value.slice(i, m.index) : "";
@@ -381,9 +404,11 @@ class Text {
                 valueFragment.appendChild(text);
                 screenColumn += tabSize - 1;
             } else if (simpleSpace) {
-                if (self.showSpaces) {
+                if (self.showSpaces || self.$renderWhitespaceMarkers) {
                     var span = this.dom.createElement("span");
                     span.className = "ace_invisible ace_invisible_space";
+                    if (!self.showSpaces)
+                        span.className += " ace_invisible_hidden";
                     span.textContent = lang.stringRepeat(self.SPACE_CHAR, simpleSpace.length);
                     valueFragment.appendChild(span);
                 } else {
@@ -395,9 +420,11 @@ class Text {
                 span.textContent = lang.stringRepeat(self.SPACE_CHAR, controlCharacter.length);
                 valueFragment.appendChild(span);
             } else if (cjkSpace) {
-                if (self.showSpaces) {
+                if (self.showSpaces || self.$renderWhitespaceMarkers) {
                     var span = this.dom.createElement("span");
                     span.className = "ace_invisible ace_invisible_space";
+                    if (!self.showSpaces)
+                        span.className += " ace_invisible_hidden";
                     span.textContent = lang.stringRepeat(self.CJK_SPACE_CHAR, cjkSpace.length);
                     valueFragment.appendChild(span);
                 } else {
@@ -792,6 +819,7 @@ Text.prototype.showInvisibles = false;
 Text.prototype.showSpaces = false;
 Text.prototype.showTabs = false;
 Text.prototype.showEOL = false;
+Text.prototype.$renderWhitespaceMarkers = false;
 Text.prototype.displayIndentGuides = true;
 Text.prototype.$highlightIndentGuides = true;
 Text.prototype.$tabStrings = [];
