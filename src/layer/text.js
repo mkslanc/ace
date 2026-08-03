@@ -108,21 +108,6 @@ class Text {
     }
 
     /**
-     * Pre-renders whitespace glyphs so text markers can reveal them without
-     * changing the text layout as the marker range changes.
-     *
-     * @param {boolean} render
-     */
-    setRenderWhitespaceMarkers(render) {
-        render = !!render;
-        if (this.$renderWhitespaceMarkers === render)
-            return;
-
-        this.$renderWhitespaceMarkers = render;
-        this.$computeTabString();
-    }
-
-    /**
      * @param {boolean} display
      */
     setDisplayIndentGuides(display) {
