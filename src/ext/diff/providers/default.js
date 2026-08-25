@@ -2241,20 +2241,13 @@ class DefaultLinesDiffComputer {
     }
     if (originalLines.length === 1 && originalLines[0].length === 0 || modifiedLines.length === 1 && modifiedLines[0].length === 0) {
       return new LinesDiff([
-        new DetailedLineRangeMapping(
+        new LineRangeMapping(
           new LineRange(1, originalLines.length + 1),
-          new LineRange(1, modifiedLines.length + 1),
-          [
-            new RangeMapping(
-              new Range(1, 1, originalLines.length, originalLines[originalLines.length - 1].length + 1),
-              new Range(1, 1, modifiedLines.length, modifiedLines[modifiedLines.length - 1].length + 1)
-            )
-          ]
+          new LineRange(1, modifiedLines.length + 1)
         )
       ], [], false);
     }
     const timeout = options.maxComputationTimeMs === 0 ? InfiniteTimeout.instance : new DateTimeout(options.maxComputationTimeMs);
-    const considerWhitespaceChanges = !options.ignoreTrimWhitespace;
     const perfectHashes = /* @__PURE__ */ new Map();
     function getOrCreateHash(text) {
       let hash = perfectHashes.get(text);
@@ -2264,84 +2257,35 @@ class DefaultLinesDiffComputer {
       }
       return hash;
     }
-    const originalLinesHashes = originalLines.map((l) => getOrCreateHash(l.trim()));
-    const modifiedLinesHashes = modifiedLines.map((l) => getOrCreateHash(l.trim()));
+    // A rough diff has no eager character pass to recover whitespace-only
+    // changes. Use exact lines unless the caller explicitly ignores trim
+    // whitespace, in which case trimmed lines are intentionally equivalent.
+    const getLineKey = options.ignoreTrimWhitespace ? (line) => line.trim() : (line) => line;
+    const originalLinesHashes = originalLines.map((l) => getOrCreateHash(getLineKey(l)));
+    const modifiedLinesHashes = modifiedLines.map((l) => getOrCreateHash(getLineKey(l)));
     const sequence1 = new LineSequence(originalLinesHashes, originalLines);
     const sequence2 = new LineSequence(modifiedLinesHashes, modifiedLines);
-    const lineAlignmentResult = (() => {
-      if (sequence1.length + sequence2.length < 1700) {
-        return this.dynamicProgrammingDiffing.compute(
-          sequence1,
-          sequence2,
-          timeout,
-          (offset1, offset2) => originalLines[offset1] === modifiedLines[offset2] ? modifiedLines[offset2].length === 0 ? 0.1 : 1 + Math.log(1 + modifiedLines[offset2].length) : 0.99
-        );
-      }
-      return this.myersDiffingAlgorithm.compute(
-        sequence1,
-        sequence2,
-        timeout
-      );
-    })();
+    const lineAlignmentResult = this.myersDiffingAlgorithm.compute(
+      sequence1,
+      sequence2,
+      timeout
+    );
     let lineAlignments = lineAlignmentResult.diffs;
-    let hitTimeout = lineAlignmentResult.hitTimeout;
     lineAlignments = optimizeSequenceDiffs(sequence1, sequence2, lineAlignments);
     lineAlignments = removeVeryShortMatchingLinesBetweenDiffs(sequence1, sequence2, lineAlignments);
-    const alignments = [];
-    const scanForWhitespaceChanges = (equalLinesCount) => {
-      if (!considerWhitespaceChanges) {
-        return;
-      }
-      for (let i = 0; i < equalLinesCount; i++) {
-        const seq1Offset = seq1LastStart + i;
-        const seq2Offset = seq2LastStart + i;
-        if (originalLines[seq1Offset] !== modifiedLines[seq2Offset]) {
-          const characterDiffs = this.refineDiff(originalLines, modifiedLines, new SequenceDiff(
-            new OffsetRange(seq1Offset, seq1Offset + 1),
-            new OffsetRange(seq2Offset, seq2Offset + 1)
-          ), timeout, considerWhitespaceChanges, options);
-          for (const a of characterDiffs.mappings) {
-            alignments.push(a);
-          }
-          if (characterDiffs.hitTimeout) {
-            hitTimeout = true;
-          }
-        }
-      }
-    };
-    let seq1LastStart = 0;
-    let seq2LastStart = 0;
-    for (const diff of lineAlignments) {
-      assertFn(() => diff.seq1Range.start - seq1LastStart === diff.seq2Range.start - seq2LastStart);
-      const equalLinesCount = diff.seq1Range.start - seq1LastStart;
-      scanForWhitespaceChanges(equalLinesCount);
-      seq1LastStart = diff.seq1Range.endExclusive;
-      seq2LastStart = diff.seq2Range.endExclusive;
-      const characterDiffs = this.refineDiff(originalLines, modifiedLines, diff, timeout, considerWhitespaceChanges, options);
-      if (characterDiffs.hitTimeout) {
-        hitTimeout = true;
-      }
-      for (const a of characterDiffs.mappings) {
-        alignments.push(a);
-      }
-    }
-    scanForWhitespaceChanges(originalLines.length - seq1LastStart);
-    const changes = lineRangeMappingFromRangeMappings(alignments, new ArrayText(originalLines), new ArrayText(modifiedLines));
+    const changes = lineAlignments.map(toLineRangeMapping);
     let moves = [];
-    if (options.computeMoves) {
-      moves = this.computeMoves(changes, originalLines, modifiedLines, originalLinesHashes, modifiedLinesHashes, timeout, considerWhitespaceChanges, options);
+    if (options.computeMoves && !lineAlignmentResult.hitTimeout) {
+      moves = computeMovedLines(
+        changes,
+        originalLines,
+        modifiedLines,
+        originalLinesHashes,
+        modifiedLinesHashes,
+        timeout
+      );
     }
     assertFn(() => {
-      function validatePosition(pos, lines) {
-        if (pos.lineNumber < 1 || pos.lineNumber > lines.length) {
-          return false;
-        }
-        const line = lines[pos.lineNumber - 1];
-        if (pos.column < 1 || pos.column > line.length + 1) {
-          return false;
-        }
-        return true;
-      }
       function validateRange(range, lines) {
         if (range.startLineNumber < 1 || range.startLineNumber > lines.length + 1) {
           return false;
@@ -2352,41 +2296,13 @@ class DefaultLinesDiffComputer {
         return true;
       }
       for (const c of changes) {
-        if (!c.innerChanges) {
-          return false;
-        }
-        for (const ic of c.innerChanges) {
-          const valid = validatePosition(ic.modifiedRange.getStartPosition(), modifiedLines) && validatePosition(ic.modifiedRange.getEndPosition(), modifiedLines) && validatePosition(ic.originalRange.getStartPosition(), originalLines) && validatePosition(ic.originalRange.getEndPosition(), originalLines);
-          if (!valid) {
-            return false;
-          }
-        }
         if (!validateRange(c.modified, modifiedLines) || !validateRange(c.original, originalLines)) {
           return false;
         }
       }
       return true;
     });
-    return new LinesDiff(changes, moves, hitTimeout);
-  }
-  computeMoves(changes, originalLines, modifiedLines, hashedOriginalLines, hashedModifiedLines, timeout, considerWhitespaceChanges, options) {
-    const moves = computeMovedLines(
-      changes,
-      originalLines,
-      modifiedLines,
-      hashedOriginalLines,
-      hashedModifiedLines,
-      timeout
-    );
-    const movesWithDiffs = moves.map((m) => {
-      const moveChanges = this.refineDiff(originalLines, modifiedLines, new SequenceDiff(
-        m.original.toOffsetRange(),
-        m.modified.toOffsetRange()
-      ), timeout, considerWhitespaceChanges, options);
-      const mappings = lineRangeMappingFromRangeMappings(moveChanges.mappings, new ArrayText(originalLines), new ArrayText(modifiedLines), true);
-      return new MovedText(m, mappings);
-    });
-    return movesWithDiffs;
+    return new LinesDiff(changes, moves, lineAlignmentResult.hitTimeout);
   }
   refineDiff(originalLines, modifiedLines, diff, timeout, considerWhitespaceChanges, options) {
     const lineRangeMapping = toLineRangeMapping(diff);
@@ -2439,18 +2355,25 @@ function computeDiff(originalLines, modifiedLines, options) {
       origEnd: originalEndLineNumber,
       editStart: modifiedStartLineNumber,
       editEnd: modifiedEndLineNumber,
-      charChanges: innerChanges?.map((m) => ({
-        originalStartLineNumber: m.originalRange.startLineNumber - 1,
-        originalStartColumn: m.originalRange.startColumn - 1,
-        originalEndLineNumber: m.originalRange.endLineNumber - 1,
-        originalEndColumn: m.originalRange.endColumn - 1,
-        modifiedStartLineNumber: m.modifiedRange.startLineNumber - 1,
-        modifiedStartColumn: m.modifiedRange.startColumn - 1,
-        modifiedEndLineNumber: m.modifiedRange.endLineNumber - 1,
-        modifiedEndColumn: m.modifiedRange.endColumn - 1
-      }))
+      charChanges: innerChanges?.map(rangeMappingToCharChange),
+      inlinePending: !result.hitTimeout
+        && changes.original.length > 0
+        && changes.modified.length > 0
     };
   });
+}
+
+function rangeMappingToCharChange(mapping) {
+  return {
+    originalStartLineNumber: mapping.originalRange.startLineNumber - 1,
+    originalStartColumn: mapping.originalRange.startColumn - 1,
+    originalEndLineNumber: mapping.originalRange.endLineNumber - 1,
+    originalEndColumn: mapping.originalRange.endColumn - 1,
+    modifiedStartLineNumber: mapping.modifiedRange.startLineNumber - 1,
+    modifiedStartColumn: mapping.modifiedRange.startColumn - 1,
+    modifiedEndLineNumber: mapping.modifiedRange.endLineNumber - 1,
+    modifiedEndColumn: mapping.modifiedRange.endColumn - 1
+  };
 }
 
 exports.computeDiff = computeDiff;
@@ -2465,13 +2388,47 @@ var {DiffChunk} = require("../base_diff_view");
 
 class DiffProvider {
     compute(originalLines, modifiedLines, opts) {
-        if (!opts) opts = {};
-        if (!opts.maxComputationTimeMs) opts.maxComputationTimeMs = 500;
+        opts = Object.assign({}, opts);
+        if (opts.maxComputationTimeMs == null) opts.maxComputationTimeMs = 500;
         const chunks = computeDiff(originalLines, modifiedLines, opts) || [];
         return chunks.map(
-            c => new DiffChunk(new AceRange(c.origStart, 0, c.origEnd, 0), new AceRange(c.editStart, 0, c.editEnd, 0),
-                c.charChanges
+            c => new DiffChunk(
+                new AceRange(c.origStart, 0, c.origEnd, 0),
+                new AceRange(c.editStart, 0, c.editEnd, 0),
+                c.charChanges,
+                c.inlinePending
             ));
+    }
+
+    /**
+     * Refines one coarse line chunk into character changes. Small character
+     * ranges use dynamic programming for alignment quality; larger ranges use
+     * Myers to avoid a quadratic character matrix.
+     */
+    refine(originalLines, modifiedLines, chunk, opts) {
+        opts = Object.assign({}, opts);
+        if (opts.maxComputationTimeMs == null) opts.maxComputationTimeMs = 25;
+        const timeout = opts.maxComputationTimeMs === 0
+            ? InfiniteTimeout.instance
+            : new DateTimeout(opts.maxComputationTimeMs);
+        const computer = new DefaultLinesDiffComputer();
+        const result = computer.refineDiff(
+            originalLines,
+            modifiedLines,
+            new SequenceDiff(
+                new OffsetRange(chunk.old.start.row, chunk.old.end.row),
+                new OffsetRange(chunk.new.start.row, chunk.new.end.row)
+            ),
+            timeout,
+            !opts.ignoreTrimWhitespace,
+            opts
+        );
+        const charChanges = result.mappings.map(rangeMappingToCharChange);
+        const refinedChunk = new DiffChunk(chunk.old, chunk.new, charChanges);
+        return {
+            charChanges: refinedChunk.charChanges,
+            hitTimeout: result.hitTimeout
+        };
     }
 }
 

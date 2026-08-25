@@ -6,6 +6,7 @@ require("../../test/mockdom");
 var {InlineDiffView} = require("./inline_diff_view");
 var {SplitDiffView} = require("./split_diff_view");
 var {DiffProvider} = require("./providers/default");
+var {DiffChunk} = require("./base_diff_view");
 
 var ace = require("../../ace");
 var Range = require("../../range").Range;
@@ -326,7 +327,113 @@ module.exports = {
         var markers = diffView.editorA.renderer.$markerBack.element.childNodes;
         assert.equal(markers[0].className, "ace_diff aligned_diff");
         assert.equal(markers[1].className, "ace_diff aligned_diff");
-        assert.equal(markers.length, 4);
+        // Full-range inline markers are redundant with the line marker.
+        assert.equal(markers.length, 2);
+    },
+
+    "test provider refines one line chunk": function() {
+        var diffProvider = new DiffProvider();
+        var originalLines = ["const answer = 41;"];
+        var modifiedLines = ["const answer = 42;"];
+        var chunks = diffProvider.compute(
+            originalLines,
+            modifiedLines,
+            {maxComputationTimeMs: 0, ignoreTrimWhitespace: false}
+        );
+
+        assert.equal(chunks.length, 1);
+        assert.equal(chunks[0].charChanges, undefined);
+        assert.equal(chunks[0].inlinePending, true);
+
+        var result = diffProvider.refine(
+            originalLines,
+            modifiedLines,
+            chunks[0],
+            {maxComputationTimeMs: 0, ignoreTrimWhitespace: false}
+        );
+
+        assert.equal(result.hitTimeout, false);
+        assert.equal(result.charChanges.length, 1);
+        assert.equal(result.charChanges[0].old.start.column, 15);
+        assert.equal(result.charChanges[0].old.end.column, 17);
+        assert.equal(result.charChanges[0].new.start.column, 15);
+        assert.equal(result.charChanges[0].new.end.column, 17);
+    },
+
+    "test rough diff whitespace and insertion semantics": function() {
+        var diffProvider = new DiffProvider();
+        var whitespaceChange = diffProvider.compute(
+            ["  x"],
+            ["    x"],
+            {maxComputationTimeMs: 0, ignoreTrimWhitespace: false}
+        );
+        var ignoredWhitespaceChange = diffProvider.compute(
+            ["  x"],
+            ["    x"],
+            {maxComputationTimeMs: 0, ignoreTrimWhitespace: true}
+        );
+        var insertion = diffProvider.compute(
+            ["a", "c"],
+            ["a", "b", "c"],
+            {maxComputationTimeMs: 0, ignoreTrimWhitespace: false}
+        );
+
+        assert.equal(whitespaceChange.length, 1);
+        assert.equal(whitespaceChange[0].inlinePending, true);
+        assert.equal(ignoredWhitespaceChange.length, 0);
+        assert.equal(insertion.length, 1);
+        assert.equal(insertion[0].old.isEmpty(), true);
+        assert.equal(insertion[0].inlinePending, false);
+    },
+
+    "test visible pending chunks are refined": async function(done) {
+        editorA.session.setValue("const answer = 41;");
+        editorB.session.setValue("const answer = 42;");
+
+        var refineCalls = 0;
+        var provider = {
+            compute: function() {
+                var chunk = new DiffChunk(
+                    new Range(0, 0, 1, 0),
+                    new Range(0, 0, 1, 0),
+                    undefined,
+                    true
+                );
+                return [chunk];
+            },
+            refine: function() {
+                refineCalls++;
+                var refined = new DiffChunk(
+                    new Range(0, 0, 1, 0),
+                    new Range(0, 0, 1, 0),
+                    [{
+                        originalStartLineNumber: 0,
+                        originalStartColumn: 15,
+                        originalEndLineNumber: 0,
+                        originalEndColumn: 17,
+                        modifiedStartLineNumber: 0,
+                        modifiedStartColumn: 15,
+                        modifiedEndLineNumber: 0,
+                        modifiedEndColumn: 17
+                    }]
+                );
+                return {charChanges: refined.charChanges, hitTimeout: false};
+            }
+        };
+
+        diffView = new SplitDiffView({editorA, editorB, diffProvider: provider});
+        diffView.onInput();
+        editorA.renderer.$loop._flush();
+        editorB.renderer.$loop._flush();
+        for (var i = 0; i < 10 && diffView.chunks[0].inlinePending; i++) {
+            diffView.scheduleVisibleInlineRefinement();
+            await lang.sleep(10);
+        }
+
+        assert.ok(refineCalls >= 1);
+        assert.equal(diffView.chunks[0].inlinePending, false);
+        assert.equal(diffView.chunks[0].charChanges[0].old.start.column, 15);
+        done();
     },
 
     "test: toggle wrap": function() {
