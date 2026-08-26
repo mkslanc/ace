@@ -386,54 +386,78 @@ module.exports = {
         assert.equal(insertion[0].inlinePending, false);
     },
 
-    "test visible pending chunks are refined": async function(done) {
-        editorA.session.setValue("const answer = 41;");
-        editorB.session.setValue("const answer = 42;");
+    "test inline changes are refined as chunks enter the viewport": async function() {
+        var originalLines = [];
+        var modifiedLines = [];
+        for (var row = 0; row < 80; row++) {
+            originalLines.push("const value" + row + " = " + row + ";");
+            modifiedLines.push("const value" + row + " = " + row + ";");
+        }
+        modifiedLines[2] = "const value2 = changedAtTop;";
+        modifiedLines[70] = "const value70 = changedAtBottom;";
 
-        var refineCalls = 0;
+        editorA.session.setValue(originalLines.join("\n"));
+        editorB.session.setValue(modifiedLines.join("\n"));
+        editorA.renderer.$loop._flush();
+        editorB.renderer.$loop._flush();
+
+        diffView = new SplitDiffView({editorA, editorB, diffProvider: new DiffProvider()});
+        diffView.onInput();
+
+        assert.ok(editorA.getLastVisibleRow() < 70);
+        assert.equal(diffView.chunks.length, 2);
+        assert.equal(diffView.chunks[0].old.start.row, 2);
+        assert.equal(diffView.chunks[0].inlinePending, false);
+        assert.ok(diffView.chunks[0].charChanges.length > 0);
+        assert.equal(diffView.chunks[1].old.start.row, 70);
+        assert.equal(diffView.chunks[1].inlinePending, true);
+        assert.equal(diffView.chunks[1].charChanges, undefined);
+
+        var lineHeight = editorA.renderer.lineHeight;
+        var scrollRender = editorA.renderer.once("afterRender");
+        editorA.session.setScrollTop(lineHeight * 70);
+        await scrollRender;
+        assert.ok(editorA.getFirstVisibleRow() <= 70);
+        assert.ok(editorA.getLastVisibleRow() >= 70);
+
+        // The first render schedules refinement; refinement updates the
+        // markers and causes this second render.
+        await editorA.renderer.once("afterRender");
+        assert.equal(diffView.chunks[1].inlinePending, false);
+        assert.ok(diffView.chunks[1].charChanges.length > 0);
+    },
+
+    "test timed out refinement keeps partial inline changes": function() {
+        editorA.session.setValue("changed value");
+        editorB.session.setValue("modified value");
+        editorA.renderer.$loop._flush();
+        editorB.renderer.$loop._flush();
+
+        var partialInlineChange = new DiffChunk(
+            new Range(0, 0, 0, 7),
+            new Range(0, 0, 0, 8)
+        );
         var provider = {
             compute: function() {
-                var chunk = new DiffChunk(
+                return [new DiffChunk(
                     new Range(0, 0, 1, 0),
                     new Range(0, 0, 1, 0),
                     undefined,
                     true
-                );
-                return [chunk];
+                )];
             },
             refine: function() {
-                refineCalls++;
-                var refined = new DiffChunk(
-                    new Range(0, 0, 1, 0),
-                    new Range(0, 0, 1, 0),
-                    [{
-                        originalStartLineNumber: 0,
-                        originalStartColumn: 15,
-                        originalEndLineNumber: 0,
-                        originalEndColumn: 17,
-                        modifiedStartLineNumber: 0,
-                        modifiedStartColumn: 15,
-                        modifiedEndLineNumber: 0,
-                        modifiedEndColumn: 17
-                    }]
-                );
-                return {charChanges: refined.charChanges, hitTimeout: false};
+                return {charChanges: [partialInlineChange], hitTimeout: true};
             }
         };
 
         diffView = new SplitDiffView({editorA, editorB, diffProvider: provider});
         diffView.onInput();
-        editorA.renderer.$loop._flush();
-        editorB.renderer.$loop._flush();
-        for (var i = 0; i < 10 && diffView.chunks[0].inlinePending; i++) {
-            diffView.scheduleVisibleInlineRefinement();
-            await lang.sleep(10);
-        }
 
-        assert.ok(refineCalls >= 1);
         assert.equal(diffView.chunks[0].inlinePending, false);
-        assert.equal(diffView.chunks[0].charChanges[0].old.start.column, 15);
-        done();
+        assert.equal(diffView.chunks[0].inlineRefineHitTimeout, true);
+        assert.equal(diffView.chunks[0].charChanges.length, 1);
+        assert.equal(diffView.chunks[0].charChanges[0], partialInlineChange);
     },
 
     "test: toggle wrap": function() {

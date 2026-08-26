@@ -1,6 +1,5 @@
 "use strict";
 
-var oop = require("../../lib/oop");
 var Range = require("../../range").Range;
 var dom = require("../../lib/dom");
 var config = require("../../config");
@@ -284,7 +283,12 @@ class BaseDiffView {
         this.selectionRangeA = null;
         this.selectionRangeB = null;
 
+        const diffStartTime = Date.now();
         var chunks = this.$diffLines(val1, val2);
+
+        if (chunks && chunks.length <= this.$maxDiffs) {
+            this.$refineVisibleInlineChunks(chunks, val1, val2, diffStartTime);
+        }
 
         this.diffSession.chunks = this.chunks = chunks;
         this.gutterDecoratorA && this.gutterDecoratorA.setDecorations(chunks);
@@ -442,17 +446,54 @@ class BaseDiffView {
         if (!chunk)
             return;
 
+        this.$refineInlineChunk(
+            chunk,
+            this.$diffOriginalLines,
+            this.$diffModifiedLines,
+            this.$inlineRefineMaxComputationTimeMs
+        );
+        this.editorA && this.editorA.renderer.updateBackMarkers();
+        this.editorB && this.editorB.renderer.updateBackMarkers();
+    }
+
+    $refineVisibleInlineChunks(chunks, originalLines, modifiedLines, diffStartTime) {
+        if (!chunks || !this.diffProvider
+            || typeof this.diffProvider.refine !== "function")
+            return;
+
+        const roughDiffTime = Date.now() - diffStartTime;
+        const remainingDiffTime = this.$maxComputationTimeMs === 0
+            ? this.$inlineRefineMaxComputationTimeMs
+            : Math.max(0, this.$maxComputationTimeMs - roughDiffTime);
+        const maxComputationTimeMs = Math.min(
+            this.$inlineRefineMaxComputationTimeMs,
+            remainingDiffTime
+        );
+        if (maxComputationTimeMs <= 0)
+            return;
+
+        const deadline = Date.now() + maxComputationTimeMs;
+        let chunk;
+        while ((chunk = this.$findVisiblePendingChunk(chunks))) {
+            const remainingTime = deadline - Date.now();
+            if (remainingTime <= 0)
+                break;
+            this.$refineInlineChunk(chunk, originalLines, modifiedLines, remainingTime);
+        }
+    }
+
+    $refineInlineChunk(chunk, originalLines, modifiedLines, maxComputationTimeMs) {
         // Claim the chunk before running synchronous provider code. A timed-out
         // local refinement is kept as its final coarse result instead of being
         // retried after every render.
         chunk.inlinePending = false;
         const result = this.diffProvider.refine(
-            this.$diffOriginalLines,
-            this.$diffModifiedLines,
+            originalLines,
+            modifiedLines,
             chunk,
             {
                 ignoreTrimWhitespace: this.$ignoreTrimWhitespace,
-                maxComputationTimeMs: this.$inlineRefineMaxComputationTimeMs
+                maxComputationTimeMs: maxComputationTimeMs
             }
         );
 
@@ -460,13 +501,10 @@ class BaseDiffView {
             return;
         chunk.charChanges = result.charChanges || [];
         chunk.inlineRefineHitTimeout = result.hitTimeout === true;
-        this.editorA && this.editorA.renderer.updateBackMarkers();
-        this.editorB && this.editorB.renderer.updateBackMarkers();
-        this.scheduleVisibleInlineRefinement();
     }
 
-    $findVisiblePendingChunk() {
-        if (!this.chunks)
+    $findVisiblePendingChunk(chunks = this.chunks) {
+        if (!chunks)
             return null;
         const margin = 10;
         const isVisible = (editor, range) => {
@@ -480,7 +518,7 @@ class BaseDiffView {
             return rangeEndRow >= firstRow && range.start.row <= lastRow;
         };
 
-        for (const chunk of this.chunks) {
+        for (const chunk of chunks) {
             if (!chunk.inlinePending)
                 continue;
             if (this.inlineDiffEditor) {

@@ -86,7 +86,6 @@ class SplitDiffView extends BaseDiffView {
 
     onScroll(e, session) {
         this.syncScroll(this.sessionA === session ? this.editorA.renderer : this.editorB.renderer);
-        this.scheduleVisibleInlineRefinement();
     }
 
     onAfterRender() {

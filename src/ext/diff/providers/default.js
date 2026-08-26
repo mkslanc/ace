@@ -2380,7 +2380,7 @@ exports.computeDiff = computeDiff;
 
 var AceRange = require("../../../range").Range;
 
-var {DiffChunk} = require("../base_diff_view"); 
+var DiffChunk = require("../base_diff_view").DiffChunk;
  
 /**
  * VSCode’s computeDiff provider
