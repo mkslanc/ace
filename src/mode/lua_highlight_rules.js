@@ -63,62 +63,35 @@ var LuaHighlightRules = function() {
 
     this.$rules = {
         "start" : [{
-            stateName: "bracketedComment",
-            onMatch : function(value, currentState, stack){
-                stack.unshift(this.next, value.length - 2, currentState);
-                return "comment";
-            },
-            regex : /\-\-\[=*\[/,
-            next  : [
-                {
-                    onMatch : function(value, currentState, stack) {
-                        if (value.length == stack[1]) {
-                            stack.shift();
-                            stack.shift();
-                            this.next = stack.shift();
-                        } else {
-                            this.next = "";
-                        }
-                        return "comment";
-                    },
-                    regex : /\]=*\]/,
-                    next  : "start"
-                }, {
-                    defaultToken: "comment.body"
-                }
-            ]
-        },
-
-        {
+            token: "comment",
+            regex: /\-\-\[(=*)\[/,
+            ruleScope: "comment.block.lua",
+            scope: {
+                type: "begin",
+                state: "comment.block.lua.0",
+                name: "comment.block.lua",
+                contentName: "comment.block.lua",
+                regex: /\]\1\](?:--)?/,
+                token: "comment",
+                ruleScope: "comment.block.lua"
+            }
+        }, {
+            token: "string.start",
+            regex: /\[(=*)\[/,
+            ruleScope: "string.quoted.bracket.lua",
+            scope: {
+                type: "begin",
+                state: "string.quoted.bracket.lua.1",
+                name: "string.quoted.bracket.lua",
+                contentName: "string.quoted.bracket.lua",
+                regex: /\]\1\]/,
+                token: "string.end",
+                ruleScope: "string.quoted.bracket.lua",
+                merge: false
+            }
+        }, {
             token : "comment",
             regex : "\\-\\-.*$"
-        },
-        {
-            stateName: "bracketedString",
-            onMatch : function(value, currentState, stack){
-                stack.unshift(this.next, value.length, currentState);
-                return "string.start";
-            },
-            regex : /\[=*\[/,
-            next  : [
-                {
-                    onMatch : function(value, currentState, stack) {
-                        if (value.length == stack[1]) {
-                            stack.shift();
-                            stack.shift();
-                            this.next = stack.shift();
-                        } else {
-                            this.next = "";
-                        }
-                        return "string.end";
-                    },
-                    
-                    regex : /\]=*\]/,
-                    next  : "start"
-                }, {
-                    defaultToken : "string"
-                }
-            ]
         },
         {
             token : "string",           // " string
@@ -149,7 +122,15 @@ var LuaHighlightRules = function() {
             regex : "\\s+|\\w+"
         } ]
     };
-    
+    this.$rules["comment.block.lua.0"] = [{
+        defaultToken: "comment",
+        ruleScope: "comment.block.lua"
+    }];
+    this.$rules["string.quoted.bracket.lua.1"] = [{
+        defaultToken: "string",
+        ruleScope: "string.quoted.bracket.lua"
+    }];
+
     this.normalizeRules();
 };
 

@@ -34,6 +34,7 @@ TextHighlightRules = function() {
         }
         for (var key in rules) {
             var state = rules[key];
+            delete state.processed;
             for (var i = 0; i < state.length; i++) {
                 var rule = state[i];
                 if (rule.next || rule.onMatch) {
@@ -44,6 +45,8 @@ TextHighlightRules = function() {
                     if (rule.nextState && rule.nextState.indexOf(prefix) !== 0)
                         rule.nextState = prefix + rule.nextState;
                 }
+                if (rule.scope && rule.scope.state && rule.scope.state.indexOf(prefix) !== 0)
+                    rule.scope.state = prefix + rule.scope.state;
             }
             this.$rules[prefix + key] = state;
         }
@@ -115,11 +118,28 @@ TextHighlightRules = function() {
     this.normalizeRules = function() {
         var id = 0;
         var rules = this.$rules;
+        var pendingStates = [];
+        function enqueueState(name) {
+            if (!rules[name] || pendingStates.indexOf(name) !== -1)
+                return;
+            pendingStates.push(name);
+        }
         function processState(key) {
             var state = rules[key];
+            if (!state || state["processed"])
+                return;
+            if (state["processing"])
+                return;
+            state["processing"] = true;
             state["processed"] = true;
             for (var i = 0; i < state.length; i++) {
                 var rule = state[i];
+                if (rule && rule.disabled) {
+                    state.splice(i, 1);
+                    i--;
+                    continue;
+                }
+                rule = state[i];
                 var toInsert = null;
                 if (Array.isArray(rule)) {
                     toInsert = rule;
@@ -152,7 +172,7 @@ TextHighlightRules = function() {
                     }
                     rules[stateName] = next;
                     rule.next = stateName;
-                    processState(stateName);
+                    enqueueState(stateName);
                 } else if (next == "pop") {
                     rule.next = popState;
                 }
@@ -177,10 +197,17 @@ TextHighlightRules = function() {
                 if (includeName) {
                     if (includeName === "$self")
                         includeName = "start";
-                    if (Array.isArray(includeName))
-                        toInsert = includeName.map(function(x) { return rules[x]; });
-                    else
+                    if (Array.isArray(includeName)) {
+                        toInsert = [];
+                        includeName.forEach(function(name) {
+                            processState(name);
+                            if (rules[name])
+                                toInsert = toInsert.concat(rules[name]);
+                        });
+                    } else {
+                        processState(includeName);
                         toInsert = rules[includeName];
+                    }
                 }
 
                 if (toInsert) {
@@ -204,8 +231,11 @@ TextHighlightRules = function() {
                     delete rule.defaultToken;
                 }
             }
+            delete state["processing"];
         }
-        Object.keys(rules).forEach(processState, this);
+        Object.keys(rules).forEach(enqueueState);
+        while (pendingStates.length)
+            processState(pendingStates.shift());
     };
 
     this.createKeywordMapper = function(map, defaultToken, ignoreCase, splitChar) {
