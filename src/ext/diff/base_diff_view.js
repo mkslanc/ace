@@ -1095,8 +1095,9 @@ class DiffHighlight {
                     var range = new Range(start - lineWidget.rowsAbove, 0, start - 1, Number.MAX_VALUE);
                     markerLayer.drawFullLineMarker(html, range, "ace_diff aligned_diff", config);
                 }
-                let end = start + lineWidget.rowCount - (lineWidget.rowsAbove || 0);
-                var range = new Range(start + 1, 0, end, Number.MAX_VALUE);
+                var offset = session.getRowLength(row) - lineWidget.rowCount;
+                let end = start + offset - 1 + lineWidget.rowCount - (lineWidget.rowsAbove || 0);
+                var range = new Range(start + offset, 0, end, Number.MAX_VALUE);
                 markerLayer.drawFullLineMarker(html, range, "ace_diff aligned_diff", config);
             }
         }
