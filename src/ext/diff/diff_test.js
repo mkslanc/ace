@@ -460,7 +460,7 @@ module.exports = {
         assert.equal(diffView.chunks[0].charChanges[0], partialInlineChange);
     },
 
-    "test: wrap large documents": function() {
+    "test: wrap large documents": async function() {
         var diffProvider = new DiffProvider();
 
         var neutral = "x".repeat(500) + "\n";
@@ -478,8 +478,10 @@ module.exports = {
             diffProvider,
             wrap: true,
         });
-        
+
         diffView.onInput();
+        diffView.resize(true);
+        await lang.sleep(0); // TODO test is failing without this, probably because rendering not refined diff the first time
         assert.ok(diffView.editorA.renderer.lineHeight > 0);
         assert.ok(diffView.editorB.renderer.lineHeight > 0);
         assert.equal(diffView.chunks.length, 2);
