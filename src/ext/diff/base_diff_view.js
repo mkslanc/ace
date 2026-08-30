@@ -1117,6 +1117,9 @@ class DiffHighlight {
             if (lineChange.charChanges) {
                 for (var i = 0; i < lineChange.charChanges.length; i++) {
                     var storedChangeRange = lineChange.charChanges[i][dir];
+                    if (storedChangeRange.end.row < config.firstRow || storedChangeRange.start.row > config.lastRow) {
+                        continue;
+                    }
                     if (inlineChangeSpansLineChange(storedChangeRange, lineChange[dir], session)) {
                         continue;
                     }
@@ -1170,7 +1173,7 @@ class DiffHighlight {
                         );
                         var screenRange = range.toScreenRange(session);
                         let cssClass = "inline " + operation;
-                        if (range.isEmpty() && changeRange.start.column !== 0) {
+                        if (range.isEmpty()) {
                             cssClass = "inline empty " + opOperation;
                         }
 

@@ -460,6 +460,41 @@ module.exports = {
         assert.equal(diffView.chunks[0].charChanges[0], partialInlineChange);
     },
 
+    "test: wrap large documents": function() {
+        var diffProvider = new DiffProvider();
+
+        var neutral = "x".repeat(500) + "\n";
+        var delimiter = "_".repeat(500) + "\n";
+        var valueA = ("aa" + neutral).repeat(100)
+            + neutral.repeat(300)
+            + delimiter
+            + ("bb" + neutral).repeat(100);
+        var valueB = (neutral).repeat(400) + delimiter + ("cc" + neutral).repeat(100);
+        editorA.session.setValue(valueA);
+        editorB.session.setValue(valueB);
+
+        diffView = new SplitDiffView({
+            editorA, editorB,
+            diffProvider,
+            wrap: true,
+        });
+        
+        diffView.onInput();
+        assert.ok(diffView.editorA.renderer.lineHeight > 0);
+        assert.ok(diffView.editorB.renderer.lineHeight > 0);
+        assert.equal(diffView.chunks.length, 2);
+        
+        diffView.resize(true);
+
+        assert.ok(diffView.editorA.container.querySelectorAll(".ace_diff.inline.delete").length > 5);
+        assert.ok(diffView.editorB.container.querySelectorAll(".ace_diff.inline.delete").length > 5);
+
+        diffView.setOption("wrap", true);
+        diffView.resize(true);
+        assert.ok(diffView.editorA.container.querySelectorAll(".ace_diff.inline.delete").length < 5);
+        assert.ok(diffView.editorB.container.querySelectorAll(".ace_diff.inline.delete").length < 5);
+    },
+
     "test: toggle wrap": function() {
         var diffProvider = new DiffProvider();
 
