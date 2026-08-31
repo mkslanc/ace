@@ -479,6 +479,8 @@ module.exports = {
             wrap: true,
         });
 
+        diffView.$maxComputationTimeMs = 0;
+        diffView.$inlineRefineMaxComputationTimeMs = 1000;
         diffView.setOption("wrap", false);
         diffView.onInput();
         diffView.resize(true);
@@ -507,13 +509,17 @@ module.exports = {
     "test: wrap documents with more than 1700 lines": async function() {
         var diffProvider = new DiffProvider();
 
-        var neutral = "x".repeat(500) + "\n";
+        var changed = "x".repeat(500) + "\n";
+        var neutral = "x\n";
         var delimiter = "_".repeat(500) + "\n";
-        var valueA = ("aa" + neutral).repeat(100)
-            + neutral.repeat(1600)
+        var valueA = ("aa" + changed).repeat(30)
+            + neutral.repeat(1700)
             + delimiter
-            + ("bb" + neutral).repeat(100);
-        var valueB = neutral.repeat(1700) + delimiter + ("cc" + neutral).repeat(100);
+            + ("bb" + changed).repeat(30);
+        var valueB = changed.repeat(30)
+            + neutral.repeat(1700)
+            + delimiter
+            + ("cc" + changed).repeat(30);
         editorA.session.setValue(valueA);
         editorB.session.setValue(valueB);
 
@@ -523,6 +529,8 @@ module.exports = {
             wrap: true,
         });
 
+        diffView.$maxComputationTimeMs = 0;
+        diffView.$inlineRefineMaxComputationTimeMs = 1000;
         diffView.setOption("wrap", false);
         diffView.onInput();
         diffView.resize(true);
