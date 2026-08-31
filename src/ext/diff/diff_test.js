@@ -460,11 +460,11 @@ module.exports = {
         assert.equal(diffView.chunks[0].charChanges[0], partialInlineChange);
     },
 
-    "test: wrap large documents": async function() {
+    "test: wrap documents with fewer than 1700 combined lines": async function() {
         var diffProvider = new DiffProvider();
 
         var neutral = "x".repeat(500) + "\n";
-        var delimiter = "_".repeat(500) + "\n";
+        var delimiter = "";
         var valueA = ("aa" + neutral).repeat(100)
             + neutral.repeat(300)
             + delimiter
@@ -479,13 +479,60 @@ module.exports = {
             wrap: true,
         });
 
+        diffView.setOption("wrap", false);
         diffView.onInput();
         diffView.resize(true);
         await lang.sleep(0); // TODO test is failing without this, probably because rendering not refined diff the first time
+        assert.ok(diffView.sessionA.getLength() + diffView.sessionB.getLength() < 1700);
         assert.ok(diffView.editorA.renderer.lineHeight > 0);
         assert.ok(diffView.editorB.renderer.lineHeight > 0);
         assert.equal(diffView.chunks.length, 2);
+        assert.equal(diffView.chunks[0].old.start.row, 0);
+        assert.equal(diffView.chunks[0].old.end.row, 100);
+        assert.equal(diffView.chunks[0].new.start.row, 0);
+        assert.equal(diffView.chunks[0].new.end.row, 100);
+        assert.equal(diffView.chunks[0].charChanges.length, 100);
         
+        diffView.resize(true);
+
+        assert.ok(diffView.editorA.container.querySelectorAll(".ace_diff.inline.delete").length > 5);
+        assert.ok(diffView.editorB.container.querySelectorAll(".ace_diff.inline.delete").length > 5);
+
+        diffView.setOption("wrap", true);
+        diffView.resize(true);
+        assert.ok(diffView.editorA.container.querySelectorAll(".ace_diff.inline.delete").length < 5);
+        assert.ok(diffView.editorB.container.querySelectorAll(".ace_diff.inline.delete").length < 5);
+    },
+
+    "test: wrap documents with more than 1700 lines": async function() {
+        var diffProvider = new DiffProvider();
+
+        var neutral = "x".repeat(500) + "\n";
+        var delimiter = "_".repeat(500) + "\n";
+        var valueA = ("aa" + neutral).repeat(100)
+            + neutral.repeat(1600)
+            + delimiter
+            + ("bb" + neutral).repeat(100);
+        var valueB = neutral.repeat(1700) + delimiter + ("cc" + neutral).repeat(100);
+        editorA.session.setValue(valueA);
+        editorB.session.setValue(valueB);
+
+        diffView = new SplitDiffView({
+            editorA, editorB,
+            diffProvider,
+            wrap: true,
+        });
+
+        diffView.setOption("wrap", false);
+        diffView.onInput();
+        diffView.resize(true);
+        await lang.sleep(0);
+        assert.ok(diffView.sessionA.getLength() > 1700);
+        assert.ok(diffView.sessionB.getLength() > 1700);
+        assert.ok(diffView.editorA.renderer.lineHeight > 0);
+        assert.ok(diffView.editorB.renderer.lineHeight > 0);
+        assert.equal(diffView.chunks.length, 2);
+
         diffView.resize(true);
 
         assert.ok(diffView.editorA.container.querySelectorAll(".ace_diff.inline.delete").length > 5);

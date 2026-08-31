@@ -2265,11 +2265,21 @@ class DefaultLinesDiffComputer {
     const modifiedLinesHashes = modifiedLines.map((l) => getOrCreateHash(getLineKey(l)));
     const sequence1 = new LineSequence(originalLinesHashes, originalLines);
     const sequence2 = new LineSequence(modifiedLinesHashes, modifiedLines);
-    const lineAlignmentResult = this.myersDiffingAlgorithm.compute(
-      sequence1,
-      sequence2,
-      timeout
-    );
+    const lineAlignmentResult = (() => {
+      if (sequence1.length + sequence2.length < 1700) {
+        return this.dynamicProgrammingDiffing.compute(
+          sequence1,
+          sequence2,
+          timeout,
+          (offset1, offset2) => originalLines[offset1] === modifiedLines[offset2] ? modifiedLines[offset2].length === 0 ? 0.1 : 1 + Math.log(1 + modifiedLines[offset2].length) : 0.99
+        );
+      }
+      return this.myersDiffingAlgorithm.compute(
+        sequence1,
+        sequence2,
+        timeout
+      );
+    })();
     let lineAlignments = lineAlignmentResult.diffs;
     lineAlignments = optimizeSequenceDiffs(sequence1, sequence2, lineAlignments);
     lineAlignments = removeVeryShortMatchingLinesBetweenDiffs(sequence1, sequence2, lineAlignments);
