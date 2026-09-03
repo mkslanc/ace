@@ -80,9 +80,10 @@ class BugIndicatingError extends Error {
     }
 }
 
-function assert(condition, message = "unexpected state") {
+function assert(condition, messageOrError = "unexpected state") {
     if (!condition) {
-        throw new BugIndicatingError(`Assertion Failed: ${message}`);
+        const errorToThrow = typeof messageOrError === "string" ? new BugIndicatingError(`Assertion Failed: ${messageOrError}`) : messageOrError;
+        throw errorToThrow;
     }
 }
 function assertFn(condition) {
@@ -109,40 +110,8 @@ class OffsetRange {
             throw new BugIndicatingError(`Invalid range: ${this.toString()}`);
         }
     }
-    static fromTo(start, endExclusive) {
-        return new OffsetRange(start, endExclusive);
-    }
-    static addRange(range, sortedRanges) {
-        let i = 0;
-        while (i < sortedRanges.length && sortedRanges[i].endExclusive < range.start) {
-            i++;
-        }
-        let j = i;
-        while (j < sortedRanges.length && sortedRanges[j].start <= range.endExclusive) {
-            j++;
-        }
-        if (i === j) {
-            sortedRanges.splice(i, 0, range);
-        } else {
-            const start = Math.min(range.start, sortedRanges[i].start);
-            const end = Math.max(range.endExclusive, sortedRanges[j - 1].endExclusive);
-            sortedRanges.splice(i, j - i, new OffsetRange(start, end));
-        }
-    }
-    static tryCreate(start, endExclusive) {
-        if (start > endExclusive) {
-            return undefined;
-        }
-        return new OffsetRange(start, endExclusive);
-    }
     static ofLength(length) {
         return new OffsetRange(0, length);
-    }
-    static ofStartAndLength(start, length) {
-        return new OffsetRange(start, start + length);
-    }
-    static emptyAt(offset) {
-        return new OffsetRange(offset, offset);
     }
     get isEmpty() {
         return this.start === this.endExclusive;
@@ -161,15 +130,6 @@ class OffsetRange {
     }
     toString() {
         return `[${this.start}, ${this.endExclusive})`;
-    }
-    equals(other) {
-        return this.start === other.start && this.endExclusive === other.endExclusive;
-    }
-    containsRange(other) {
-        return this.start <= other.start && other.endExclusive <= this.endExclusive;
-    }
-    contains(offset) {
-        return this.start <= offset && offset < this.endExclusive;
     }
     /**
      * for all numbers n: range1.contains(n) or range2.contains(n) => range1.join(range2).contains(n)
@@ -192,72 +152,232 @@ class OffsetRange {
         }
         return undefined;
     }
-    intersectionLength(range) {
-        const start = Math.max(this.start, range.start);
-        const end = Math.min(this.endExclusive, range.endExclusive);
-        return Math.max(0, end - start);
-    }
+    /**
+     * `a.intersects(b)` iff there exists a number n so that `a.contains(n)` and `b.contains(n)`.
+     * Warning: If one range is empty, this method returns always false.
+     */
     intersects(other) {
         const start = Math.max(this.start, other.start);
         const end = Math.min(this.endExclusive, other.endExclusive);
         return start < end;
     }
-    intersectsOrTouches(other) {
-        const start = Math.max(this.start, other.start);
-        const end = Math.min(this.endExclusive, other.endExclusive);
-        return start <= end;
-    }
-    isBefore(other) {
-        return this.endExclusive <= other.start;
-    }
-    isAfter(other) {
-        return this.start >= other.endExclusive;
-    }
     slice(arr) {
         return arr.slice(this.start, this.endExclusive);
-    }
-    substring(str) {
-        return str.substring(this.start, this.endExclusive);
-    }
-    /**
-     * Returns the given value if it is contained in this instance, otherwise the closest value that is contained.
-     * The range must not be empty.
-     */
-    clip(value) {
-        if (this.isEmpty) {
-            throw new BugIndicatingError(`Invalid clipping range: ${this.toString()}`);
-        }
-        return Math.max(this.start, Math.min(this.endExclusive - 1, value));
-    }
-    /**
-     * Returns `r := value + k * length` such that `r` is contained in this range.
-     * The range must not be empty.
-     *
-     * E.g. `[5, 10).clipCyclic(10) === 5`, `[5, 10).clipCyclic(11) === 6` and `[5, 10).clipCyclic(4) === 9`.
-     */
-    clipCyclic(value) {
-        if (this.isEmpty) {
-            throw new BugIndicatingError(`Invalid clipping range: ${this.toString()}`);
-        }
-        if (value < this.start) {
-            return this.endExclusive - (this.start - value) % this.length;
-        }
-        if (value >= this.endExclusive) {
-            return this.start + (value - this.start) % this.length;
-        }
-        return value;
-    }
-    map(f) {
-        const result = [];
-        for (let i = this.start; i < this.endExclusive; i++) {
-            result.push(f(i));
-        }
-        return result;
     }
     forEach(f) {
         for (let i = this.start; i < this.endExclusive; i++) {
             f(i);
         }
+    }
+}
+
+function findLastMonotonous(array, predicate) {
+    const idx = findLastIdxMonotonous(array, predicate);
+    return idx === -1 ? undefined : array[idx];
+}
+function findLastIdxMonotonous(array, predicate, startIdx = 0, endIdxEx = array.length) {
+    let i = startIdx;
+    let j = endIdxEx;
+    while (i < j) {
+        const k = Math.floor((i + j) / 2);
+        if (predicate(array[k])) {
+            i = k + 1;
+        } else {
+            j = k;
+        }
+    }
+    return i - 1;
+}
+function findFirstMonotonous(array, predicate) {
+    const idx = findFirstIdxMonotonousOrArrLen(array, predicate);
+    return idx === array.length ? undefined : array[idx];
+}
+function findFirstIdxMonotonousOrArrLen(array, predicate, startIdx = 0, endIdxEx = array.length) {
+    let i = startIdx;
+    let j = endIdxEx;
+    while (i < j) {
+        const k = Math.floor((i + j) / 2);
+        if (predicate(array[k])) {
+            j = k;
+        } else {
+            i = k + 1;
+        }
+    }
+    return i;
+}
+class MonotonousArray {
+    constructor(_array) {
+        this._array = _array;
+        this._findLastMonotonousLastIdx = 0;
+    }
+    static {
+        this.assertInvariants = false;
+    }
+    /**
+     * The predicate must be monotonous, i.e. `arr.map(predicate)` must be like `[true, ..., true, false, ..., false]`!
+     * For subsequent calls, current predicate must be weaker than (or equal to) the previous predicate, i.e. more entries must be `true`.
+     */
+    findLastMonotonous(predicate) {
+        if (MonotonousArray.assertInvariants) {
+            if (this._prevFindLastPredicate) {
+                for (const item of this._array) {
+                    if (this._prevFindLastPredicate(item) && !predicate(item)) {
+                        throw new Error("MonotonousArray: current predicate must be weaker than (or equal to) the previous predicate.");
+                    }
+                }
+            }
+            this._prevFindLastPredicate = predicate;
+        }
+        const idx = findLastIdxMonotonous(this._array, predicate, this._findLastMonotonousLastIdx);
+        this._findLastMonotonousLastIdx = idx + 1;
+        return idx === -1 ? undefined : this._array[idx];
+    }
+}
+
+class LineRange {
+    static {
+        this.compareByStart = compareBy((l) => l.startLineNumber, numberComparator);
+    }
+    static join(lineRanges) {
+        if (lineRanges.length === 0) {
+            throw new BugIndicatingError("lineRanges cannot be empty");
+        }
+        let startLineNumber = lineRanges[0].startLineNumber;
+        let endLineNumberExclusive = lineRanges[0].endLineNumberExclusive;
+        for (let i = 1; i < lineRanges.length; i++) {
+            startLineNumber = Math.min(startLineNumber, lineRanges[i].startLineNumber);
+            endLineNumberExclusive = Math.max(endLineNumberExclusive, lineRanges[i].endLineNumberExclusive);
+        }
+        return new LineRange(startLineNumber, endLineNumberExclusive);
+    }
+    constructor(startLineNumber, endLineNumberExclusive) {
+        if (startLineNumber > endLineNumberExclusive) {
+            throw new BugIndicatingError(`startLineNumber ${startLineNumber} cannot be after endLineNumberExclusive ${endLineNumberExclusive}`);
+        }
+        this.startLineNumber = startLineNumber;
+        this.endLineNumberExclusive = endLineNumberExclusive;
+    }
+    /**
+     * Indicates if this line range is empty.
+     */
+    get isEmpty() {
+        return this.startLineNumber === this.endLineNumberExclusive;
+    }
+    /**
+     * Moves this line range by the given offset of line numbers.
+     */
+    delta(offset) {
+        return new LineRange(this.startLineNumber + offset, this.endLineNumberExclusive + offset);
+    }
+    /**
+     * The number of lines this line range spans.
+     */
+    get length() {
+        return this.endLineNumberExclusive - this.startLineNumber;
+    }
+    /**
+     * Creates a line range that combines this and the given line range.
+     */
+    join(other) {
+        return new LineRange(
+            Math.min(this.startLineNumber, other.startLineNumber),
+            Math.max(this.endLineNumberExclusive, other.endLineNumberExclusive)
+        );
+    }
+    /**
+     * The resulting range is empty if the ranges do not intersect, but touch.
+     * If the ranges don't even touch, the result is undefined.
+     */
+    intersect(other) {
+        const startLineNumber = Math.max(this.startLineNumber, other.startLineNumber);
+        const endLineNumberExclusive = Math.min(this.endLineNumberExclusive, other.endLineNumberExclusive);
+        if (startLineNumber <= endLineNumberExclusive) {
+            return new LineRange(startLineNumber, endLineNumberExclusive);
+        }
+        return undefined;
+    }
+    intersectsOrTouches(other) {
+        return this.startLineNumber <= other.endLineNumberExclusive && other.startLineNumber <= this.endLineNumberExclusive;
+    }
+    /**
+     * Converts this 1-based line range to a 0-based offset range (subtracts 1!).
+     * @internal
+     */
+    toOffsetRange() {
+        return new OffsetRange(this.startLineNumber - 1, this.endLineNumberExclusive - 1);
+    }
+}
+class LineRangeSet {
+    constructor(_normalizedRanges = []) {
+        this._normalizedRanges = _normalizedRanges;
+    }
+    get ranges() {
+        return this._normalizedRanges;
+    }
+    addRange(range) {
+        if (range.length === 0) {
+            return;
+        }
+        const joinRangeStartIdx = findFirstIdxMonotonousOrArrLen(this._normalizedRanges, (r) => r.endLineNumberExclusive >= range.startLineNumber);
+        const joinRangeEndIdxExclusive = findLastIdxMonotonous(this._normalizedRanges, (r) => r.startLineNumber <= range.endLineNumberExclusive) + 1;
+        if (joinRangeStartIdx === joinRangeEndIdxExclusive) {
+            this._normalizedRanges.splice(joinRangeStartIdx, 0, range);
+        } else if (joinRangeStartIdx === joinRangeEndIdxExclusive - 1) {
+            const joinRange = this._normalizedRanges[joinRangeStartIdx];
+            this._normalizedRanges[joinRangeStartIdx] = joinRange.join(range);
+        } else {
+            const joinRange = this._normalizedRanges[joinRangeStartIdx].join(this._normalizedRanges[joinRangeEndIdxExclusive - 1]).join(range);
+            this._normalizedRanges.splice(joinRangeStartIdx, joinRangeEndIdxExclusive - joinRangeStartIdx, joinRange);
+        }
+    }
+    contains(lineNumber) {
+        const rangeThatStartsBeforeEnd = findLastMonotonous(this._normalizedRanges, (r) => r.startLineNumber <= lineNumber);
+        return !!rangeThatStartsBeforeEnd && rangeThatStartsBeforeEnd.endLineNumberExclusive > lineNumber;
+    }
+    /**
+     * Subtracts all ranges in this set from `range` and returns the result.
+     */
+    subtractFrom(range) {
+        const joinRangeStartIdx = findFirstIdxMonotonousOrArrLen(this._normalizedRanges, (r) => r.endLineNumberExclusive >= range.startLineNumber);
+        const joinRangeEndIdxExclusive = findLastIdxMonotonous(this._normalizedRanges, (r) => r.startLineNumber <= range.endLineNumberExclusive) + 1;
+        if (joinRangeStartIdx === joinRangeEndIdxExclusive) {
+            return new LineRangeSet([range]);
+        }
+        const result = [];
+        let startLineNumber = range.startLineNumber;
+        for (let i = joinRangeStartIdx; i < joinRangeEndIdxExclusive; i++) {
+            const r = this._normalizedRanges[i];
+            if (r.startLineNumber > startLineNumber) {
+                result.push(new LineRange(startLineNumber, r.startLineNumber));
+            }
+            startLineNumber = r.endLineNumberExclusive;
+        }
+        if (startLineNumber < range.endLineNumberExclusive) {
+            result.push(new LineRange(startLineNumber, range.endLineNumberExclusive));
+        }
+        return new LineRangeSet(result);
+    }
+    getIntersection(other) {
+        const result = [];
+        let i1 = 0;
+        let i2 = 0;
+        while (i1 < this._normalizedRanges.length && i2 < other._normalizedRanges.length) {
+            const r1 = this._normalizedRanges[i1];
+            const r2 = other._normalizedRanges[i2];
+            const i = r1.intersect(r2);
+            if (i && !i.isEmpty) {
+                result.push(i);
+            }
+            if (r1.endLineNumberExclusive < r2.endLineNumberExclusive) {
+                i1++;
+            } else {
+                i2++;
+            }
+        }
+        return new LineRangeSet(result);
+    }
+    getWithDelta(value) {
+        return new LineRangeSet(this._normalizedRanges.map((r) => r.delta(value)));
     }
 }
 
@@ -563,225 +683,6 @@ class Range {
     }
 }
 
-function findLastMonotonous(array, predicate) {
-    const idx = findLastIdxMonotonous(array, predicate);
-    return idx === -1 ? undefined : array[idx];
-}
-function findLastIdxMonotonous(array, predicate, startIdx = 0, endIdxEx = array.length) {
-    let i = startIdx;
-    let j = endIdxEx;
-    while (i < j) {
-        const k = Math.floor((i + j) / 2);
-        if (predicate(array[k])) {
-            i = k + 1;
-        } else {
-            j = k;
-        }
-    }
-    return i - 1;
-}
-function findFirstMonotonous(array, predicate) {
-    const idx = findFirstIdxMonotonousOrArrLen(array, predicate);
-    return idx === array.length ? undefined : array[idx];
-}
-function findFirstIdxMonotonousOrArrLen(array, predicate, startIdx = 0, endIdxEx = array.length) {
-    let i = startIdx;
-    let j = endIdxEx;
-    while (i < j) {
-        const k = Math.floor((i + j) / 2);
-        if (predicate(array[k])) {
-            j = k;
-        } else {
-            i = k + 1;
-        }
-    }
-    return i;
-}
-class MonotonousArray {
-    constructor(_array) {
-        this._array = _array;
-        this._findLastMonotonousLastIdx = 0;
-    }
-    static {
-        this.assertInvariants = false;
-    }
-    /**
-     * The predicate must be monotonous, i.e. `arr.map(predicate)` must be like `[true, ..., true, false, ..., false]`!
-     * For subsequent calls, current predicate must be weaker than (or equal to) the previous predicate, i.e. more entries must be `true`.
-     */
-    findLastMonotonous(predicate) {
-        if (MonotonousArray.assertInvariants) {
-            if (this._prevFindLastPredicate) {
-                for (const item of this._array) {
-                    if (this._prevFindLastPredicate(item) && !predicate(item)) {
-                        throw new Error("MonotonousArray: current predicate must be weaker than (or equal to) the previous predicate.");
-                    }
-                }
-            }
-            this._prevFindLastPredicate = predicate;
-        }
-        const idx = findLastIdxMonotonous(this._array, predicate, this._findLastMonotonousLastIdx);
-        this._findLastMonotonousLastIdx = idx + 1;
-        return idx === -1 ? undefined : this._array[idx];
-    }
-}
-
-class LineRange {
-    static fromRangeInclusive(range) {
-        return new LineRange(range.startLineNumber, range.endLineNumber + 1);
-    }
-    static join(lineRanges) {
-        if (lineRanges.length === 0) {
-            throw new BugIndicatingError("lineRanges cannot be empty");
-        }
-        let startLineNumber = lineRanges[0].startLineNumber;
-        let endLineNumberExclusive = lineRanges[0].endLineNumberExclusive;
-        for (let i = 1; i < lineRanges.length; i++) {
-            startLineNumber = Math.min(startLineNumber, lineRanges[i].startLineNumber);
-            endLineNumberExclusive = Math.max(endLineNumberExclusive, lineRanges[i].endLineNumberExclusive);
-        }
-        return new LineRange(startLineNumber, endLineNumberExclusive);
-    }
-    static ofLength(startLineNumber, length) {
-        return new LineRange(startLineNumber, startLineNumber + length);
-    }
-    constructor(startLineNumber, endLineNumberExclusive) {
-        if (startLineNumber > endLineNumberExclusive) {
-            throw new BugIndicatingError(`startLineNumber ${startLineNumber} cannot be after endLineNumberExclusive ${endLineNumberExclusive}`);
-        }
-        this.startLineNumber = startLineNumber;
-        this.endLineNumberExclusive = endLineNumberExclusive;
-    }
-    /**
-     * Indicates if this line range is empty.
-     */
-    get isEmpty() {
-        return this.startLineNumber === this.endLineNumberExclusive;
-    }
-    /**
-     * Moves this line range by the given offset of line numbers.
-     */
-    delta(offset) {
-        return new LineRange(this.startLineNumber + offset, this.endLineNumberExclusive + offset);
-    }
-    /**
-     * The number of lines this line range spans.
-     */
-    get length() {
-        return this.endLineNumberExclusive - this.startLineNumber;
-    }
-    /**
-     * Creates a line range that combines this and the given line range.
-     */
-    join(other) {
-        return new LineRange(
-            Math.min(this.startLineNumber, other.startLineNumber),
-            Math.max(this.endLineNumberExclusive, other.endLineNumberExclusive)
-        );
-    }
-    /**
-     * The resulting range is empty if the ranges do not intersect, but touch.
-     * If the ranges don't even touch, the result is undefined.
-     */
-    intersect(other) {
-        const startLineNumber = Math.max(this.startLineNumber, other.startLineNumber);
-        const endLineNumberExclusive = Math.min(this.endLineNumberExclusive, other.endLineNumberExclusive);
-        if (startLineNumber <= endLineNumberExclusive) {
-            return new LineRange(startLineNumber, endLineNumberExclusive);
-        }
-        return undefined;
-    }
-    overlapOrTouch(other) {
-        return this.startLineNumber <= other.endLineNumberExclusive && other.startLineNumber <= this.endLineNumberExclusive;
-    }
-    toInclusiveRange() {
-        if (this.isEmpty) {
-            return null;
-        }
-        return new Range(this.startLineNumber, 1, this.endLineNumberExclusive - 1, Number.MAX_SAFE_INTEGER);
-    }
-    /**
-     * Converts this 1-based line range to a 0-based offset range (subtracts 1!).
-     * @internal
-     */
-    toOffsetRange() {
-        return new OffsetRange(this.startLineNumber - 1, this.endLineNumberExclusive - 1);
-    }
-}
-class LineRangeSet {
-    constructor(_normalizedRanges = []) {
-        this._normalizedRanges = _normalizedRanges;
-    }
-    get ranges() {
-        return this._normalizedRanges;
-    }
-    addRange(range) {
-        if (range.length === 0) {
-            return;
-        }
-        const joinRangeStartIdx = findFirstIdxMonotonousOrArrLen(this._normalizedRanges, (r) => r.endLineNumberExclusive >= range.startLineNumber);
-        const joinRangeEndIdxExclusive = findLastIdxMonotonous(this._normalizedRanges, (r) => r.startLineNumber <= range.endLineNumberExclusive) + 1;
-        if (joinRangeStartIdx === joinRangeEndIdxExclusive) {
-            this._normalizedRanges.splice(joinRangeStartIdx, 0, range);
-        } else if (joinRangeStartIdx === joinRangeEndIdxExclusive - 1) {
-            const joinRange = this._normalizedRanges[joinRangeStartIdx];
-            this._normalizedRanges[joinRangeStartIdx] = joinRange.join(range);
-        } else {
-            const joinRange = this._normalizedRanges[joinRangeStartIdx].join(this._normalizedRanges[joinRangeEndIdxExclusive - 1]).join(range);
-            this._normalizedRanges.splice(joinRangeStartIdx, joinRangeEndIdxExclusive - joinRangeStartIdx, joinRange);
-        }
-    }
-    contains(lineNumber) {
-        const rangeThatStartsBeforeEnd = findLastMonotonous(this._normalizedRanges, (r) => r.startLineNumber <= lineNumber);
-        return !!rangeThatStartsBeforeEnd && rangeThatStartsBeforeEnd.endLineNumberExclusive > lineNumber;
-    }
-    /**
-     * Subtracts all ranges in this set from `range` and returns the result.
-     */
-    subtractFrom(range) {
-        const joinRangeStartIdx = findFirstIdxMonotonousOrArrLen(this._normalizedRanges, (r) => r.endLineNumberExclusive >= range.startLineNumber);
-        const joinRangeEndIdxExclusive = findLastIdxMonotonous(this._normalizedRanges, (r) => r.startLineNumber <= range.endLineNumberExclusive) + 1;
-        if (joinRangeStartIdx === joinRangeEndIdxExclusive) {
-            return new LineRangeSet([range]);
-        }
-        const result = [];
-        let startLineNumber = range.startLineNumber;
-        for (let i = joinRangeStartIdx; i < joinRangeEndIdxExclusive; i++) {
-            const r = this._normalizedRanges[i];
-            if (r.startLineNumber > startLineNumber) {
-                result.push(new LineRange(startLineNumber, r.startLineNumber));
-            }
-            startLineNumber = r.endLineNumberExclusive;
-        }
-        if (startLineNumber < range.endLineNumberExclusive) {
-            result.push(new LineRange(startLineNumber, range.endLineNumberExclusive));
-        }
-        return new LineRangeSet(result);
-    }
-    getIntersection(other) {
-        const result = [];
-        let i1 = 0;
-        let i2 = 0;
-        while (i1 < this._normalizedRanges.length && i2 < other._normalizedRanges.length) {
-            const r1 = this._normalizedRanges[i1];
-            const r2 = other._normalizedRanges[i2];
-            const i = r1.intersect(r2);
-            if (i && !i.isEmpty) {
-                result.push(i);
-            }
-            if (r1.endLineNumberExclusive < r2.endLineNumberExclusive) {
-                i1++;
-            } else {
-                i2++;
-            }
-        }
-        return new LineRangeSet(result);
-    }
-    getWithDelta(value) {
-        return new LineRangeSet(this._normalizedRanges.map((r) => r.delta(value)));
-    }
-}
-
 class LineRangeMapping {
     constructor(originalRange, modifiedRange) {
         this.original = originalRange;
@@ -792,34 +693,6 @@ class LineRangeMapping {
             this.original.join(other.original),
             this.modified.join(other.modified)
         );
-    }
-    get changedLineCount() {
-        return Math.max(this.original.length, this.modified.length);
-    }
-    /**
-     * This method assumes that the LineRangeMapping describes a valid diff!
-     * I.e. if one range is empty, the other range cannot be the entire document.
-     * It avoids various problems when the line range points to non-existing line-numbers.
-     */
-    toRangeMapping() {
-        const origInclusiveRange = this.original.toInclusiveRange();
-        const modInclusiveRange = this.modified.toInclusiveRange();
-        if (origInclusiveRange && modInclusiveRange) {
-            return new RangeMapping(origInclusiveRange, modInclusiveRange);
-        } else if (this.original.startLineNumber === 1 || this.modified.startLineNumber === 1) {
-            if (!(this.modified.startLineNumber === 1 && this.original.startLineNumber === 1)) {
-                throw new BugIndicatingError("not a valid diff");
-            }
-            return new RangeMapping(
-                new Range(this.original.startLineNumber, 1, this.original.endLineNumberExclusive, 1),
-                new Range(this.modified.startLineNumber, 1, this.modified.endLineNumberExclusive, 1)
-            );
-        } else {
-            return new RangeMapping(
-                new Range(this.original.startLineNumber - 1, Number.MAX_SAFE_INTEGER, this.original.endLineNumberExclusive - 1, Number.MAX_SAFE_INTEGER),
-                new Range(this.modified.startLineNumber - 1, Number.MAX_SAFE_INTEGER, this.modified.endLineNumberExclusive - 1, Number.MAX_SAFE_INTEGER)
-            );
-        }
     }
     /**
      * This method assumes that the LineRangeMapping describes a valid diff!
@@ -877,20 +750,9 @@ function isValidLineNumber(lineNumber, lines) {
     return lineNumber >= 1 && lineNumber <= lines.length;
 }
 class DetailedLineRangeMapping extends LineRangeMapping {
-    static fromRangeMappings(rangeMappings) {
-        const originalRange = LineRange.join(rangeMappings.map((r) => LineRange.fromRangeInclusive(r.originalRange)));
-        const modifiedRange = LineRange.join(rangeMappings.map((r) => LineRange.fromRangeInclusive(r.modifiedRange)));
-        return new DetailedLineRangeMapping(originalRange, modifiedRange, rangeMappings);
-    }
     constructor(originalRange, modifiedRange, innerChanges) {
         super(originalRange, modifiedRange);
         this.innerChanges = innerChanges;
-    }
-    flip() {
-        return new DetailedLineRangeMapping(this.modified, this.original, this.innerChanges?.map((c) => c.flip()));
-    }
-    withInnerChangesFromLineRanges() {
-        return new DetailedLineRangeMapping(this.original, this.modified, [this.toRangeMapping()]);
     }
 }
 class RangeMapping {
@@ -917,9 +779,6 @@ class RangeMapping {
         this.originalRange = originalRange;
         this.modifiedRange = modifiedRange;
     }
-    flip() {
-        return new RangeMapping(this.modifiedRange, this.originalRange);
-    }
     /**
      * Creates a single text edit that describes the change from the original to the modified text.
      */
@@ -934,7 +793,7 @@ function lineRangeMappingFromRangeMappings(alignments, originalLines, modifiedLi
     const changes = [];
     for (const g of groupAdjacentBy(
         alignments.map((a) => getLineRangeMapping(a, originalLines, modifiedLines)),
-        (a1, a2) => a1.original.overlapOrTouch(a2.original) || a1.modified.overlapOrTouch(a2.modified)
+        (a1, a2) => a1.original.intersectsOrTouches(a2.original) || a1.modified.intersectsOrTouches(a2.modified)
     )) {
         const first = g[0];
         const last = g[g.length - 1];
@@ -1109,11 +968,6 @@ class DateTimeout {
             this.valid = false;
         }
         return this.valid;
-    }
-    disable() {
-        this.timeout = Number.MAX_SAFE_INTEGER;
-        this.isValid = () => true;
-        this.valid = true;
     }
 }
 
@@ -1751,13 +1605,6 @@ class SetMap {
         }
         values.forEach(fn);
     }
-    get(key) {
-        const values = this.map.get(key);
-        if (!values) {
-            return /* @__PURE__ */ new Set();
-        }
-        return values;
-    }
 }
 
 class LinesSliceCharSequence {
@@ -2184,25 +2031,9 @@ class TextLength {
     static {
         this.zero = new TextLength(0, 0);
     }
-    toLineRange() {
-        return LineRange.ofLength(1, this.lineCount);
-    }
-    addToPosition(position) {
-        if (this.lineCount === 0) {
-            return new Position(position.lineNumber, position.column + this.columnCount);
-        } else {
-            return new Position(position.lineNumber + this.lineCount, this.columnCount + 1);
-        }
-    }
 }
 
 class AbstractText {
-    get endPositionExclusive() {
-        return this.length.addToPosition(new Position(1, 1));
-    }
-    get lineRange() {
-        return this.length.toLineRange();
-    }
     getLineLength(lineNumber) {
         return this.getValueOfRange(new Range(lineNumber, 1, lineNumber, Number.MAX_SAFE_INTEGER)).length;
     }
@@ -2338,7 +2169,9 @@ class DefaultLinesDiffComputer {
             }
         }
         scanForWhitespaceChanges(originalLines.length - seq1LastStart);
-        const changes = lineRangeMappingFromRangeMappings(alignments, new ArrayText(originalLines), new ArrayText(modifiedLines));
+        const original = new ArrayText(originalLines);
+        const modified = new ArrayText(modifiedLines);
+        const changes = lineRangeMappingFromRangeMappings(alignments, original, modified);
         let moves = [];
         if (options.computeMoves) {
             moves = this.computeMoves(changes, originalLines, modifiedLines, originalLinesHashes, modifiedLinesHashes, timeout, considerWhitespaceChanges, options);
